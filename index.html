@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Öğrenci-Öğretmen Atama ve Arama Raporu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      font-family: Arial, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #222;
+      background: #f3f5f7;
+    }
+    body {
+      margin: 0;
+      padding: 0 16px 40px;
+      background: #f3f5f7;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+    h2, h3 {
+      margin-top: 24px;
+      margin-bottom: 10px;
+    }
+    .app-shell {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      padding: 16px 18px;
+      margin-top: 16px;
+    }
+    .flex {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .flex-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .col {
+      flex: 1 1 320px;
+      min-width: 280px;
+    }
+    label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 4px;
+    }
+    select, input[type="date"], input[type="text"], textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid #cbd2dd;
+      font-size: 0.9rem;
+    }
+    select[multiple] {
+      height: 160px;
+    }
+    button {
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      background: #2563eb;
+      color: white;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    button.secondary {
+      background: #e5e7eb;
+      color: #111827;
+      font-weight: 500;
+    }
+    button.danger {
+      background: #dc2626;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .pill-group button {
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      border-radius: 999px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 10px;
+      font-size: 0.85rem;
+    }
+    th, td {
+      border: 1px solid #e5e7eb;
+      padding: 6px 8px;
+      text-align: left;
+    }
+    thead {
+      background: #f9fafb;
+    }
+    tr:nth-child(even) td {
+      background: #f9fafb;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      background: #e5f0ff;
+      color: #1d4ed8;
+      margin-left: 4px;
+    }
+    .muted {
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+    .date-preview {
+      font-size: 0.8rem;
+      margin-top: 4px;
+      color: #374151;
+    }
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .report-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-top: 12px;
+      page-break-inside: avoid;
+    }
+    .report-card h3 {
+      margin-top: 0;
+      margin-bottom: 4px;
+    }
+    .report-meta {
+      font-size: 0.8rem;
+      color: #4b5563;
+      margin-bottom: 6px;
+    }
+    textarea.note-cell {
+      width: 100%;
+      min-height: 48px;
+      resize: vertical;
+      font-size: 0.8rem;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-size: 0.75rem;
+      margin-right: 6px;
+      margin-top: 2px;
+    }
+    .chip span {
+      font-weight: 600;
+      margin-right: 4px;
+    }
+    .info-block {
+      font-size: 0.8rem;
+      color: #4b5563;
+      margin-top: 6px;
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .card {
+        box-shadow: none;
+        border-radius: 0;
+        margin-top: 0;
+      }
+      .report-card {
+        border: 1px solid #000;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <h1>Öğrenci – Öğretmen Atama ve Arama Takip Sistemi</h1>
+  <p style="text-align:center" class="muted">
+    Veriler Google Sheets'ten çekilir, atamalar Firebase Realtime Database'e kaydedilir.
+  </p>
+
+  <!-- VERİ YÜKLEME -->
+  <div class="card no-print">
+    <div class="flex-between">
+      <div>
+        <div class="section-title">1. Google Sheets verilerini yükle</div>
+        <div class="muted">
+          Öğrenci ve öğretmen listeleri otomatik çekilir. İstersen “Verileri Yeniden Yükle” diyerek yenileyebilirsin.
+        </div>
+      </div>
+      <div>
+        <button id="reloadDataBtn">Verileri Yeniden Yükle</button>
+      </div>
+    </div>
+    <div class="flex" style="margin-top:10px">
+      <div class="col">
+        <div><strong>Öğrenci Listesi:</strong> <span id="studentStatus" class="muted">Henüz yüklenmedi</span></div>
+      </div>
+      <div class="col">
+        <div><strong>Öğretmen Listesi:</strong> <span id="teacherStatus" class="muted">Henüz yüklenmedi</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ATAMA BÖLÜMÜ -->
+  <div class="card no-print">
+    <div class="section-title">2. Atama ayarları</div>
+    <div class="flex">
+      <div class="col">
+        <label for="classFilter">Sınıf Seç</label>
+        <select id="classFilter"></select>
+        <div class="info-block">
+          Sınıf seçince aşağıda o sınıfa ait öğrenciler listelenir. İstersen tek tek, istersen tüm sınıfı seçip atama yapabilirsin.
+        </div>
+      </div>
+      <div class="col">
+        <label for="teacherSelect">Öğretmen(ler) Seç <span class="badge">Çoklu seçim</span></label>
+        <select id="teacherSelect" multiple></select>
+        <div class="info-block">
+          CTRL / CMD ile birden fazla öğretmen seçebilirsin. Bir sınıfa ve bir öğrenciye istediğin kadar öğretmen atanabilir.
+        </div>
+      </div>
+      <div class="col">
+        <label>Tarih Aralığı</label>
+        <div class="flex" style="gap:8px">
+          <div class="col">
+            <input type="date" id="assignStart" />
+          </div>
+          <div class="col">
+            <input type="date" id="assignEnd" />
+          </div>
+        </div>
+        <div class="pill-group" style="margin-top:6px">
+          <button type="button" class="secondary" data-quick="7">+ 7 gün</button>
+          <button type="button" class="secondary" data-quick="14">+ 14 gün</button>
+          <button type="button" class="secondary" data-quick="28">+ 28 gün</button>
+        </div>
+        <div id="assignDatePreview" class="date-preview">Seçili aralık: henüz seçilmedi</div>
+      </div>
+    </div>
+
+    <div class="flex-between" style="margin-top:14px">
+      <div>
+        <button id="selectAllStudentsBtn" class="secondary">Tüm Sınıfı Seç</button>
+        <button id="clearSelectionBtn" class="secondary">Seçimleri Temizle</button>
+      </div>
+      <div>
+        <button id="assignBtn">Seçili Öğrencilere Seçili Öğretmenleri Ata</button>
+      </div>
+    </div>
+
+    <h3 style="margin-top:18px">Sınıf Öğrenci Listesi</h3>
+    <div class="muted">Listeden öğrenci seç. “Tüm Sınıfı Seç” butonu ile komple sınıfa da atama yapabilirsin.</div>
+    <div style="max-height:260px; overflow:auto; margin-top:6px;">
+      <table>
+        <thead>
+          <tr>
+            <th><input type="checkbox" id="allRowCheckbox" /></th>
+            <th>İsim</th>
+            <th>Soyisim</th>
+            <th>Cinsiyet</th>
+            <th>Sınıf</th>
+            <th>Okul No</th>
+            <th>Veli Adı</th>
+            <th>Veli Soyadı</th>
+            <th>Veli Telefon</th>
+            <th>Tarih</th>
+          </tr>
+        </thead>
+        <tbody id="studentsBody">
+          <!-- JS ile doldurulacak -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ATAMA ÖZETİ + FIREBASE -->
+  <div class="card no-print">
+    <div class="flex-between">
+      <div>
+        <div class="section-title">3. Yapılan atamalar</div>
+        <div class="muted">Burada sınıf / öğrenci / öğretmen bazında oluşan tüm atamaları görebilirsin.</div>
+      </div>
+      <div>
+        <button id="saveAssignmentsBtn">Atamaları Firebase'e Kaydet</button>
+        <button id="deleteAssignmentsBtn" class="danger">Tüm Atamaları Sil</button>
+      </div>
+    </div>
+
+    <div style="max-height:260px; overflow:auto; margin-top:8px;">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Öğretmen</th>
+            <th>Branş</th>
+            <th>Öğrenci</th>
+            <th>Soyisim</th>
+            <th>Sınıf</th>
+            <th>Okul No</th>
+            <th>Veli Adı</th>
+            <th>Veli Soyadı</th>
+            <th>Veli Tel</th>
+            <th>Tarih Aralığı</th>
+            <th>Sil</th>
+          </tr>
+        </thead>
+        <tbody id="assignmentsBody">
+          <!-- JS ile doldurulacak -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RAPORLAR -->
+  <div class="card">
+    <div class="flex-between no-print">
+      <div>
+        <div class="section-title">4. Öğretmen bazlı arama raporları</div>
+        <div class="muted">
+          Belirlediğin tarihler arasında, her öğretmenin arayacağı öğrenciler listelenir. “Arama yapıldı mı?” ve “Not” alanları
+          doldurulup tekrar Firebase'e kaydedilebilir. Yazdır butonu ile profesyonel bir liste alınabilir.
+        </div>
+      </div>
+      <div class="flex" style="gap:8px">
+        <div class="col">
+          <label>Rapor Tarih Aralığı</label>
+          <div class="flex" style="gap:8px">
+            <div class="col">
+              <input type="date" id="reportStart" />
+            </div>
+            <div class="col">
+              <input type="date" id="reportEnd" />
+            </div>
+          </div>
+        </div>
+        <div class="col" style="align-self:flex-end;">
+          <button id="generateReportsBtn" class="secondary">Raporları Oluştur</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="reportContainer" style="margin-top:12px;">
+      <!-- Raporlar JS ile üretilecek -->
+    </div>
+
+    <div class="flex-between no-print" style="margin-top:16px;">
+      <div class="muted">
+        Not ve arama durumlarını kaydedip daha sonra tekrar açtığında aynı şekilde görebilirsin.
+      </div>
+      <div>
+        <button id="saveReportNotesBtn" class="secondary">Rapor Notlarını Firebase'e Kaydet</button>
+        <button id="printReportsBtn">Raporları Yazdır</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JS KISMI -->
+<script type="module">
+  /***********************
+   * SABİT AYARLAR
+   **********************/
+  const STUDENT_SHEET_CSV_URL =
+    "https://docs.google.com/spreadsheets/d/16BD_BrNLYBaXviCzB8yDKBGS2Vdj5DHi/export?format=csv&gid=0";
+  const TEACHER_SHEET_CSV_URL =
+    "https://docs.google.com/spreadsheets/d/1oJGMO7FOPV4U86peeA63lmMk-wVCKsfWuyw2yefMweg/export?format=csv&gid=0";
+
+  // Firebase ayarları (gönderdiğinle aynı)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+  import {
+    getDatabase,
+    ref,
+    set,
+    get,
+    remove
+  } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAIzu6aNQstwQCdMWODyIwiaVVBm63OeGw",
+    authDomain: "odevfeno.firebaseapp.com",
+    databaseURL: "https://odevfeno-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "odevfeno",
+    storageBucket: "odevfeno.firebasestorage.app",
+    messagingSenderId: "662757516934",
+    appId: "1:662757516934:web:0042188832f63deb6fd307",
+    measurementId: "G-4Q99NQRB38"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const ASSIGNMENTS_PATH = "assignments";
+
+  /***********************
+   * DURUMLAR
+   **********************/
+  let students = [];   // tüm öğrenciler
+  let teachers = [];   // tüm öğretmenler
+  let assignments = []; // atamalar (Firebase'e de kaydedilecek)
+
+  /***********************
+   * YARDIMCI FONKSİYONLAR
+   **********************/
+  function parseCSV(text) {
+    const lines = text.trim().split(/\r?\n/);
+    return lines.map(line => line.split(","));
+  }
+
+  function toDisplayDateFromISO(iso) {
+    if (!iso) return "";
+    const [y, m, d] = iso.split("-");
+    return d + "." + m + "." + y;
+  }
+
+  function formatDateForStore(d) {
+    // d: Date objesi
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  function toDisplayDateFromSheet(ddmmyyyy) {
+    // Zaten 24.11.2025 formatında geliyor, aynen döndürelim
+    return ddmmyyyy || "";
+  }
+
+  function dateRangesOverlap(aStart, aEnd, bStart, bEnd) {
+    if (!aStart || !aEnd || !bStart || !bEnd) return true;
+    return aStart <= bEnd && aEnd >= bStart;
+  }
+
+  function unique(arr) {
+    return Array.from(new Set(arr));
+  }
+
+  function uid() {
+    return "a_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+  }
+
+  function showMessage(targetElementId, text) {
+    const el = document.getElementById(targetElementId);
+    if (el) el.textContent = text;
+  }
+
+  /***********************
+   * GOOGLE SHEETS'TEN VERİ ÇEKME
+   **********************/
+  async function loadStudents() {
+    showMessage("studentStatus", "Yükleniyor...");
+    const res = await fetch(STUDENT_SHEET_CSV_URL);
+    const text = await res.text();
+    const rows = parseCSV(text);
+    const header = rows[0];
+
+    const idxIsim = header.indexOf("İsim");
+    const idxSoyisim = header.indexOf("Soyisim*");
+    const idxCinsiyet = header.indexOf("Cinsiyet*");
+    const idxSinif = header.indexOf("Sınıf");
+    const idxOkulNo = header.indexOf("Okul Numarası");
+    const idxVeliAdi = header.indexOf("Veli Adı");
+    const idxVeliSoyadi = header.indexOf("Veli Soyadı");
+    const idxVeliTel = header.indexOf("Veli Telefon");
+    const idxTarih = header.indexOf("Tarih");
+
+    students = rows
+      .slice(1)
+      .filter(r => r[idxIsim] && r[idxSinif])
+      .map(r => ({
+        studentId: r[idxOkulNo]?.trim() || "",
+        isim: r[idxIsim]?.trim() || "",
+        soyisim: r[idxSoyisim]?.trim() || "",
+        cinsiyet: r[idxCinsiyet]?.trim() || "",
+        sinif: r[idxSinif]?.trim() || "",
+        okulNo: r[idxOkulNo]?.trim() || "",
+        veliAdi: r[idxVeliAdi]?.trim() || "",
+        veliSoyadi: r[idxVeliSoyadi]?.trim() || "",
+        veliTel: r[idxVeliTel]?.trim() || "",
+        tarihHam: r[idxTarih]?.trim() || ""
+      }));
+
+    showMessage("studentStatus", `Yüklendi (${students.length} öğrenci)`);
+    fillClassFilter();
+    renderStudentsTable();
+  }
+
+  async function loadTeachers() {
+    showMessage("teacherStatus", "Yükleniyor...");
+    const res = await fetch(TEACHER_SHEET_CSV_URL);
+    const text = await res.text();
+    const rows = parseCSV(text);
+    const header = rows[0];
+
+    const idxId = header.indexOf("ID");
+    const idxAd = header.indexOf("OGRETMEN_ADI");
+    const idxBrans = header.indexOf("BRANS");
+
+    teachers = rows
+      .slice(1)
+      .filter(r => r[idxAd])
+      .map(r => ({
+        id: r[idxId]?.trim() || "",
+        ad: r[idxAd]?.trim() || "",
+        brans: r[idxBrans]?.trim() || ""
+      }));
+
+    showMessage("teacherStatus", `Yüklendi (${teachers.length} öğretmen)`);
+    fillTeacherSelect();
+  }
+
+  async function loadAllData() {
+    try {
+      await Promise.all([loadStudents(), loadTeachers(), loadAssignmentsFromFirebase()]);
+    } catch (err) {
+      console.error(err);
+      alert("Veriler yüklenirken bir hata oluştu. Google Sheets paylaşım izinlerini kontrol edin.");
+      showMessage("studentStatus", "Hata");
+      showMessage("teacherStatus", "Hata");
+    }
+  }
+
+  /***********************
+   * EKRAN DOLDURMA
+   **********************/
+  function fillClassFilter() {
+    const select = document.getElementById("classFilter");
+    const siniflar = unique(students.map(s => s.sinif)).sort();
+    select.innerHTML = "";
+    siniflar.forEach(sinif => {
+      const opt = document.createElement("option");
+      opt.value = sinif;
+      opt.textContent = sinif;
+      select.appendChild(opt);
+    });
+  }
+
+  function fillTeacherSelect() {
+    const select = document.getElementById("teacherSelect");
+    select.innerHTML = "";
+    teachers.forEach(t => {
+      const opt = document.createElement("option");
+      opt.value = t.id;
+      opt.textContent = `${t.ad} (${t.brans})`;
+      select.appendChild(opt);
+    });
+  }
+
+  function renderStudentsTable() {
+    const tbody = document.getElementById("studentsBody");
+    const classFilter = document.getElementById("classFilter");
+    if (!classFilter.value) {
+      tbody.innerHTML = "";
+      return;
+    }
+    const sinif = classFilter.value;
+    const filtered = students.filter(s => s.sinif === sinif);
+    tbody.innerHTML = "";
+    filtered.forEach(s => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><input type="checkbox" class="student-checkbox" data-okulno="${s.okulNo}"></td>
+        <td>${s.isim}</td>
+        <td>${s.soyisim}</td>
+        <td>${s.cinsiyet}</td>
+        <td>${s.sinif}</td>
+        <td>${s.okulNo}</td>
+        <td>${s.veliAdi}</td>
+        <td>${s.veliSoyadi}</td>
+        <td>${s.veliTel}</td>
+        <td>${toDisplayDateFromSheet(s.tarihHam)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderAssignmentsTable() {
+    const tbody = document.getElementById("assignmentsBody");
+    tbody.innerHTML = "";
+    assignments.forEach((a, idx) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${idx + 1}</td>
+        <td>${a.teacherName}</td>
+        <td>${a.teacherBranch}</td>
+        <td>${a.studentFirstName}</td>
+        <td>${a.studentLastName}</td>
+        <td>${a.class}</td>
+        <td>${a.schoolNumber}</td>
+        <td>${a.parentFirstName}</td>
+        <td>${a.parentLastName}</td>
+        <td>${a.parentPhone}</td>
+        <td>${toDisplayDateFromISO(a.startDate)} – ${toDisplayDateFromISO(a.endDate)}</td>
+        <td><button type="button" class="secondary" data-del-id="${a.id}">Sil</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderReports() {
+    const container = document.getElementById("reportContainer");
+    container.innerHTML = "";
+    if (!assignments.length) {
+      container.innerHTML = "<p class='muted'>Herhangi bir atama yok.</p>";
+      return;
+    }
+
+    const reportStart = document.getElementById("reportStart").value || null;
+    const reportEnd = document.getElementById("reportEnd").value || null;
+
+    const filtered = assignments.filter(a =>
+      dateRangesOverlap(a.startDate, a.endDate, reportStart, reportEnd)
+    );
+
+    if (!filtered.length) {
+      container.innerHTML =
+        "<p class='muted'>Seçili tarih aralığında herhangi bir atama bulunamadı.</p>";
+      return;
+    }
+
+    // Öğretmene göre grupla
+    const groups = {};
+    filtered.forEach(a => {
+      if (!groups[a.teacherId]) groups[a.teacherId] = [];
+      groups[a.teacherId].push(a);
+    });
+
+    Object.keys(groups).forEach(teacherId => {
+      const assignmentsForTeacher = groups[teacherId];
+      const tName = assignmentsForTeacher[0].teacherName;
+      const tBranch = assignmentsForTeacher[0].teacherBranch;
+
+      const card = document.createElement("div");
+      card.className = "report-card";
+
+      const minStart = assignmentsForTeacher.reduce(
+        (min, a) => (!min || a.startDate < min ? a.startDate : min),
+        null
+      );
+      const maxEnd = assignmentsForTeacher.reduce(
+        (max, a) => (!max || a.endDate > max ? a.endDate : max),
+        null
+      );
+
+      card.innerHTML = `
+        <h3>${tName}</h3>
+        <div class="report-meta">
+          <span class="chip"><span>Branş:</span>${tBranch}</span>
+          <span class="chip"><span>Atama Sayısı:</span>${assignmentsForTeacher.length}</span>
+          <span class="chip"><span>Tarih:</span>${toDisplayDateFromISO(minStart)} – ${toDisplayDateFromISO(maxEnd)}</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>İsim</th>
+              <th>Soyisim</th>
+              <th>Cinsiyet</th>
+              <th>Sınıf</th>
+              <th>Okul No</th>
+              <th>Veli Adı</th>
+              <th>Veli Soyadı</th>
+              <th>Veli Telefon</th>
+              <th>Arama yapıldı mı?</th>
+              <th>Not</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      `;
+
+      const tbody = card.querySelector("tbody");
+      assignmentsForTeacher.forEach((a, idx) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${idx + 1}</td>
+          <td>${a.studentFirstName}</td>
+          <td>${a.studentLastName}</td>
+          <td>${a.gender}</td>
+          <td>${a.class}</td>
+          <td>${a.schoolNumber}</td>
+          <td>${a.parentFirstName}</td>
+          <td>${a.parentLastName}</td>
+          <td>${a.parentPhone}</td>
+          <td style="text-align:center;">
+            <input type="checkbox" class="report-called" data-assignment-id="${a.id}" ${a.called ? "checked" : ""}>
+          </td>
+          <td>
+            <textarea class="note-cell" data-assignment-id="${a.id}">${a.note || ""}</textarea>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      container.appendChild(card);
+    });
+  }
+
+  /***********************
+   * FIREBASE KAYIT / OKUMA
+   **********************/
+  async function saveAssignmentsToFirebase() {
+    try {
+      const refPath = ref(db, ASSIGNMENTS_PATH);
+      await set(refPath, assignments);
+      alert("Atamalar Firebase'e kaydedildi.");
+    } catch (err) {
+      console.error(err);
+      alert("Firebase'e kaydedilirken hata oluştu.");
+    }
+  }
+
+  async function loadAssignmentsFromFirebase() {
+    try {
+      const snapshot = await get(ref(db, ASSIGNMENTS_PATH));
+      if (snapshot.exists()) {
+        const value = snapshot.val();
+        if (Array.isArray(value)) {
+          assignments = value.filter(Boolean); // null vb. temizle
+        } else {
+          assignments = Object.values(value || {});
+        }
+        renderAssignmentsTable();
+      } else {
+        assignments = [];
+        renderAssignmentsTable();
+      }
+    } catch (err) {
+      console.error(err);
+      // İlk kullanımda hata olsa da uygulama çalışmaya devam etsin
+    }
+  }
+
+  async function deleteAllAssignmentsInFirebase() {
+    if (!confirm("Tüm atamaları silmek istediğine emin misin?")) return;
+    try {
+      await remove(ref(db, ASSIGNMENTS_PATH));
+      assignments = [];
+      renderAssignmentsTable();
+      document.getElementById("reportContainer").innerHTML = "";
+      alert("Tüm atamalar silindi.");
+    } catch (err) {
+      console.error(err);
+      alert("Atamalar silinirken hata oluştu.");
+    }
+  }
+
+  /***********************
+   * ATAMA OLUŞTURMA
+   **********************/
+  function getSelectedTeacherIds() {
+    const select = document.getElementById("teacherSelect");
+    return Array.from(select.selectedOptions).map(o => o.value);
+  }
+
+  function getSelectedStudents() {
+    const checkboxes = Array.from(
+      document.querySelectorAll(".student-checkbox:checked")
+    );
+    const okulNos = checkboxes.map(cb => cb.getAttribute("data-okulno"));
+    return students.filter(s => okulNos.includes(s.okulNo));
+  }
+
+  function updateAssignDatePreview() {
+    const start = document.getElementById("assignStart").value;
+    const end = document.getElementById("assignEnd").value;
+    const label = document.getElementById("assignDatePreview");
+    if (!start || !end) {
+      label.textContent = "Seçili aralık: henüz seçilmedi";
+      return;
+    }
+    label.textContent =
+      "Seçili aralık: " +
+      toDisplayDateFromISO(start) +
+      " – " +
+      toDisplayDateFromISO(end);
+  }
+
+  function applyQuickRange(days) {
+    const startInput = document.getElementById("assignStart");
+    const endInput = document.getElementById("assignEnd");
+    let start = startInput.value;
+    if (!start) {
+      const today = new Date();
+      start = formatDateForStore(today);
+      startInput.value = start;
+    }
+    const [y, m, d] = start.split("-");
+    const base = new Date(Number(y), Number(m) - 1, Number(d));
+    const endDate = new Date(base.getTime());
+    endDate.setDate(endDate.getDate() + Number(days));
+    endInput.value = formatDateForStore(endDate);
+    updateAssignDatePreview();
+  }
+
+  function createAssignments() {
+    const teacherIds = getSelectedTeacherIds();
+    const selectedStudents = getSelectedStudents();
+    const start = document.getElementById("assignStart").value;
+    const end = document.getElementById("assignEnd").value;
+
+    if (!teacherIds.length) {
+      alert("Lütfen en az bir öğretmen seç.");
+      return;
+    }
+    if (!selectedStudents.length) {
+      alert("Lütfen en az bir öğrenci seç.");
+      return;
+    }
+    if (!start || !end) {
+      alert("Lütfen tarih aralığını seç.");
+      return;
+    }
+    if (end < start) {
+      alert("Bitiş tarihi başlangıç tarihinden önce olamaz.");
+      return;
+    }
+
+    let added = 0;
+
+    teacherIds.forEach(tid => {
+      const teacher = teachers.find(t => t.id === tid);
+      if (!teacher) return;
+      selectedStudents.forEach(s => {
+        // aynı kayıt zaten varsa ekleme
+        const exists = assignments.some(
+          a =>
+            a.teacherId === tid &&
+            a.schoolNumber === s.okulNo &&
+            a.startDate === start &&
+            a.endDate === end
+        );
+        if (exists) return;
+
+        assignments.push({
+          id: uid(),
+          teacherId: tid,
+          teacherName: teacher.ad,
+          teacherBranch: teacher.brans,
+          studentFirstName: s.isim,
+          studentLastName: s.soyisim,
+          gender: s.cinsiyet,
+          class: s.sinif,
+          schoolNumber: s.okulNo,
+          parentFirstName: s.veliAdi,
+          parentLastName: s.veliSoyadi,
+          parentPhone: s.veliTel,
+          startDate: start,
+          endDate: end,
+          called: false,
+          note: ""
+        });
+        added++;
+      });
+    });
+
+    if (!added) {
+      alert("Yeni atama eklenmedi (muhtemelen aynı kayıtlar zaten mevcut).");
+    } else {
+      renderAssignmentsTable();
+      alert(added + " yeni atama oluşturuldu.");
+    }
+  }
+
+  function removeAssignmentById(id) {
+    assignments = assignments.filter(a => a.id !== id);
+    renderAssignmentsTable();
+  }
+
+  function syncReportControlsBackToAssignments() {
+    const checkboxes = Array.from(
+      document.querySelectorAll(".report-called[data-assignment-id]")
+    );
+    const notes = Array.from(
+      document.querySelectorAll(".note-cell[data-assignment-id]")
+    );
+
+    checkboxes.forEach(cb => {
+      const id = cb.getAttribute("data-assignment-id");
+      const ass = assignments.find(a => a.id === id);
+      if (ass) ass.called = cb.checked;
+    });
+
+    notes.forEach(n => {
+      const id = n.getAttribute("data-assignment-id");
+      const ass = assignments.find(a => a.id === id);
+      if (ass) ass.note = n.value;
+    });
+  }
+
+  /***********************
+   * EVENT LİSTENERS
+   **********************/
+  document.getElementById("reloadDataBtn").addEventListener("click", loadAllData);
+
+  document.getElementById("classFilter").addEventListener("change", () => {
+    renderStudentsTable();
+  });
+
+  document.getElementById("assignStart").addEventListener("change", updateAssignDatePreview);
+  document.getElementById("assignEnd").addEventListener("change", updateAssignDatePreview);
+
+  document.querySelectorAll("button[data-quick]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const days = btn.getAttribute("data-quick");
+      applyQuickRange(days);
+    });
+  });
+
+  document
+    .getElementById("selectAllStudentsBtn")
+    .addEventListener("click", () => {
+      document
+        .querySelectorAll(".student-checkbox")
+        .forEach(cb => (cb.checked = true));
+      document.getElementById("allRowCheckbox").checked = true;
+    });
+
+  document
+    .getElementById("clearSelectionBtn")
+    .addEventListener("click", () => {
+      document
+        .querySelectorAll(".student-checkbox")
+        .forEach(cb => (cb.checked = false));
+      document.getElementById("allRowCheckbox").checked = false;
+    });
+
+  document.getElementById("allRowCheckbox").addEventListener("change", e => {
+    const checked = e.target.checked;
+    document
+      .querySelectorAll(".student-checkbox")
+      .forEach(cb => (cb.checked = checked));
+  });
+
+  document.getElementById("assignBtn").addEventListener("click", createAssignments);
+
+  document
+    .getElementById("assignmentsBody")
+    .addEventListener("click", e => {
+      const btn = e.target.closest("button[data-del-id]");
+      if (!btn) return;
+      const id = btn.getAttribute("data-del-id");
+      if (confirm("Bu atamayı silmek istiyor musun?")) {
+        removeAssignmentById(id);
+      }
+    });
+
+  document
+    .getElementById("saveAssignmentsBtn")
+    .addEventListener("click", async () => {
+      syncReportControlsBackToAssignments();
+      await saveAssignmentsToFirebase();
+    });
+
+  document
+    .getElementById("deleteAssignmentsBtn")
+    .addEventListener("click", deleteAllAssignmentsInFirebase);
+
+  document
+    .getElementById("generateReportsBtn")
+    .addEventListener("click", () => {
+      syncReportControlsBackToAssignments();
+      renderReports();
+    });
+
+  document
+    .getElementById("saveReportNotesBtn")
+    .addEventListener("click", async () => {
+      syncReportControlsBackToAssignments();
+      await saveAssignmentsToFirebase();
+    });
+
+  document
+    .getElementById("printReportsBtn")
+    .addEventListener("click", () => {
+      syncReportControlsBackToAssignments();
+      renderReports(); // son hali ile yazdır
+      window.print();
+    });
+
+  /***********************
+   * BAŞLANGIÇTA ÇALIŞACAKLAR
+   **********************/
+  // sayfa açılır açılmaz verileri yükle
+  loadAllData();
+</script>
+</body>
+</html>
