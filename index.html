@@ -150,9 +150,10 @@
       color: #4b5563;
       margin-bottom: 6px;
     }
+    /* Açıklama kutusu 3 kat yüksek */
     textarea.note-cell {
       width: 100%;
-      min-height: 48px;
+      min-height: 144px;
       resize: vertical;
       font-size: 0.8rem;
     }
@@ -194,6 +195,14 @@
       color: #1d4ed8;
     }
 
+    /* Her öğretmen sayfası için başlık */
+    .report-page-title {
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
     /* Yazdırma özel stilleri */
     #reportContainer {
       /* Ekranda gizli, yazdırırken gösterilecek */
@@ -208,15 +217,12 @@
         background: #fff;
         padding: 0;
       }
-      /* Mevcut no-print sınıfı zaten tanımlı; onu kullanalım */
       .no-print {
         display: none !important;
       }
-      /* Ekranda gizlediğimiz rapor konteynerini yazdırmada gösterelim */
       #reportContainer {
         display: block;
       }
-      /* Yazdırma için özel başlık görünür olsun */
       #printTitle {
         display: block;
         text-align: center;
@@ -225,7 +231,6 @@
         font-size: 1.4rem;
         font-weight: bold;
       }
-      /* Her öğretmen raporu yeni sayfada başlasın */
       .report-card {
         page-break-after: always;
         border: 1px solid #000;
@@ -368,11 +373,8 @@
       </div>
       <div>
         <button id="saveAssignmentsBtn">Atamaları Firebase'e Kaydet</button>
-        <!-- Yeni düğme: Firebase'den mevcut atamaları yeniden yükle -->
         <button id="loadAssignmentsBtn" class="secondary">Firebase'den Yükle</button>
-        <!-- Düğme metni güncellendi: Firebase'i tamamen temizler -->
         <button id="deleteAssignmentsBtn" class="danger">Firebase'i Temizle</button>
-        <!-- Yazdırma düğmesi; raporları oluşturup yazdırır -->
         <button id="printReportsBtn">Raporları Yazdır</button>
       </div>
     </div>
@@ -468,20 +470,11 @@
     return rows;
   }
 
-  function normalizeHeader(str) {
-    if (!str) return "";
-    return str.replace(/^\uFEFF/, "").replace(/\*/g, "").trim().toLowerCase();
-  }
-
-  // Başlığı bire bir, Türkçe karakterlere dokunmadan arar
   function findColumnIndex(headerRow, expectedHeader) {
-    const target = expectedHeader.replace(/\*/g, "").trim();  // * işaretini kaldır
-
+    const target = expectedHeader.replace(/\*/g, "").trim();
     for (let i = 0; i < headerRow.length; i++) {
       const cell = (headerRow[i] || "").replace(/\*/g, "").trim();
-      if (cell === target) {
-        return i;
-      }
+      if (cell === target) return i;
     }
     return -1;
   }
@@ -497,11 +490,6 @@
     const mm = String(d.getMonth() + 1).padStart(2, "0");
     const dd = String(d.getDate()).padStart(2, "0");
     return `${yyyy}-${mm}-${dd}`;
-  }
-
-  function dateRangesOverlap(aStart, aEnd, bStart, bEnd) {
-    if (!aStart || !aEnd || !bStart || !bEnd) return true;
-    return aStart <= bEnd && aEnd >= bStart;
   }
 
   const unique = arr => Array.from(new Set(arr));
@@ -626,7 +614,20 @@
     const sel = document.getElementById("classFilter");
     if (!sel.value) { tbody.innerHTML=""; return; }
     const sinif = sel.value;
-    const list = students.filter(s => s.sinif === sinif);
+    let list = students.filter(s => s.sinif === sinif);
+
+    // Sınıf öğrencilerini önce okul numarasına, sonra isim ve soyisme göre sırala
+    list.sort((a, b) => {
+      const numA = parseInt(a.okulNo, 10);
+      const numB = parseInt(b.okulNo, 10);
+      if (!isNaN(numA) && !isNaN(numB) && numA !== numB) {
+        return numA - numB;
+      }
+      const nameCmp = a.isim.localeCompare(b.isim, 'tr', { sensitivity: 'base' });
+      if (nameCmp !== 0) return nameCmp;
+      return a.soyisim.localeCompare(b.soyisim, 'tr', { sensitivity: 'base' });
+    });
+
     tbody.innerHTML = "";
     list.forEach(s => {
       const tr = document.createElement("tr");
@@ -703,6 +704,7 @@
       const card = document.createElement("div");
       card.className = "report-card";
       card.innerHTML = `
+        <div class="report-page-title">Öğretmen Arama Listesi</div>
         <h3>${tName}</h3>
         <div class="report-meta">
           <span class="chip"><span>Branş:</span>${tBranch}</span>
@@ -745,10 +747,13 @@
             <input type="checkbox" class="report-called" data-assignment-id="${a.id}" ${a.called ? "checked" : ""}>
           </td>
         `;
-        // Not satırı
+        // Not satırı (başlığı ile birlikte)
         const tr2 = document.createElement("tr");
         tr2.innerHTML = `
-          <td colspan="10"><textarea class="note-cell" data-assignment-id="${a.id}">${a.note || ""}</textarea></td>
+          <td colspan="10">
+            <div style="font-size:0.8rem; font-weight:600; margin-bottom:4px;">Açıklama</div>
+            <textarea class="note-cell" data-assignment-id="${a.id}">${a.note || ""}</textarea>
+          </td>
         `;
         tbody.appendChild(tr1);
         tbody.appendChild(tr2);
@@ -918,7 +923,6 @@
   });
   document.getElementById("deleteAssignmentsBtn").addEventListener("click", deleteAllAssignmentsInFirebase);
 
-  // Yeni düğme: Firebase'den atamaları yükle
   document.getElementById("loadAssignmentsBtn").addEventListener("click", async()=>{
     await loadAssignmentsFromFirebase();
   });
