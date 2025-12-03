@@ -139,7 +139,7 @@
       border-radius: 10px;
       padding: 12px 14px;
       margin-top: 12px;
-      page-break-inside: avoid;
+      page-break-inside: avoid !important; /* kart tek parça kalsın */
     }
     .report-card h3 {
       margin-top: 0;
@@ -175,6 +175,23 @@
       font-size: 0.8rem;
       color: #4b5563;
       margin-top: 6px;
+    }
+
+    /* Her öğrenci satırı ve açıklaması birlikte kalsın */
+    .report-card table tr {
+      page-break-inside: avoid !important;
+    }
+
+    /* Zümre başkanı notu için stil */
+    .footer-note {
+      margin-top: 12px;
+      padding: 8px;
+      text-align: center;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: 1px dashed #2563eb;
+      border-radius: 6px;
+      color: #1d4ed8;
     }
 
     /* Yazdırma özel stilleri */
@@ -215,6 +232,9 @@
       }
       .report-card:last-child {
         page-break-after: auto;
+      }
+      .footer-note {
+        page-break-inside: avoid !important;
       }
     }
 
@@ -380,7 +400,7 @@
     </div>
   </div>
 
-  <!-- Rapor kartları artık ayrı bir konteynerde oluşturulacak. Bu alan ekranda gizlenir fakat yazdırmada görünür. -->
+  <!-- Rapor kartları ayrı konteynerde; ekranda gizli, yazdırmada görünür -->
   <div id="reportContainer"></div>
 </div>
 
@@ -453,20 +473,18 @@
     return str.replace(/^\uFEFF/, "").replace(/\*/g, "").trim().toLowerCase();
   }
 
- // Başlığı bire bir, Türkçe karakterlere dokunmadan arar
-function findColumnIndex(headerRow, expectedHeader) {
-  const target = expectedHeader.replace(/\*/g, "").trim();  // * işaretini kaldır
+  // Başlığı bire bir, Türkçe karakterlere dokunmadan arar
+  function findColumnIndex(headerRow, expectedHeader) {
+    const target = expectedHeader.replace(/\*/g, "").trim();  // * işaretini kaldır
 
-  for (let i = 0; i < headerRow.length; i++) {
-    const cell = (headerRow[i] || "").replace(/\*/g, "").trim();
-    if (cell === target) {
-      return i;
+    for (let i = 0; i < headerRow.length; i++) {
+      const cell = (headerRow[i] || "").replace(/\*/g, "").trim();
+      if (cell === target) {
+        return i;
+      }
     }
+    return -1;
   }
-  return -1;
-}
-
-
 
   function toDisplayDateFromISO(iso) {
     if (!iso) return "";
@@ -500,17 +518,14 @@ function findColumnIndex(headerRow, expectedHeader) {
     if (!rows.length) { setText("studentStatus","Hiç satır yok"); return; }
 
     const header = rows[0];
-const idxIsim      = findColumnIndex(header, "İsim");
-const idxSoyisim   = findColumnIndex(header, "Soyisim*");
-const idxCinsiyet  = findColumnIndex(header, "Cinsiyet*");
-const idxSinif     = findColumnIndex(header, "Sınıf");
-const idxOkulNo    = findColumnIndex(header, "Okul Numarası");
-const idxVeliAdi   = findColumnIndex(header, "Veli Adı");
-const idxVeliSoyad = findColumnIndex(header, "Veli Soyadı");
-const idxVeliTel   = findColumnIndex(header, "Veli Telefon");
-
-
-    // YIL, Tarih, Burslu mu? var ama kullanılmıyor; bulmaya bile gerek yok.
+    const idxIsim      = findColumnIndex(header, "İsim");
+    const idxSoyisim   = findColumnIndex(header, "Soyisim*");
+    const idxCinsiyet  = findColumnIndex(header, "Cinsiyet*");
+    const idxSinif     = findColumnIndex(header, "Sınıf");
+    const idxOkulNo    = findColumnIndex(header, "Okul Numarası");
+    const idxVeliAdi   = findColumnIndex(header, "Veli Adı");
+    const idxVeliSoyad = findColumnIndex(header, "Veli Soyadı");
+    const idxVeliTel   = findColumnIndex(header, "Veli Telefon");
 
     const required = [idxIsim, idxSoyisim, idxCinsiyet, idxSinif, idxOkulNo];
     if (required.some(i => i === -1)) {
@@ -545,9 +560,8 @@ const idxVeliTel   = findColumnIndex(header, "Veli Telefon");
     if (!rows.length) { setText("teacherStatus","Hiç satır yok"); return; }
     const header = rows[0];
     const idxId    = findColumnIndex(header, "ID");
-const idxAd    = findColumnIndex(header, "OGRETMEN_ADI");
-const idxBrans = findColumnIndex(header, "BRANS");
-
+    const idxAd    = findColumnIndex(header, "OGRETMEN_ADI");
+    const idxBrans = findColumnIndex(header, "BRANS");
 
     teachers = rows.slice(1)
       .filter(r => r[idxAd])
@@ -659,7 +673,6 @@ const idxBrans = findColumnIndex(header, "BRANS");
     cont.innerHTML = "";
     if (!assignments.length) { cont.innerHTML="<p class='muted'>Herhangi bir atama yok.</p>"; return; }
 
-    // Filtrelenmiş atamalar yerine mevcut atamaların tamamını kullan
     const filtered = assignments.slice();
     if (!filtered.length) {
       cont.innerHTML = "<p class='muted'>Herhangi bir atama yok.</p>";
@@ -682,7 +695,6 @@ const idxBrans = findColumnIndex(header, "BRANS");
       list.sort((a,b) => {
         const nameCompare = a.studentFirstName.localeCompare(b.studentFirstName, 'tr', { sensitivity: 'base' });
         if (nameCompare !== 0) return nameCompare;
-        // Okul numarasını sayısal karşılaştırma olarak dene, değilse alfabetik
         const numA = parseInt(a.schoolNumber,10);
         const numB = parseInt(b.schoolNumber,10);
         if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
@@ -741,14 +753,15 @@ const idxBrans = findColumnIndex(header, "BRANS");
         tbody.appendChild(tr1);
         tbody.appendChild(tr2);
       });
+
+      // Zümre başkanı notu: tablonun hemen altında, kartın içinde
+      const footerNote = document.createElement("div");
+      footerNote.className = "footer-note";
+      footerNote.textContent = "📌 Listeyi lütfen zümre başkanına zamanında teslim ediniz.";
+      card.appendChild(footerNote);
+
       cont.appendChild(card);
     });
-    // Listenin en altına zümre başkanı uyarısı ekle
-    const footer = document.createElement('p');
-    footer.textContent = 'Listeyi lütfen zümre başkanına zamanında teslim ediniz.';
-    footer.style.marginTop = '20px';
-    footer.style.fontSize = '0.9rem';
-    cont.appendChild(footer);
   }
 
   /* FIREBASE */
@@ -904,7 +917,6 @@ const idxBrans = findColumnIndex(header, "BRANS");
     await saveAssignmentsToFirebase();
   });
   document.getElementById("deleteAssignmentsBtn").addEventListener("click", deleteAllAssignmentsInFirebase);
-  // generateReportsBtn ve saveReportNotesBtn kaldırıldı; ilgili dinleyicilere ihtiyaç yok
 
   // Yeni düğme: Firebase'den atamaları yükle
   document.getElementById("loadAssignmentsBtn").addEventListener("click", async()=>{
@@ -921,6 +933,3 @@ const idxBrans = findColumnIndex(header, "BRANS");
 </script>
 </body>
 </html>
-
-
-
