@@ -20,10 +20,6 @@
       margin-top: 20px;
       margin-bottom: 8px;
     }
-    h2, h3 {
-      margin-top: 24px;
-      margin-bottom: 10px;
-    }
     .app-shell {
       max-width: 1400px;
       margin: 0 auto;
@@ -57,7 +53,7 @@
       display: block;
       margin-bottom: 4px;
     }
-    select, input[type="date"], input[type="text"], textarea {
+    select, input[type="date"], textarea {
       width: 100%;
       box-sizing: border-box;
       padding: 6px 8px;
@@ -288,16 +284,13 @@
             <th>Soyisim</th>
             <th>Cinsiyet</th>
             <th>Sınıf</th>
-            <th>Okul No</th>
+            <th>Okul Numarası</th>
             <th>Veli Adı</th>
             <th>Veli Soyadı</th>
             <th>Veli Telefon</th>
-            <th>Tarih</th>
           </tr>
         </thead>
-        <tbody id="studentsBody">
-          <!-- JS ile doldurulacak -->
-        </tbody>
+        <tbody id="studentsBody"></tbody>
       </table>
     </div>
   </div>
@@ -306,7 +299,7 @@
   <div class="card no-print">
     <div class="flex-between">
       <div>
-        <div class.section-title>3. Yapılan atamalar</div>
+        <div class="section-title">3. Yapılan atamalar</div>
         <div class="muted">Burada sınıf / öğrenci / öğretmen bazında oluşan tüm atamaları görebilirsin.</div>
       </div>
       <div>
@@ -322,20 +315,18 @@
             <th>#</th>
             <th>Öğretmen</th>
             <th>Branş</th>
-            <th>Öğrenci</th>
+            <th>İsim</th>
             <th>Soyisim</th>
             <th>Sınıf</th>
-            <th>Okul No</th>
+            <th>Okul Numarası</th>
             <th>Veli Adı</th>
             <th>Veli Soyadı</th>
-            <th>Veli Tel</th>
+            <th>Veli Telefon</th>
             <th>Tarih Aralığı</th>
             <th>Sil</th>
           </tr>
         </thead>
-        <tbody id="assignmentsBody">
-          <!-- JS ile doldurulacak -->
-        </tbody>
+        <tbody id="assignmentsBody"></tbody>
       </table>
     </div>
   </div>
@@ -368,9 +359,7 @@
       </div>
     </div>
 
-    <div id="reportContainer" style="margin-top:12px;">
-      <!-- Raporlar JS ile üretilecek -->
-    </div>
+    <div id="reportContainer" style="margin-top:12px;"></div>
 
     <div class="flex-between no-print" style="margin-top:16px;">
       <div class="muted">
@@ -384,27 +373,15 @@
   </div>
 </div>
 
-<!-- JS KISMI -->
 <script type="module">
-  /***********************
-   * SABİT AYARLAR
-   **********************/
-  // ÖĞRENCİLER: 2025-2026 sekmesi (isimle)
+  /* SABİTLER */
   const STUDENT_SHEET_CSV_URL =
     "https://docs.google.com/spreadsheets/d/16BD_BrNLYBaXviCzB8yDKBGS2Vdj5DHi/gviz/tq?tqx=out:csv&sheet=2025-2026";
-
-  // ÖĞRETMENLER: daha önce çalışan yöntem (gid=0)
   const TEACHER_SHEET_CSV_URL =
     "https://docs.google.com/spreadsheets/d/1oJGMO7FOPV4U86peeA63lmMk-wVCKsfWuyw2yefMweg/export?format=csv&gid=0";
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-  import {
-    getDatabase,
-    ref,
-    set,
-    get,
-    remove
-  } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+  import { getDatabase, ref, set, get, remove } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAIzu6aNQstwQCdMWODyIwiaVVBm63OeGw",
@@ -425,39 +402,36 @@
   let teachers = [];
   let assignments = [];
 
+  /* YARDIMCI FONKSİYONLAR */
+
   function detectSeparator(line) {
-    const commaCount = (line.match(/,/g) || []).length;
-    const semicolonCount = (line.match(/;/g) || []).length;
-    return semicolonCount > commaCount ? ";" : ",";
+    const comma = (line.match(/,/g) || []).length;
+    const semi = (line.match(/;/g) || []).length;
+    return semi > comma ? ";" : ",";
   }
 
   function parseCSV(text) {
     const lines = text.trim().split(/\r?\n/);
     if (!lines.length) return [];
     const sep = detectSeparator(lines[0]);
-
     const rows = [];
     for (const line of lines) {
       const row = [];
-      let current = "";
-      let inQuotes = false;
+      let cur = "";
+      let inQ = false;
       for (let i = 0; i < line.length; i++) {
         const ch = line[i];
         if (ch === '"') {
-          if (inQuotes && line[i + 1] === '"') {
-            current += '"';
-            i++;
-          } else {
-            inQuotes = !inQuotes;
-          }
-        } else if (ch === sep && !inQuotes) {
-          row.push(current);
-          current = "";
+          if (inQ && line[i + 1] === '"') {
+            cur += '"'; i++;
+          } else inQ = !inQ;
+        } else if (ch === sep && !inQ) {
+          row.push(cur); cur = "";
         } else {
-          current += ch;
+          cur += ch;
         }
       }
-      row.push(current);
+      row.push(cur);
       rows.push(row.map(c => c.trim()));
     }
     return rows;
@@ -465,11 +439,7 @@
 
   function normalizeHeader(str) {
     if (!str) return "";
-    return str
-      .replace(/^\uFEFF/, "")
-      .replace(/\*/g, "")
-      .trim()
-      .toLowerCase();
+    return str.replace(/^\uFEFF/, "").replace(/\*/g, "").trim().toLowerCase();
   }
 
   function findColumnIndex(headerRow, keyword) {
@@ -484,7 +454,7 @@
   function toDisplayDateFromISO(iso) {
     if (!iso) return "";
     const [y, m, d] = iso.split("-");
-    return d + "." + m + "." + y;
+    return `${d}.${m}.${y}`;
   }
 
   function formatDateForStore(d) {
@@ -494,39 +464,25 @@
     return `${yyyy}-${mm}-${dd}`;
   }
 
-  function toDisplayDateFromSheet(ddmmyyyy) {
-    return ddmmyyyy || "";
-  }
-
   function dateRangesOverlap(aStart, aEnd, bStart, bEnd) {
     if (!aStart || !aEnd || !bStart || !bEnd) return true;
     return aStart <= bEnd && aEnd >= bStart;
   }
 
-  function unique(arr) {
-    return Array.from(new Set(arr));
-  }
+  const unique = arr => Array.from(new Set(arr));
+  const uid = () => "a_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+  const setText = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
 
-  function uid() {
-    return "a_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
-  }
-
-  function showMessage(targetElementId, text) {
-    const el = document.getElementById(targetElementId);
-    if (el) el.textContent = text;
-  }
+  /* VERİ ÇEKME */
 
   async function loadStudents() {
-    showMessage("studentStatus", "Yükleniyor...");
+    setText("studentStatus", "Yükleniyor...");
     const res = await fetch(STUDENT_SHEET_CSV_URL);
     const text = await res.text();
     const rows = parseCSV(text);
-    if (!rows.length) {
-      showMessage("studentStatus", "Hiç satır bulunamadı");
-      return;
-    }
-    const header = rows[0];
+    if (!rows.length) { setText("studentStatus","Hiç satır yok"); return; }
 
+    const header = rows[0];
     const idxIsim      = findColumnIndex(header, "isim");
     const idxSoyisim   = findColumnIndex(header, "soyisim");
     const idxCinsiyet  = findColumnIndex(header, "cinsiyet");
@@ -535,53 +491,45 @@
     const idxVeliAdi   = findColumnIndex(header, "veli adı");
     const idxVeliSoyad = findColumnIndex(header, "veli soyadı");
     const idxVeliTel   = findColumnIndex(header, "veli telefon");
-    const idxTarih     = findColumnIndex(header, "tarih");
+    // YIL, Tarih, Burslu mu? var ama kullanılmıyor; bulmaya bile gerek yok.
 
     const required = [idxIsim, idxSoyisim, idxCinsiyet, idxSinif, idxOkulNo];
     if (required.some(i => i === -1)) {
-      console.error("Başlıklar bulunamadı:", header);
-      showMessage("studentStatus", "Başlıklar bulunamadı, lütfen sütun adlarını kontrol edin.");
+      console.error("Başlıklar:", header);
+      setText("studentStatus","Başlıklar bulunamadı (İsim, Soyisim*, Cinsiyet*, Sınıf, Okul Numarası…) kontrol et.");
       return;
     }
 
-    students = rows
-      .slice(1)
+    students = rows.slice(1)
       .filter(r => r[idxIsim] && r[idxSinif])
       .map(r => ({
-        studentId: r[idxOkulNo] || "",
         isim: r[idxIsim] || "",
         soyisim: r[idxSoyisim] || "",
         cinsiyet: r[idxCinsiyet] || "",
         sinif: r[idxSinif] || "",
         okulNo: r[idxOkulNo] || "",
-        veliAdi: idxVeliAdi   !== -1 ? (r[idxVeliAdi]   || "") : "",
-        veliSoyadi: idxVeliSoyad !== -1 ? (r[idxVeliSoyad] || "") : "",
-        veliTel: idxVeliTel   !== -1 ? (r[idxVeliTel]   || "") : "",
-        tarihHam: idxTarih    !== -1 ? (r[idxTarih]      || "") : ""
+        veliAdi:   idxVeliAdi   !== -1 ? (r[idxVeliAdi]   || "") : "",
+        veliSoyadi:idxVeliSoyad !== -1 ? (r[idxVeliSoyad] || "") : "",
+        veliTel:   idxVeliTel   !== -1 ? (r[idxVeliTel]   || "") : ""
       }));
 
-    showMessage("studentStatus", `Yüklendi (${students.length} öğrenci)`);
+    setText("studentStatus", `Yüklendi (${students.length} öğrenci)`);
     fillClassFilter();
     renderStudentsTable();
   }
 
   async function loadTeachers() {
-    showMessage("teacherStatus", "Yükleniyor...");
+    setText("teacherStatus", "Yükleniyor...");
     const res = await fetch(TEACHER_SHEET_CSV_URL);
     const text = await res.text();
     const rows = parseCSV(text);
-    if (!rows.length) {
-      showMessage("teacherStatus", "Hiç satır bulunamadı");
-      return;
-    }
+    if (!rows.length) { setText("teacherStatus","Hiç satır yok"); return; }
     const header = rows[0];
-
     const idxId    = findColumnIndex(header, "id");
     const idxAd    = findColumnIndex(header, "ogretmen_adi");
     const idxBrans = findColumnIndex(header, "brans");
 
-    teachers = rows
-      .slice(1)
+    teachers = rows.slice(1)
       .filter(r => r[idxAd])
       .map(r => ({
         id:    idxId    !== -1 ? (r[idxId]    || "") : "",
@@ -589,74 +537,64 @@
         brans: idxBrans !== -1 ? (r[idxBrans] || "") : ""
       }));
 
-    showMessage("teacherStatus", `Yüklendi (${teachers.length} öğretmen)`);
+    setText("teacherStatus", `Yüklendi (${teachers.length} öğretmen)`);
     fillTeacherSelect();
   }
 
   async function loadAssignmentsFromFirebase() {
     try {
-      const snapshot = await get(ref(db, ASSIGNMENTS_PATH));
-      if (snapshot.exists()) {
-        const value = snapshot.val();
-        if (Array.isArray(value)) {
-          assignments = value.filter(Boolean);
-        } else {
-          assignments = Object.values(value || {});
-        }
-      } else {
-        assignments = [];
-      }
+      const snap = await get(ref(db, ASSIGNMENTS_PATH));
+      if (snap.exists()) {
+        const val = snap.val();
+        assignments = Array.isArray(val) ? val.filter(Boolean) : Object.values(val || {});
+      } else assignments = [];
       renderAssignmentsTable();
-    } catch (err) {
-      console.error(err);
-    }
+    } catch (e) { console.error(e); }
   }
 
   async function loadAllData() {
     try {
       await Promise.all([loadStudents(), loadTeachers(), loadAssignmentsFromFirebase()]);
-    } catch (err) {
-      console.error(err);
-      alert("Veriler yüklenirken bir hata oluştu. Google Sheets paylaşım izinlerini kontrol edin.");
-      showMessage("studentStatus", "Hata");
-      showMessage("teacherStatus", "Hata");
+    } catch (e) {
+      console.error(e);
+      alert("Veriler yüklenirken hata oluştu (paylaşım izinlerini kontrol et).");
+      setText("studentStatus","Hata");
+      setText("teacherStatus","Hata");
     }
   }
 
+  /* EKRAN DOLDURMA */
+
   function fillClassFilter() {
-    const select = document.getElementById("classFilter");
+    const sel = document.getElementById("classFilter");
     const siniflar = unique(students.map(s => s.sinif)).sort();
-    select.innerHTML = "";
-    siniflar.forEach(sinif => {
-      const opt = document.createElement("option");
-      opt.value = sinif;
-      opt.textContent = sinif;
-      select.appendChild(opt);
+    sel.innerHTML = "";
+    siniflar.forEach(s => {
+      const o = document.createElement("option");
+      o.value = s; o.textContent = s;
+      sel.appendChild(o);
     });
   }
 
   function fillTeacherSelect() {
-    const select = document.getElementById("teacherSelect");
-    select.innerHTML = "";
+    const sel = document.getElementById("teacherSelect");
+    sel.innerHTML = "";
     teachers.forEach(t => {
-      const opt = document.createElement("option");
-      opt.value = t.id;
-      opt.textContent = `${t.ad} (${t.brans})`;
-      select.appendChild(opt);
+      const o = document.createElement("option");
+      o.value = t.id;
+      o.textContent = `${t.ad} (${t.brans})`;
+      sel.appendChild(o);
     });
   }
 
   function renderStudentsTable() {
     const tbody = document.getElementById("studentsBody");
-    const classFilter = document.getElementById("classFilter");
-    if (!classFilter.value) {
-      tbody.innerHTML = "";
-      return;
-    }
-    const sinif = classFilter.value;
-    const filtered = students.filter(s => s.sinif === sinif);
+    const sel = document.getElementById("classFilter");
+    if (!sel.value) { tbody.innerHTML=""; return; }
+    const sinif = sel.value;
+    const list = students.filter(s => s.sinif === sinif);
     tbody.innerHTML = "";
-    filtered.forEach(s => {
+    list.forEach(s => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td><input type="checkbox" class="student-checkbox" data-okulno="${s.okulNo}"></td>
@@ -668,7 +606,6 @@
         <td>${s.veliAdi}</td>
         <td>${s.veliSoyadi}</td>
         <td>${s.veliTel}</td>
-        <td>${toDisplayDateFromSheet(s.tarihHam)}</td>
       `;
       tbody.appendChild(tr);
     });
@@ -677,10 +614,10 @@
   function renderAssignmentsTable() {
     const tbody = document.getElementById("assignmentsBody");
     tbody.innerHTML = "";
-    assignments.forEach((a, idx) => {
+    assignments.forEach((a,i) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${idx + 1}</td>
+        <td>${i+1}</td>
         <td>${a.teacherName}</td>
         <td>${a.teacherBranch}</td>
         <td>${a.studentFirstName}</td>
@@ -698,54 +635,35 @@
   }
 
   function renderReports() {
-    const container = document.getElementById("reportContainer");
-    container.innerHTML = "";
-    if (!assignments.length) {
-      container.innerHTML = "<p class='muted'>Herhangi bir atama yok.</p>";
-      return;
-    }
+    const cont = document.getElementById("reportContainer");
+    cont.innerHTML = "";
+    if (!assignments.length) { cont.innerHTML="<p class='muted'>Herhangi bir atama yok.</p>"; return; }
 
-    const reportStart = document.getElementById("reportStart").value || null;
-    const reportEnd = document.getElementById("reportEnd").value || null;
-
-    const filtered = assignments.filter(a =>
-      dateRangesOverlap(a.startDate, a.endDate, reportStart, reportEnd)
-    );
-
-    if (!filtered.length) {
-      container.innerHTML =
-        "<p class='muted'>Seçili tarih aralığında herhangi bir atama bulunamadı.</p>";
-      return;
-    }
+    const rs = document.getElementById("reportStart").value || null;
+    const re = document.getElementById("reportEnd").value || null;
+    const filtered = assignments.filter(a => dateRangesOverlap(a.startDate,a.endDate,rs,re));
+    if (!filtered.length) { cont.innerHTML="<p class='muted'>Seçili aralıkta atama yok.</p>"; return; }
 
     const groups = {};
     filtered.forEach(a => {
-      if (!groups[a.teacherId]) groups[a.teacherId] = [];
+      if (!groups[a.teacherId]) groups[a.teacherId]=[];
       groups[a.teacherId].push(a);
     });
 
-    Object.keys(groups).forEach(teacherId => {
-      const assignmentsForTeacher = groups[teacherId];
-      const tName = assignmentsForTeacher[0].teacherName;
-      const tBranch = assignmentsForTeacher[0].teacherBranch;
+    Object.keys(groups).forEach(tid => {
+      const list = groups[tid];
+      const tName = list[0].teacherName;
+      const tBranch = list[0].teacherBranch;
+      const minStart = list.reduce((m,a)=>!m||a.startDate<m?a.startDate:m,null);
+      const maxEnd   = list.reduce((m,a)=>!m||a.endDate>m?a.endDate:m,null);
 
       const card = document.createElement("div");
-      card.className = "report-card";
-
-      const minStart = assignmentsForTeacher.reduce(
-        (min, a) => (!min || a.startDate < min ? a.startDate : min),
-        null
-      );
-      const maxEnd = assignmentsForTeacher.reduce(
-        (max, a) => (!max || a.endDate > max ? a.endDate : max),
-        null
-      );
-
+      card.className="report-card";
       card.innerHTML = `
         <h3>${tName}</h3>
         <div class="report-meta">
           <span class="chip"><span>Branş:</span>${tBranch}</span>
-          <span class="chip"><span>Atama Sayısı:</span>${assignmentsForTeacher.length}</span>
+          <span class="chip"><span>Atama Sayısı:</span>${list.length}</span>
           <span class="chip"><span>Tarih:</span>${toDisplayDateFromISO(minStart)} – ${toDisplayDateFromISO(maxEnd)}</span>
         </div>
         <table>
@@ -767,12 +685,11 @@
           <tbody></tbody>
         </table>
       `;
-
       const tbody = card.querySelector("tbody");
-      assignmentsForTeacher.forEach((a, idx) => {
+      list.forEach((a,i) => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td>${idx + 1}</td>
+          <td>${i+1}</td>
           <td>${a.studentFirstName}</td>
           <td>${a.studentLastName}</td>
           <td>${a.gender}</td>
@@ -782,231 +699,184 @@
           <td>${a.parentLastName}</td>
           <td>${a.parentPhone}</td>
           <td style="text-align:center;">
-            <input type="checkbox" class="report-called" data-assignment-id="${a.id}" ${a.called ? "checked" : ""}>
+            <input type="checkbox" class="report-called" data-assignment-id="${a.id}" ${a.called?"checked":""}>
           </td>
-          <td>
-            <textarea class="note-cell" data-assignment-id="${a.id}">${a.note || ""}</textarea>
-          </td>
+          <td><textarea class="note-cell" data-assignment-id="${a.id}">${a.note||""}</textarea></td>
         `;
         tbody.appendChild(tr);
       });
-
-      container.appendChild(card);
+      cont.appendChild(card);
     });
   }
 
+  /* FIREBASE */
+
   async function saveAssignmentsToFirebase() {
     try {
-      const refPath = ref(db, ASSIGNMENTS_PATH);
-      await set(refPath, assignments);
-      alert("Atamalar Firebase'e kaydedildi.");
-    } catch (err) {
-      console.error(err);
+      await set(ref(db, ASSIGNMENTS_PATH), assignments);
+      alert("Atamalar kaydedildi.");
+    } catch (e) {
+      console.error(e);
       alert("Firebase'e kaydedilirken hata oluştu.");
     }
   }
 
   async function deleteAllAssignmentsInFirebase() {
-    if (!confirm("Tüm atamaları silmek istediğine emin misin?")) return;
+    if (!confirm("Tüm atamaları silmek istiyor musun?")) return;
     try {
       await remove(ref(db, ASSIGNMENTS_PATH));
       assignments = [];
       renderAssignmentsTable();
-      document.getElementById("reportContainer").innerHTML = "";
+      document.getElementById("reportContainer").innerHTML="";
       alert("Tüm atamalar silindi.");
-    } catch (err) {
-      console.error(err);
-      alert("Atamalar silinirken hata oluştu.");
+    } catch (e) {
+      console.error(e);
+      alert("Silme sırasında hata oluştu.");
     }
   }
 
-  function getSelectedTeacherIds() {
-    const select = document.getElementById("teacherSelect");
-    return Array.from(select.selectedOptions).map(o => o.value);
-  }
+  /* ATAMA OLUŞTURMA & NOT SENKRON */
+
+  const getSelectedTeacherIds = () =>
+    Array.from(document.getElementById("teacherSelect").selectedOptions).map(o => o.value);
 
   function getSelectedStudents() {
-    const checkboxes = Array.from(
-      document.querySelectorAll(".student-checkbox:checked")
-    );
-    const okulNos = checkboxes.map(cb => cb.getAttribute("data-okulno"));
+    const okulNos = Array.from(document.querySelectorAll(".student-checkbox:checked"))
+      .map(cb => cb.getAttribute("data-okulno"));
     return students.filter(s => okulNos.includes(s.okulNo));
   }
 
   function updateAssignDatePreview() {
-    const start = document.getElementById("assignStart").value;
-    const end = document.getElementById("assignEnd").value;
-    const label = document.getElementById("assignDatePreview");
-    if (!start || !end) {
-      label.textContent = "Seçili aralık: henüz seçilmedi";
-      return;
-    }
-    label.textContent =
-      "Seçili aralık: " +
-      toDisplayDateFromISO(start) +
-      " – " +
-      toDisplayDateFromISO(end);
+    const s = document.getElementById("assignStart").value;
+    const e = document.getElementById("assignEnd").value;
+    const el = document.getElementById("assignDatePreview");
+    if (!s || !e) { el.textContent="Seçili aralık: henüz seçilmedi"; return; }
+    el.textContent = "Seçili aralık: " + toDisplayDateFromISO(s) + " – " + toDisplayDateFromISO(e);
   }
 
   function applyQuickRange(days) {
-    const startInput = document.getElementById("assignStart");
-    const endInput = document.getElementById("assignEnd");
-    let start = startInput.value;
-    if (!start) {
-      const today = new Date();
-      start = formatDateForStore(today);
-      startInput.value = start;
-    }
-    const [y, m, d] = start.split("-");
-    const base = new Date(Number(y), Number(m) - 1, Number(d));
-    const endDate = new Date(base.getTime());
-    endDate.setDate(endDate.getDate() + Number(days));
-    endInput.value = formatDateForStore(endDate);
+    const sInput = document.getElementById("assignStart");
+    const eInput = document.getElementById("assignEnd");
+    let s = sInput.value;
+    if (!s) { const t=new Date(); s=formatDateForStore(t); sInput.value=s; }
+    const [y,m,d]=s.split("-");
+    const base = new Date(+y,+m-1,+d);
+    const end  = new Date(base.getTime());
+    end.setDate(end.getDate()+Number(days));
+    eInput.value = formatDateForStore(end);
     updateAssignDatePreview();
   }
 
   function createAssignments() {
-    const teacherIds = getSelectedTeacherIds();
-    const selectedStudents = getSelectedStudents();
-    const start = document.getElementById("assignStart").value;
-    const end = document.getElementById("assignEnd").value;
+    const tids = getSelectedTeacherIds();
+    const studs = getSelectedStudents();
+    const s = document.getElementById("assignStart").value;
+    const e = document.getElementById("assignEnd").value;
 
-    if (!teacherIds.length) {
-      alert("Lütfen en az bir öğretmen seç.");
-      return;
-    }
-    if (!selectedStudents.length) {
-      alert("Lütfen en az bir öğrenci seç.");
-      return;
-    }
-    if (!start || !end) {
-      alert("Lütfen tarih aralığını seç.");
-      return;
-    }
-    if (end < start) {
-      alert("Bitiş tarihi başlangıç tarihinden önce olamaz.");
-      return;
-    }
+    if (!tids.length) { alert("En az bir öğretmen seç."); return; }
+    if (!studs.length) { alert("En az bir öğrenci seç."); return; }
+    if (!s || !e) { alert("Tarih aralığı seç."); return; }
+    if (e < s) { alert("Bitiş tarihi başlangıçtan önce olamaz."); return; }
 
-    let added = 0;
-
-    teacherIds.forEach(tid => {
-      const teacher = teachers.find(t => t.id === tid);
-      if (!teacher) return;
-      selectedStudents.forEach(s => {
-        const exists = assignments.some(
-          a =>
-            a.teacherId === tid &&
-            a.schoolNumber === s.okulNo &&
-            a.startDate === start &&
-            a.endDate === end
+    let added=0;
+    tids.forEach(tid=>{
+      const t=teachers.find(x=>x.id===tid); if(!t) return;
+      studs.forEach(st=>{
+        const exists = assignments.some(a =>
+          a.teacherId===tid && a.schoolNumber===st.okulNo && a.startDate===s && a.endDate===e
         );
         if (exists) return;
-
         assignments.push({
           id: uid(),
           teacherId: tid,
-          teacherName: teacher.ad,
-          teacherBranch: teacher.brans,
-          studentFirstName: s.isim,
-          studentLastName: s.soyisim,
-          gender: s.cinsiyet,
-          class: s.sinif,
-          schoolNumber: s.okulNo,
-          parentFirstName: s.veliAdi,
-          parentLastName: s.veliSoyadi,
-          parentPhone: s.veliTel,
-          startDate: start,
-          endDate: end,
+          teacherName: t.ad,
+          teacherBranch: t.brans,
+          studentFirstName: st.isim,
+          studentLastName: st.soyisim,
+          gender: st.cinsiyet,
+          class: st.sinif,
+          schoolNumber: st.okulNo,
+          parentFirstName: st.veliAdi,
+          parentLastName: st.veliSoyadi,
+          parentPhone: st.veliTel,
+          startDate: s,
+          endDate: e,
           called: false,
           note: ""
         });
         added++;
       });
     });
-
-    if (!added) {
-      alert("Yeni atama eklenmedi (muhtemelen aynı kayıtlar zaten mevcut).");
-    } else {
-      renderAssignmentsTable();
-      alert(added + " yeni atama oluşturuldu.");
-    }
+    if (!added) alert("Yeni atama eklenmedi (muhtemelen aynı kayıtlar var).");
+    else { renderAssignmentsTable(); alert(added+" atama oluşturuldu."); }
   }
 
   function removeAssignmentById(id) {
-    assignments = assignments.filter(a => a.id !== id);
+    assignments = assignments.filter(a=>a.id!==id);
     renderAssignmentsTable();
   }
 
-  function syncReportControlsBackToAssignments() {
-    const checkboxes = Array.from(
-      document.querySelectorAll(".report-called[data-assignment-id]")
-    );
-    const notes = Array.from(
-      document.querySelectorAll(".note-cell[data-assignment-id]")
-    );
-
-    checkboxes.forEach(cb => {
+  function syncReportBackToAssignments() {
+    Array.from(document.querySelectorAll(".report-called")).forEach(cb=>{
       const id = cb.getAttribute("data-assignment-id");
-      const ass = assignments.find(a => a.id === id);
-      if (ass) ass.called = cb.checked;
+      const a = assignments.find(x=>x.id===id);
+      if (a) a.called = cb.checked;
     });
-
-    notes.forEach(n => {
-      const id = n.getAttribute("data-assignment-id");
-      const ass = assignments.find(a => a.id === id);
-      if (ass) ass.note = n.value;
+    Array.from(document.querySelectorAll(".note-cell")).forEach(t=>{
+      const id = t.getAttribute("data-assignment-id");
+      const a = assignments.find(x=>x.id===id);
+      if (a) a.note = t.value;
     });
   }
+
+  /* OLAYLAR */
 
   document.getElementById("reloadDataBtn").addEventListener("click", loadAllData);
   document.getElementById("classFilter").addEventListener("change", renderStudentsTable);
   document.getElementById("assignStart").addEventListener("change", updateAssignDatePreview);
   document.getElementById("assignEnd").addEventListener("change", updateAssignDatePreview);
-  document.querySelectorAll("button[data-quick]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const days = btn.getAttribute("data-quick");
-      applyQuickRange(days);
-    });
+  document.querySelectorAll("button[data-quick]").forEach(btn=>{
+    btn.addEventListener("click", ()=>applyQuickRange(btn.getAttribute("data-quick")));
   });
-  document.getElementById("selectAllStudentsBtn").addEventListener("click", () => {
-    document.querySelectorAll(".student-checkbox").forEach(cb => (cb.checked = true));
-    document.getElementById("allRowCheckbox").checked = true;
+  document.getElementById("selectAllStudentsBtn").addEventListener("click", ()=>{
+    document.querySelectorAll(".student-checkbox").forEach(cb=>cb.checked=true);
+    document.getElementById("allRowCheckbox").checked=true;
   });
-  document.getElementById("clearSelectionBtn").addEventListener("click", () => {
-    document.querySelectorAll(".student-checkbox").forEach(cb => (cb.checked = false));
-    document.getElementById("allRowCheckbox").checked = false;
+  document.getElementById("clearSelectionBtn").addEventListener("click", ()=>{
+    document.querySelectorAll(".student-checkbox").forEach(cb=>cb.checked=false);
+    document.getElementById("allRowCheckbox").checked=false;
   });
-  document.getElementById("allRowCheckbox").addEventListener("change", e => {
-    const checked = e.target.checked;
-    document.querySelectorAll(".student-checkbox").forEach(cb => (cb.checked = checked));
+  document.getElementById("allRowCheckbox").addEventListener("change",e=>{
+    const c=e.target.checked;
+    document.querySelectorAll(".student-checkbox").forEach(cb=>cb.checked=c);
   });
   document.getElementById("assignBtn").addEventListener("click", createAssignments);
-  document.getElementById("assignmentsBody").addEventListener("click", e => {
-    const btn = e.target.closest("button[data-del-id]");
-    if (!btn) return;
-    const id = btn.getAttribute("data-del-id");
-    if (confirm("Bu atamayı silmek istiyor musun?")) removeAssignmentById(id);
+  document.getElementById("assignmentsBody").addEventListener("click",e=>{
+    const btn=e.target.closest("button[data-del-id]");
+    if(!btn) return;
+    const id=btn.getAttribute("data-del-id");
+    if(confirm("Bu atamayı silmek istiyor musun?")) removeAssignmentById(id);
   });
-  document.getElementById("saveAssignmentsBtn").addEventListener("click", async () => {
-    syncReportControlsBackToAssignments();
+  document.getElementById("saveAssignmentsBtn").addEventListener("click", async()=>{
+    syncReportBackToAssignments();
     await saveAssignmentsToFirebase();
   });
   document.getElementById("deleteAssignmentsBtn").addEventListener("click", deleteAllAssignmentsInFirebase);
-  document.getElementById("generateReportsBtn").addEventListener("click", () => {
-    syncReportControlsBackToAssignments();
+  document.getElementById("generateReportsBtn").addEventListener("click", ()=>{
+    syncReportBackToAssignments();
     renderReports();
   });
-  document.getElementById("saveReportNotesBtn").addEventListener("click", async () => {
-    syncReportControlsBackToAssignments();
+  document.getElementById("saveReportNotesBtn").addEventListener("click", async()=>{
+    syncReportBackToAssignments();
     await saveAssignmentsToFirebase();
   });
-  document.getElementById("printReportsBtn").addEventListener("click", () => {
-    syncReportControlsBackToAssignments();
+  document.getElementById("printReportsBtn").addEventListener("click", ()=>{
+    syncReportBackToAssignments();
     renderReports();
     window.print();
   });
 
+  /* BAŞLANGIÇ */
   loadAllData();
 </script>
 </body>
