@@ -166,7 +166,7 @@
       color: #2d3748;
     }
 
-    /* İstatistik Kutuları */
+    /* YENİ: İstatistik Kutuları (Profesyonel Görünüm İçin) */
     .stat-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -227,21 +227,6 @@
       margin-top: 5px;
       font-size: 0.9rem;
       color: #4a5568;
-    }
-
-    /* --- YENİ EKLENEN STİL: Sayfa Numarası Rozeti --- */
-    .report-page-badge {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: #3182ce;
-      border: 2px solid #3182ce;
-      border-radius: 8px;
-      width: 50px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #fff;
     }
 
     textarea.note-cell {
@@ -322,7 +307,7 @@
         border: none;
         box-shadow: none;
         margin-top: 0;
-        page-break-after: always; /* Her rapor sonrası sayfa atla */
+        page-break-after: always;
       }
       .report-card:last-child {
         page-break-after: auto;
@@ -341,16 +326,6 @@
       }
       .report-header-meta {
         color: #000 !important;
-      }
-
-      /* Sayfa numarası yazdırma stili */
-      .report-page-badge {
-        color: #000 !important;
-        border: 2px solid #000 !important;
-        background: #fff !important;
-        font-size: 14pt;
-        width: 40px;
-        height: 30px;
       }
       
       table {
@@ -807,24 +782,18 @@
     });
 
     const teacherIds = Object.keys(groups);
-    
-    // GÜNCELLEME BURADA: index parametresi eklendi
-    teacherIds.forEach((tid, index) => {
+    teacherIds.forEach((tid) => {
       const list = groups[tid];
       const tName = list[0].teacherName;
       const tBranch = list[0].teacherBranch;
       const minStart = list.reduce((m,a)=>!m||a.startDate < m ? a.startDate : m, null);
       const maxEnd    = list.reduce((m,a)=>!m||a.endDate > m ? a.endDate : m, null);
-      
-      // Sayfa numarası (1'den başlar)
-      const pageNo = index + 1;
 
       list.sort(sortStudentsHelper);
 
       const card = document.createElement("div");
       card.className = "report-card";
 
-      // HTML içinde report-page-badge eklendi
       let html = `
         <div class="report-page-title">Öğretmen Veli Arama Takip Listesi</div>
         <div class="report-header-box">
@@ -838,7 +807,6 @@
               <span><strong>Tarih:</strong> ${toDisplayDateFromISO(minStart)} – ${toDisplayDateFromISO(maxEnd)}</span>
             </div>
           </div>
-          <div class="report-page-badge">${pageNo}</div>
         </div>
       `;
       card.innerHTML = html;
@@ -886,7 +854,7 @@
 
       card.appendChild(table);
 
-      // Footer Notu
+      // GÜNCELLENEN FOOTER NOTU
       const footerNote = document.createElement("div");
       footerNote.className = "footer-note";
       footerNote.textContent = "📌 Not: Bu liste tamamlandığında lütfen ilgili zümre başkanına zamanında teslim ediniz.";
