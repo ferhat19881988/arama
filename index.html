@@ -306,7 +306,7 @@
   <div class="card no-print">
     <div class="flex-between">
       <div>
-        <div class="section-title">3. Yapılan atamalar</div>
+        <div class.section-title>3. Yapılan atamalar</div>
         <div class="muted">Burada sınıf / öğrenci / öğretmen bazında oluşan tüm atamaları görebilirsin.</div>
       </div>
       <div>
@@ -389,14 +389,14 @@
   /***********************
    * SABİT AYARLAR
    **********************/
-  /* ÖĞRENCİLER -> 2025-2026 sekmesi */
+  // ÖĞRENCİLER: 2025-2026 sekmesi (isimle)
   const STUDENT_SHEET_CSV_URL =
     "https://docs.google.com/spreadsheets/d/16BD_BrNLYBaXviCzB8yDKBGS2Vdj5DHi/gviz/tq?tqx=out:csv&sheet=2025-2026";
-  /* ÖĞRETMENLER -> Ogretmenler sekmesi */
-  const TEACHER_SHEET_CSV_URL =
-    "https://docs.google.com/spreadsheets/d/1oJGMO7FOPV4U86peeA63lmMk-wVCKsfWuyw2yefMweg/gviz/tq?tqx=out:csv&sheet=Ogretmenler";
 
-  // Firebase ayarları (gönderdiğinle aynı)
+  // ÖĞRETMENLER: daha önce çalışan yöntem (gid=0)
+  const TEACHER_SHEET_CSV_URL =
+    "https://docs.google.com/spreadsheets/d/1oJGMO7FOPV4U86peeA63lmMk-wVCKsfWuyw2yefMweg/export?format=csv&gid=0";
+
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
   import {
     getDatabase,
@@ -421,16 +421,10 @@
   const db = getDatabase(app);
   const ASSIGNMENTS_PATH = "assignments";
 
-  /***********************
-   * DURUMLAR
-   **********************/
-  let students = [];   // tüm öğrenciler
-  let teachers = [];   // tüm öğretmenler
-  let assignments = []; // atamalar (Firebase'e de kaydedilecek)
+  let students = [];
+  let teachers = [];
+  let assignments = [];
 
-  /***********************
-   * YARDIMCI FONKSİYONLAR
-   **********************/
   function detectSeparator(line) {
     const commaCount = (line.match(/,/g) || []).length;
     const semicolonCount = (line.match(/;/g) || []).length;
@@ -471,7 +465,6 @@
 
   function normalizeHeader(str) {
     if (!str) return "";
-    // BOM ve yıldız, boşlukları temizle
     return str
       .replace(/^\uFEFF/, "")
       .replace(/\*/g, "")
@@ -523,9 +516,6 @@
     if (el) el.textContent = text;
   }
 
-  /***********************
-   * GOOGLE SHEETS'TEN VERİ ÇEKME
-   **********************/
   async function loadStudents() {
     showMessage("studentStatus", "Yükleniyor...");
     const res = await fetch(STUDENT_SHEET_CSV_URL);
@@ -603,6 +593,25 @@
     fillTeacherSelect();
   }
 
+  async function loadAssignmentsFromFirebase() {
+    try {
+      const snapshot = await get(ref(db, ASSIGNMENTS_PATH));
+      if (snapshot.exists()) {
+        const value = snapshot.val();
+        if (Array.isArray(value)) {
+          assignments = value.filter(Boolean);
+        } else {
+          assignments = Object.values(value || {});
+        }
+      } else {
+        assignments = [];
+      }
+      renderAssignmentsTable();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   async function loadAllData() {
     try {
       await Promise.all([loadStudents(), loadTeachers(), loadAssignmentsFromFirebase()]);
@@ -614,9 +623,6 @@
     }
   }
 
-  /***********************
-   * EKRAN DOLDURMA
-   **********************/
   function fillClassFilter() {
     const select = document.getElementById("classFilter");
     const siniflar = unique(students.map(s => s.sinif)).sort();
@@ -758,10 +764,9 @@
               <th>Not</th>
             </tr>
           </thead>
-          <tbody>
-          </tbody>
+          <tbody></tbody>
         </table>
-      ";
+      `;
 
       const tbody = card.querySelector("tbody");
       assignmentsForTeacher.forEach((a, idx) => {
@@ -790,9 +795,6 @@
     });
   }
 
-  /***********************
-   * FIREBASE KAYIT / OKUMA
-   **********************/
   async function saveAssignmentsToFirebase() {
     try {
       const refPath = ref(db, ASSIGNMENTS_PATH);
@@ -801,26 +803,6 @@
     } catch (err) {
       console.error(err);
       alert("Firebase'e kaydedilirken hata oluştu.");
-    }
-  }
-
-  async function loadAssignmentsFromFirebase() {
-    try {
-      const snapshot = await get(ref(db, ASSIGNMENTS_PATH));
-      if (snapshot.exists()) {
-        const value = snapshot.val();
-        if (Array.isArray(value)) {
-          assignments = value.filter(Boolean);
-        } else {
-          assignments = Object.values(value || {});
-        }
-        renderAssignmentsTable();
-      } else {
-        assignments = [];
-        renderAssignmentsTable();
-      }
-    } catch (err) {
-      console.error(err);
     }
   }
 
@@ -838,9 +820,6 @@
     }
   }
 
-  /***********************
-   * ATAMA OLUŞTURMA
-   **********************/
   function getSelectedTeacherIds() {
     const select = document.getElementById("teacherSelect");
     return Array.from(select.selectedOptions).map(o => o.value);
@@ -980,99 +959,54 @@
     });
   }
 
-  /***********************
-   * EVENT LİSTENERS
-   **********************/
   document.getElementById("reloadDataBtn").addEventListener("click", loadAllData);
-
-  document.getElementById("classFilter").addEventListener("change", () => {
-    renderStudentsTable();
-  });
-
+  document.getElementById("classFilter").addEventListener("change", renderStudentsTable);
   document.getElementById("assignStart").addEventListener("change", updateAssignDatePreview);
   document.getElementById("assignEnd").addEventListener("change", updateAssignDatePreview);
-
   document.querySelectorAll("button[data-quick]").forEach(btn => {
     btn.addEventListener("click", () => {
       const days = btn.getAttribute("data-quick");
       applyQuickRange(days);
     });
   });
-
-  document
-    .getElementById("selectAllStudentsBtn")
-    .addEventListener("click", () => {
-      document
-        .querySelectorAll(".student-checkbox")
-        .forEach(cb => (cb.checked = true));
-      document.getElementById("allRowCheckbox").checked = true;
-    });
-
-  document
-    .getElementById("clearSelectionBtn")
-    .addEventListener("click", () => {
-      document
-        .querySelectorAll(".student-checkbox")
-        .forEach(cb => (cb.checked = false));
-      document.getElementById("allRowCheckbox").checked = false;
-    });
-
+  document.getElementById("selectAllStudentsBtn").addEventListener("click", () => {
+    document.querySelectorAll(".student-checkbox").forEach(cb => (cb.checked = true));
+    document.getElementById("allRowCheckbox").checked = true;
+  });
+  document.getElementById("clearSelectionBtn").addEventListener("click", () => {
+    document.querySelectorAll(".student-checkbox").forEach(cb => (cb.checked = false));
+    document.getElementById("allRowCheckbox").checked = false;
+  });
   document.getElementById("allRowCheckbox").addEventListener("change", e => {
     const checked = e.target.checked;
-    document
-      .querySelectorAll(".student-checkbox")
-      .forEach(cb => (cb.checked = checked));
+    document.querySelectorAll(".student-checkbox").forEach(cb => (cb.checked = checked));
+  });
+  document.getElementById("assignBtn").addEventListener("click", createAssignments);
+  document.getElementById("assignmentsBody").addEventListener("click", e => {
+    const btn = e.target.closest("button[data-del-id]");
+    if (!btn) return;
+    const id = btn.getAttribute("data-del-id");
+    if (confirm("Bu atamayı silmek istiyor musun?")) removeAssignmentById(id);
+  });
+  document.getElementById("saveAssignmentsBtn").addEventListener("click", async () => {
+    syncReportControlsBackToAssignments();
+    await saveAssignmentsToFirebase();
+  });
+  document.getElementById("deleteAssignmentsBtn").addEventListener("click", deleteAllAssignmentsInFirebase);
+  document.getElementById("generateReportsBtn").addEventListener("click", () => {
+    syncReportControlsBackToAssignments();
+    renderReports();
+  });
+  document.getElementById("saveReportNotesBtn").addEventListener("click", async () => {
+    syncReportControlsBackToAssignments();
+    await saveAssignmentsToFirebase();
+  });
+  document.getElementById("printReportsBtn").addEventListener("click", () => {
+    syncReportControlsBackToAssignments();
+    renderReports();
+    window.print();
   });
 
-  document.getElementById("assignBtn").addEventListener("click", createAssignments);
-
-  document
-    .getElementById("assignmentsBody")
-    .addEventListener("click", e => {
-      const btn = e.target.closest("button[data-del-id]");
-      if (!btn) return;
-      const id = btn.getAttribute("data-del-id");
-      if (confirm("Bu atamayı silmek istiyor musun?")) {
-        removeAssignmentById(id);
-      }
-    });
-
-  document
-    .getElementById("saveAssignmentsBtn")
-    .addEventListener("click", async () => {
-      syncReportControlsBackToAssignments();
-      await saveAssignmentsToFirebase();
-    });
-
-  document
-    .getElementById("deleteAssignmentsBtn")
-    .addEventListener("click", deleteAllAssignmentsInFirebase);
-
-  document
-    .getElementById("generateReportsBtn")
-    .addEventListener("click", () => {
-      syncReportControlsBackToAssignments();
-      renderReports();
-    });
-
-  document
-    .getElementById("saveReportNotesBtn")
-    .addEventListener("click", async () => {
-      syncReportControlsBackToAssignments();
-      await saveAssignmentsToFirebase();
-    });
-
-  document
-    .getElementById("printReportsBtn")
-    .addEventListener("click", () => {
-      syncReportControlsBackToAssignments();
-      renderReports();
-      window.print();
-    });
-
-  /***********************
-   * BAŞLANGIÇTA ÇALIŞACAKLAR
-   **********************/
   loadAllData();
 </script>
 </body>
