@@ -442,14 +442,22 @@
     return str.replace(/^\uFEFF/, "").replace(/\*/g, "").trim().toLowerCase();
   }
 
-  function findColumnIndex(headerRow, keyword) {
-    const target = keyword.toLowerCase();
-    for (let i = 0; i < headerRow.length; i++) {
-      const h = normalizeHeader(headerRow[i]);
-      if (h.startsWith(target)) return i;
-    }
-    return -1;
+ function findColumnIndex(headerRow, expected) {
+  // Başlıktaki yıldızları (*) ve gereksiz boşlukları temizle
+  const normalizedExpected = expected.replace("*", "").trim().toLowerCase();
+
+  for (let i = 0; i < headerRow.length; i++) {
+    if (!headerRow[i]) continue;
+
+    // Hücredeki yıldızı kaldır
+    const h = headerRow[i].replace("*", "").trim().toLowerCase();
+
+    // Türkçe karakter fark etmeksizin doğrudan bire bir karşılaştır
+    if (h === normalizedExpected) return i;
   }
+  return -1;
+}
+
 
   function toDisplayDateFromISO(iso) {
     if (!iso) return "";
@@ -483,14 +491,15 @@
     if (!rows.length) { setText("studentStatus","Hiç satır yok"); return; }
 
     const header = rows[0];
-    const idxIsim      = findColumnIndex(header, "isim");
-    const idxSoyisim   = findColumnIndex(header, "soyisim");
-    const idxCinsiyet  = findColumnIndex(header, "cinsiyet");
-    const idxSinif     = findColumnIndex(header, "sınıf");
-    const idxOkulNo    = findColumnIndex(header, "okul numarası");
-    const idxVeliAdi   = findColumnIndex(header, "veli adı");
-    const idxVeliSoyad = findColumnIndex(header, "veli soyadı");
-    const idxVeliTel   = findColumnIndex(header, "veli telefon");
+   const idxIsim      = findColumnIndex(header, "isim");
+const idxSoyisim   = findColumnIndex(header, "soyisim*");
+const idxCinsiyet  = findColumnIndex(header, "cinsiyet*");
+const idxSinif     = findColumnIndex(header, "sınıf");
+const idxOkulNo    = findColumnIndex(header, "okul numarası");
+const idxVeliAdi   = findColumnIndex(header, "veli adı");
+const idxVeliSoyad = findColumnIndex(header, "veli soyadı");
+const idxVeliTel   = findColumnIndex(header, "veli telefon");
+
     // YIL, Tarih, Burslu mu? var ama kullanılmıyor; bulmaya bile gerek yok.
 
     const required = [idxIsim, idxSoyisim, idxCinsiyet, idxSinif, idxOkulNo];
@@ -881,3 +890,4 @@
 </script>
 </body>
 </html>
+
