@@ -166,7 +166,7 @@
       color: #2d3748;
     }
 
-    /* İstatistik Kutuları */
+    /* YENİ: İstatistik Kutuları (Profesyonel Görünüm İçin) */
     .stat-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -198,56 +198,46 @@
       font-weight: 700;
     }
 
-    /* RAPOR VE YAZDIRMA TASARIMI */
-    
-    /* Her sayfa (kağıt) için kapsayıcı */
-    .print-page-sheet {
+    /* RAPOR KARTI TASARIMI */
+    .report-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 0;
+      padding: 0;
+      margin-top: 30px;
       background: #fff;
-      border: 1px solid #e2e8f0; 
-      margin-bottom: 30px;
-      /* Ekranda görelim diye padding */
-      padding: 20px; 
-      position: relative;
-      /* Yazdırmada sayfa kırılımı sağlar */
-      page-break-after: always;
-      break-after: page;
-      min-height: 25cm; /* A4 boyutunu simüle etmeye çalışır */
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
+      page-break-inside: auto !important;
     }
-
+    
     .report-header-box {
       background: #f7fafc;
-      padding: 10px 15px;
+      padding: 15px 20px;
       border-bottom: 2px solid #3182ce;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
     }
     .report-header-info h3 {
       margin: 0;
-      font-size: 1.2rem;
+      font-size: 1.4rem;
       color: #2c5282;
     }
     .report-header-meta {
       display: flex;
       gap: 15px;
-      margin-top: 4px;
-      font-size: 0.85rem;
+      margin-top: 5px;
+      font-size: 0.9rem;
       color: #4a5568;
     }
 
     textarea.note-cell {
       width: 100%;
-      min-height: 35px;
+      min-height: 40px;
       resize: vertical;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       border: 1px dashed #cbd5e0;
       background: #fffaf0;
-      padding: 4px;
-      margin-top: 2px;
+      padding: 8px;
+      margin-top: 4px;
       font-family: 'Segoe UI', sans-serif;
     }
 
@@ -257,31 +247,36 @@
       margin-top: 6px;
     }
 
-    /* Footer Note: Sayfa altındaki uyarı */
+    /* Alt Not Tasarımı */
     .footer-note {
-      margin-top: auto; /* Sayfanın en altına it */
-      padding: 10px;
+      margin: 15px;
+      padding: 12px;
       text-align: center;
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       font-weight: 600;
-      border-top: 1px dashed #cbd5e1;
+      border: 2px dashed #cbd5e1;
+      border-radius: 8px;
       color: #475569;
+      background-color: #f8fafc;
     }
 
-    /* Page Number: Sağ alt köşe */
-    .page-number-box {
-      text-align: right;
-      font-size: 0.8rem;
-      font-weight: bold;
-      color: #000;
-      margin-top: 5px;
-      border-top: 1px solid #000;
-      padding-top: 5px;
+    .report-page-title {
+      display: none;
     }
 
+    /* YAZDIRMA İÇİN SATIR GRUPLAMA */
+    .student-print-block {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      border-bottom: 4px solid #e2e8f0;
+    }
+
+    /* Yazdırma özel stilleri */
     #reportContainer {
-      display: none; /* Yazdır denilene kadar gizli tutabiliriz ya da aşağıda gösteririz */
-      margin-top: 40px;
+      display: none;
+    }
+    #printTitle {
+      display: none;
     }
 
     @media print {
@@ -289,27 +284,33 @@
         background: #fff;
         padding: 0;
         font-family: 'Times New Roman', serif;
-        font-size: 11pt;
+        font-size: 12pt;
       }
       .no-print {
         display: none !important;
       }
-      .app-shell {
-        max-width: 100%;
-        margin: 0;
-      }
       #reportContainer {
         display: block;
       }
+      .report-page-title {
+        display: block;
+        text-align: center;
+        font-size: 14pt;
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        border-bottom: 1px solid #000;
+        padding-bottom: 5px;
+      }
       
-      .print-page-sheet {
+      .report-card {
         border: none;
-        margin: 0;
-        padding: 0;
-        /* Yazıcıda tam sayfa */
-        height: 100vh; 
+        box-shadow: none;
+        margin-top: 0;
         page-break-after: always;
-        position: relative;
+      }
+      .report-card:last-child {
+        page-break-after: auto;
       }
       
       .report-header-box {
@@ -317,64 +318,51 @@
         border: 1px solid #000;
         border-bottom: 2px solid #000;
         color: #000;
-        padding: 8px;
-        -webkit-print-color-adjust: exact;
+        padding: 10px;
       }
       .report-header-info h3 {
         color: #000;
-        font-size: 14pt;
+        font-size: 16pt;
       }
       .report-header-meta {
         color: #000 !important;
       }
       
       table {
-        font-size: 9pt;
-        margin-top: 5px;
+        font-size: 10pt;
+        margin-top: 10px;
         border: 1px solid #000;
-        width: 100%;
       }
       th {
         background-color: #ddd !important;
         color: #000;
         font-weight: bold;
         border: 1px solid #000;
-        padding: 4px;
-        -webkit-print-color-adjust: exact;
+        padding: 6px;
       }
       td {
         border: 1px solid #000;
-        padding: 4px;
+        padding: 8px;
       }
-      
+      th:nth-child(2), td:nth-child(2) {
+        font-weight: bold;
+      }
+      .student-print-block {
+        border-bottom: 2px solid #000;
+      }
       textarea.note-cell {
         border: 1px solid #999;
         background: transparent;
-        min-height: 40px;
-        resize: none; /* Yazdırırken boyut değişmesin */
-        overflow: hidden;
+        min-height: 50px;
         font-family: inherit;
       }
-      
       .footer-note {
-        border: none;
-        border-top: 1px solid #000;
+        border: 1px solid #000;
         color: #000;
-        margin-bottom: 10px;
+        margin-top: 20px;
+        background-color: transparent;
+        font-weight: bold;
       }
-      
-      /* Sayfa numarası için özel stil */
-      .page-number-box {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        width: 100%;
-        text-align: right;
-        font-size: 10pt;
-        border: none;
-        padding-bottom: 5px;
-      }
-      
       input[type="checkbox"] {
         transform: scale(1.2);
       }
@@ -387,6 +375,7 @@
   <p style="text-align:center" class="muted no-print">
     Veriler Google Sheets'ten çekilir, atamalar Firebase Realtime Database'e kaydedilir.
   </p>
+  <h1 id="printTitle" style="display:none">Öğretmen Arama Takip Sistemi</h1>
 
   <div class="card no-print">
     <div class="flex-between">
@@ -509,8 +498,7 @@
     </div>
   </div>
 
-  <div id="reportContainer">
-    </div>
+  <div id="reportContainer"></div>
 </div>
 
 <script type="module">
@@ -601,10 +589,13 @@
   function sortStudentsHelper(a, b) {
     const nameA = (a.isim || a.studentFirstName || "").toLocaleLowerCase('tr');
     const nameB = (b.isim || b.studentFirstName || "").toLocaleLowerCase('tr');
+    
     const nameComp = nameA.localeCompare(nameB, 'tr');
     if (nameComp !== 0) return nameComp;
+
     const numA = parseInt(a.okulNo || a.schoolNumber, 10);
     const numB = parseInt(b.okulNo || b.schoolNumber, 10);
+    
     if (!isNaN(numA) && !isNaN(numB)) {
       return numA - numB;
     }
@@ -624,14 +615,14 @@
     if (!rows.length) { setText("studentStatus","Veri yok"); return; }
 
     const header = rows[0];
-    const idxIsim        = findColumnIndex(header, "İsim");
-    const idxSoyisim     = findColumnIndex(header, "Soyisim*");
-    const idxCinsiyet    = findColumnIndex(header, "Cinsiyet*");
-    const idxSinif       = findColumnIndex(header, "Sınıf");
-    const idxOkulNo      = findColumnIndex(header, "Okul Numarası");
-    const idxVeliAdi     = findColumnIndex(header, "Veli Adı");
-    const idxVeliSoyad   = findColumnIndex(header, "Veli Soyadı");
-    const idxVeliTel     = findColumnIndex(header, "Veli Telefon");
+    const idxIsim       = findColumnIndex(header, "İsim");
+    const idxSoyisim    = findColumnIndex(header, "Soyisim*");
+    const idxCinsiyet   = findColumnIndex(header, "Cinsiyet*");
+    const idxSinif      = findColumnIndex(header, "Sınıf");
+    const idxOkulNo     = findColumnIndex(header, "Okul Numarası");
+    const idxVeliAdi    = findColumnIndex(header, "Veli Adı");
+    const idxVeliSoyad  = findColumnIndex(header, "Veli Soyadı");
+    const idxVeliTel    = findColumnIndex(header, "Veli Telefon");
 
     const required = [idxIsim, idxSoyisim, idxCinsiyet, idxSinif, idxOkulNo];
     if (required.some(i => i === -1)) {
@@ -775,7 +766,7 @@
     });
   }
 
-  /* GÜNCELLENMİŞ RAPOR OLUŞTURMA FONKSİYONU */
+  /* RAPOR OLUŞTURMA */
   function renderReports() {
     const cont = document.getElementById("reportContainer");
     cont.innerHTML = "";
@@ -784,7 +775,6 @@
     const filtered = assignments.slice();
     if (!filtered.length) return;
     
-    // Öğretmenlere göre grupla
     const groups = {};
     filtered.forEach(a => {
       if (!groups[a.teacherId]) groups[a.teacherId] = [];
@@ -792,115 +782,86 @@
     });
 
     const teacherIds = Object.keys(groups);
-
-    // Her öğretmeni dön
     teacherIds.forEach((tid) => {
-      let list = groups[tid];
-      
-      // Öğrenci ismine göre sırala
-      list.sort(sortStudentsHelper);
-
-      // Öğretmen bilgileri
+      const list = groups[tid];
       const tName = list[0].teacherName;
       const tBranch = list[0].teacherBranch;
       const minStart = list.reduce((m,a)=>!m||a.startDate < m ? a.startDate : m, null);
       const maxEnd    = list.reduce((m,a)=>!m||a.endDate > m ? a.endDate : m, null);
-      const totalStudents = list.length;
 
-      // SAYFALAMA AYARI (A4'e not alanları ile birlikte rahat sığması için)
-      const STUDENTS_PER_PAGE = 13; // Bu sayıyı deneme yanılma ile artırıp azaltabilirsiniz.
-      const totalPages = Math.ceil(list.length / STUDENTS_PER_PAGE);
+      list.sort(sortStudentsHelper);
 
-      // Her sayfa için döngü
-      for (let page = 0; page < totalPages; page++) {
-        // Bu sayfada gösterilecek dilim
-        const chunk = list.slice(page * STUDENTS_PER_PAGE, (page + 1) * STUDENTS_PER_PAGE);
-        
-        // Sayfa container'ı oluştur (CSS'de page-break-after var)
-        const sheet = document.createElement("div");
-        sheet.className = "print-page-sheet";
+      const card = document.createElement("div");
+      card.className = "report-card";
 
-        // 1. Header (Her sayfada görünsün)
-        let html = `
-          <div class="report-header-box">
-            <div class="report-header-info">
-              <h3>${tName}</h3>
-              <div class="report-header-meta">
-                <span><strong>Branş:</strong> ${tBranch}</span>
-                <span>•</span>
-                <span><strong>Öğrenci:</strong> ${totalStudents}</span>
-                <span>•</span>
-                <span><strong>Tarih:</strong> ${toDisplayDateFromISO(minStart)} – ${toDisplayDateFromISO(maxEnd)}</span>
-              </div>
+      let html = `
+        <div class="report-page-title">Öğretmen Veli Arama Takip Listesi</div>
+        <div class="report-header-box">
+          <div class="report-header-info">
+            <h3>${tName}</h3>
+            <div class="report-header-meta">
+              <span><strong>Branş:</strong> ${tBranch}</span>
+              <span>•</span>
+              <span><strong>Öğrenci Sayısı:</strong> ${list.length}</span>
+              <span>•</span>
+              <span><strong>Tarih:</strong> ${toDisplayDateFromISO(minStart)} – ${toDisplayDateFromISO(maxEnd)}</span>
             </div>
           </div>
+        </div>
+      `;
+      card.innerHTML = html;
+
+      const table = document.createElement("table");
+      const thead = document.createElement("thead");
+      thead.innerHTML = `
+        <tr>
+          <th style="width:30px">#</th>
+          <th>Öğrenci Adı Soyadı</th>
+          <th style="width:50px">Sınıf</th>
+          <th style="width:60px">No</th>
+          <th>Veli Adı Soyadı</th>
+          <th>İletişim</th>
+          <th style="width:50px; text-align:center;">Arama</th>
+        </tr>
+      `;
+      table.appendChild(thead);
+
+      list.forEach((a, i) => {
+        const tbody = document.createElement("tbody");
+        tbody.className = "student-print-block";
+
+        tbody.innerHTML = `
+          <tr>
+            <td rowspan="2" style="vertical-align:top; font-weight:bold;">${i+1}</td>
+            <td style="font-weight:600">${a.studentFirstName} ${a.studentLastName}</td>
+            <td>${a.class}</td>
+            <td>${a.schoolNumber}</td>
+            <td>${a.parentFirstName} ${a.parentLastName}</td>
+            <td>${a.parentPhone}</td>
+            <td style="text-align:center; vertical-align:middle;">
+              <input type="checkbox" class="report-called" data-assignment-id="${a.id}" ${a.called ? "checked" : ""}>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="6" style="border-top:none; padding-top:2px;">
+              <div style="font-size:0.75rem; color:#666; margin-bottom:2px;">Görüşme Notları / Açıklama:</div>
+              <textarea class="note-cell" data-assignment-id="${a.id}">${a.note || ""}</textarea>
+            </td>
+          </tr>
         `;
-        
-        // 2. Tablo Başlangıcı
-        html += `
-          <table>
-            <thead>
-              <tr>
-                <th style="width:30px">#</th>
-                <th>Öğrenci Adı Soyadı</th>
-                <th style="width:50px">Sınıf</th>
-                <th style="width:60px">No</th>
-                <th>Veli Adı Soyadı</th>
-                <th>İletişim</th>
-                <th style="width:50px; text-align:center;">Arama</th>
-              </tr>
-            </thead>
-            <tbody class="student-print-block">
-        `;
+        table.appendChild(tbody);
+      });
 
-        // 3. Tablo Satırları (Chunk içindeki öğrenciler)
-        chunk.forEach((a, i) => {
-          // Gerçek sıra numarasını bul (Sayfa 0 ise 1..13, Sayfa 1 ise 14..26 gibi)
-          const globalIndex = (page * STUDENTS_PER_PAGE) + i + 1;
-          
-          html += `
-            <tr>
-              <td rowspan="2" style="vertical-align:top; font-weight:bold;">${globalIndex}</td>
-              <td style="font-weight:600">${a.studentFirstName} ${a.studentLastName}</td>
-              <td>${a.class}</td>
-              <td>${a.schoolNumber}</td>
-              <td>${a.parentFirstName} ${a.parentLastName}</td>
-              <td>${a.parentPhone}</td>
-              <td style="text-align:center; vertical-align:middle;">
-                <input type="checkbox" class="report-called" data-assignment-id="${a.id}" ${a.called ? "checked" : ""}>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="6" style="border-top:none; padding-top:2px;">
-                <div style="font-size:0.75rem; color:#666; margin-bottom:2px;">Görüşme Notları / Açıklama:</div>
-                <textarea class="note-cell" data-assignment-id="${a.id}">${a.note || ""}</textarea>
-              </td>
-            </tr>
-          `;
-        });
+      card.appendChild(table);
 
-        html += `</tbody></table>`;
-        
-        sheet.innerHTML = html;
+      // GÜNCELLENEN FOOTER NOTU
+      const footerNote = document.createElement("div");
+      footerNote.className = "footer-note";
+      footerNote.textContent = "📌 Not: Bu liste tamamlandığında lütfen ilgili zümre başkanına zamanında teslim ediniz.";
+      card.appendChild(footerNote);
 
-        // 4. Footer Note (Varsa her sayfaya veya sadece sona konabilir, burada her sayfaya koyuyoruz)
-        const footerNote = document.createElement("div");
-        footerNote.className = "footer-note";
-        footerNote.textContent = "📌 Not: Bu liste tamamlandığında lütfen ilgili zümre başkanına teslim ediniz.";
-        sheet.appendChild(footerNote);
-
-        // 5. Sayfa Numarası (Sağ alt köşe, Öğretmen bazlı sıfırlama)
-        const pageNumBox = document.createElement("div");
-        pageNumBox.className = "page-number-box";
-        pageNumBox.textContent = `Sayfa ${page + 1} / ${totalPages}`; // Örn: Sayfa 1 / 3
-        sheet.appendChild(pageNumBox);
-
-        cont.appendChild(sheet);
-      }
+      cont.appendChild(card);
     });
-
-    // Rapor oluşturulduktan sonra ekranı göster (display:block) - CSS'de printte zaten görünüyor
-    document.getElementById("reportContainer").style.display = "block";
   }
 
   /* İŞLEVLER */
@@ -1057,10 +1018,7 @@
   document.getElementById("printReportsBtn").addEventListener("click", ()=>{
     syncReportBackToAssignments();
     renderReports();
-    // Tarayıcının render etmesi için ufak bir gecikme
-    setTimeout(() => {
-        window.print();
-    }, 500);
+    window.print();
   });
 
   loadAllData();
