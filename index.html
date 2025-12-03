@@ -533,9 +533,10 @@ const idxVeliTel   = findColumnIndex(header, "Veli Telefon");
     const rows = parseCSV(text);
     if (!rows.length) { setText("teacherStatus","Hiç satır yok"); return; }
     const header = rows[0];
-    const idxId    = findColumnIndex(header, "id");
-    const idxAd    = findColumnIndex(header, "ogretmen_adi");
-    const idxBrans = findColumnIndex(header, "brans");
+    const idxId    = findColumnIndex(header, "ID");
+const idxAd    = findColumnIndex(header, "OGRETMEN_ADI");
+const idxBrans = findColumnIndex(header, "BRANS");
+
 
     teachers = rows.slice(1)
       .filter(r => r[idxAd])
@@ -889,5 +890,6 @@ const idxVeliTel   = findColumnIndex(header, "Veli Telefon");
 </script>
 </body>
 </html>
+
 
 
