@@ -6,19 +6,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
-      font-family: Arial, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: #222;
-      background: #f3f5f7;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+      background: #f0f2f5;
     }
     body {
       margin: 0;
       padding: 0 16px 40px;
-      background: #f3f5f7;
+      background: #f0f2f5;
     }
     h1 {
       text-align: center;
       margin-top: 20px;
       margin-bottom: 8px;
+      color: #1a202c;
     }
     .app-shell {
       max-width: 1400px;
@@ -26,10 +27,11 @@
     }
     .card {
       background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-      padding: 16px 18px;
-      margin-top: 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      padding: 20px;
+      margin-top: 20px;
+      border: 1px solid #e2e8f0;
     }
     .flex {
       display: flex;
@@ -44,22 +46,29 @@
       gap: 8px;
     }
     .col {
-      flex: 1 1 320px;
-      min-width: 280px;
+      flex: 1 1 300px;
+      min-width: 250px;
     }
     label {
       font-size: 0.9rem;
       font-weight: 600;
       display: block;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
+      color: #4a5568;
     }
     select, input[type="date"], textarea {
       width: 100%;
       box-sizing: border-box;
-      padding: 6px 8px;
+      padding: 8px 10px;
       border-radius: 6px;
-      border: 1px solid #cbd2dd;
-      font-size: 0.9rem;
+      border: 1px solid #cbd5e0;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+    select:focus, input:focus, textarea:focus {
+      border-color: #3182ce;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
     }
     select[multiple] {
       height: 160px;
@@ -67,30 +76,46 @@
     button {
       border: none;
       border-radius: 6px;
-      padding: 8px 14px;
+      padding: 10px 16px;
       font-size: 0.9rem;
       cursor: pointer;
-      background: #2563eb;
+      background: #3182ce;
       color: white;
       font-weight: 600;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #2c5282;
     }
     button.secondary {
-      background: #e5e7eb;
-      color: #111827;
-      font-weight: 500;
+      background: #edf2f7;
+      color: #2d3748;
+    }
+    button.secondary:hover {
+      background: #e2e8f0;
     }
     button.danger {
-      background: #dc2626;
+      background: #e53e3e;
+    }
+    button.danger:hover {
+      background: #c53030;
+    }
+    button.warning {
+      background: #dd6b20; /* Turuncu */
+      color: white;
+    }
+    button.warning:hover {
+      background: #c05621;
     }
     button:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
     .pill-group button {
-      padding: 4px 10px;
+      padding: 4px 12px;
       font-size: 0.8rem;
       border-radius: 999px;
     }
@@ -98,110 +123,135 @@
       border-collapse: collapse;
       width: 100%;
       margin-top: 10px;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
     }
     th, td {
-      border: 1px solid #e5e7eb;
-      padding: 6px 8px;
+      border: 1px solid #e2e8f0;
+      padding: 10px 12px;
       text-align: left;
     }
     thead {
-      background: #f9fafb;
+      background: #f7fafc;
     }
-    /* Çizgiler artık tbody arası çekileceği için bu ayarı değiştirdik */
-    /* tr:nth-child(even) td { background: #f9fafb; } */
+    th {
+      font-weight: 600;
+      color: #4a5568;
+    }
     
     .badge {
       display: inline-block;
-      padding: 2px 6px;
+      padding: 2px 8px;
       border-radius: 999px;
       font-size: 0.75rem;
-      background: #e5f0ff;
-      color: #1d4ed8;
+      background: #ebf8ff;
+      color: #2b6cb0;
       margin-left: 4px;
+      font-weight: normal;
     }
     .muted {
-      font-size: 0.8rem;
-      color: #6b7280;
+      font-size: 0.85rem;
+      color: #718096;
     }
     .date-preview {
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       margin-top: 4px;
-      color: #374151;
+      color: #4a5568;
+      font-weight: 500;
     }
     .section-title {
-      font-size: 1rem;
-      font-weight: 600;
+      font-size: 1.1rem;
+      font-weight: 700;
       margin-bottom: 6px;
+      color: #2d3748;
     }
+
+    /* RAPOR KARTI TASARIMI */
     .report-card {
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 12px 14px;
-      margin-top: 12px;
-      /* Kartın kendisi bölünebilir, içerik tbody ile korunacak */
-      page-break-inside: auto !important; 
+      border: 1px solid #e2e8f0;
+      border-radius: 0; /* Yazıcıda köşe yuvarlatma genelde istenmez */
+      padding: 0;
+      margin-top: 30px;
+      background: #fff;
+      page-break-inside: auto !important;
     }
-    .report-card h3 {
-      margin-top: 0;
-      margin-bottom: 4px;
+    
+    /* Öğretmen Başlık Kartı */
+    .report-header-box {
+      background: #f7fafc;
+      padding: 15px 20px;
+      border-bottom: 2px solid #3182ce;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .report-meta {
-      font-size: 0.8rem;
-      color: #4b5563;
-      margin-bottom: 6px;
+    .report-header-info h3 {
+      margin: 0;
+      font-size: 1.4rem;
+      color: #2c5282;
     }
-    /* GÜNCELLEME: Açıklama kutusu yüksekliği düşürüldü */
+    .report-header-meta {
+      display: flex;
+      gap: 15px;
+      margin-top: 5px;
+      font-size: 0.9rem;
+      color: #4a5568;
+    }
+
+    /* Not Alanı */
     textarea.note-cell {
       width: 100%;
-      min-height: 72px; /* 144px idi, yarıya düşürüldü */
+      min-height: 40px;
       resize: vertical;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
+      border: 1px dashed #cbd5e0;
+      background: #fffaf0; /* Hafif sarımsı not kağıdı rengi */
+      padding: 8px;
+      margin-top: 4px;
+      font-family: 'Segoe UI', sans-serif;
     }
+
     .chip {
       display: inline-flex;
       align-items: center;
-      padding: 2px 8px;
-      border-radius: 999px;
-      background: #eff6ff;
-      color: #1d4ed8;
-      font-size: 0.75rem;
-      margin-right: 6px;
-      margin-top: 2px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: #fff;
+      border: 1px solid #bee3f8;
+      color: #2b6cb0;
+      font-size: 0.8rem;
     }
     .chip span {
-      font-weight: 600;
-      margin-right: 4px;
+      font-weight: 700;
+      margin-right: 5px;
+      color: #2c5282;
     }
     .info-block {
       font-size: 0.8rem;
-      color: #4b5563;
+      color: #718096;
       margin-top: 6px;
     }
 
     .footer-note {
-      margin-top: 12px;
-      padding: 8px;
+      margin: 15px;
+      padding: 10px;
       text-align: center;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 600;
-      border: 1px dashed #2563eb;
-      border-radius: 6px;
-      color: #1d4ed8;
+      border: 2px dashed #e2e8f0;
+      border-radius: 8px;
+      color: #718096;
     }
 
     .report-page-title {
-      text-align: center;
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 6px;
+      display: none;
     }
 
-    /* GÜNCELLEME: Yazdırma için özel TBODY ayarı */
+    /* YAZDIRMA İÇİN SATIR GRUPLAMA */
+    /* Bir öğrenciye ait bilgi ve not alanı asla bölünmemeli */
     .student-print-block {
       page-break-inside: avoid !important;
       break-inside: avoid !important;
-      border-bottom: 2px solid #ccc; /* Öğrencileri ayırmak için görsel çizgi */
+      border-bottom: 4px solid #e2e8f0; /* Öğrenciler arası kalın ayırıcı */
     }
 
     /* Yazdırma özel stilleri */
@@ -211,10 +261,13 @@
     #printTitle {
       display: none;
     }
+
     @media print {
       body {
         background: #fff;
         padding: 0;
+        font-family: 'Times New Roman', serif; /* Yazıcıda okunaklı serif font */
+        font-size: 12pt;
       }
       .no-print {
         display: none !important;
@@ -222,30 +275,86 @@
       #reportContainer {
         display: block;
       }
-      #printTitle {
+      .report-page-title {
         display: block;
         text-align: center;
-        margin-top: 20px;
-        margin-bottom: 12px;
-        font-size: 1.4rem;
+        font-size: 14pt;
         font-weight: bold;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        border-bottom: 1px solid #000;
+        padding-bottom: 5px;
       }
-      /* Kart kenarlıkları yazdırmada kaldırılabilir veya sadeleştirilebilir */
+      
       .report-card {
         border: none;
-        border-bottom: 1px solid #000;
-        margin-bottom: 20px;
+        box-shadow: none;
+        margin-top: 0;
         page-break-after: always;
       }
       .report-card:last-child {
         page-break-after: auto;
       }
-      /* Tablo başlığının her sayfada tekrarlanması için */
-      thead {
-        display: table-header-group;
+      
+      .report-header-box {
+        background: #f0f0f0 !important; /* Yazıcı dostu gri */
+        border: 1px solid #000;
+        border-bottom: 2px solid #000;
+        color: #000;
+        padding: 10px;
       }
+      .report-header-info h3 {
+        color: #000;
+        font-size: 16pt;
+      }
+      .report-header-meta, .chip, .chip span {
+        color: #000 !important;
+        border-color: #000 !important;
+      }
+      
+      table {
+        font-size: 10pt;
+        margin-top: 10px;
+        border: 1px solid #000;
+      }
+      th {
+        background-color: #ddd !important;
+        color: #000;
+        font-weight: bold;
+        border: 1px solid #000;
+        padding: 6px;
+      }
+      td {
+        border: 1px solid #000;
+        padding: 8px; /* Yazdırmada ferahlık için padding artırıldı */
+      }
+      
+      /* İsim sütunu biraz daha geniş olsun */
+      th:nth-child(2), td:nth-child(2) {
+        font-weight: bold;
+      }
+      
+      /* Öğrenci bloğu ayırıcı */
+      .student-print-block {
+        border-bottom: 2px solid #000; /* Daha belirgin ayrım */
+      }
+      
+      textarea.note-cell {
+        border: 1px solid #999;
+        background: transparent;
+        min-height: 50px; /* Yazarken elle not almak için yer */
+        font-family: inherit;
+      }
+      
       .footer-note {
-        page-break-inside: avoid !important;
+        border: 1px solid #000;
+        color: #000;
+        margin-top: 20px;
+      }
+      
+      /* Checkbox'ı ortala ve büyüt */
+      input[type="checkbox"] {
+        transform: scale(1.2);
       }
     }
   </style>
@@ -261,9 +370,9 @@
   <div class="card no-print">
     <div class="flex-between">
       <div>
-        <div class="section-title">1. Google Sheets verilerini yükle</div>
+        <div class="section-title">1. Veri Kaynağı</div>
         <div class="muted">
-          Öğrenci ve öğretmen listeleri otomatik çekilir.
+          Listeler Google Sheets üzerinden çekilir.
         </div>
       </div>
       <div>
@@ -272,75 +381,65 @@
     </div>
     <div class="flex" style="margin-top:10px">
       <div class="col">
-        <div><strong>Öğrenci Listesi:</strong> <span id="studentStatus" class="muted">Henüz yüklenmedi</span></div>
+        <div class="chip" style="width:100%; justify-content:center;"><span>Öğrenci:</span> <span id="studentStatus" style="font-weight:normal">Yükleniyor...</span></div>
       </div>
       <div class="col">
-        <div><strong>Öğretmen Listesi:</strong> <span id="teacherStatus" class="muted">Henüz yüklenmedi</span></div>
+        <div class="chip" style="width:100%; justify-content:center;"><span>Öğretmen:</span> <span id="teacherStatus" style="font-weight:normal">Yükleniyor...</span></div>
       </div>
     </div>
   </div>
 
   <div class="card no-print">
-    <div class="section-title">2. Atama ayarları</div>
+    <div class="section-title">2. Atama İşlemleri</div>
     <div class="flex">
       <div class="col">
-        <label for="classFilter">Sınıf Seç</label>
+        <label for="classFilter">Sınıf Seçiniz</label>
         <select id="classFilter"></select>
-        <div class="info-block">
-          Sınıf seçince aşağıda o sınıfa ait öğrenciler listelenir.
-        </div>
       </div>
       <div class="col">
-        <label for="teacherSelect">Öğretmen(ler) Seç <span class="badge">Çoklu seçim</span></label>
+        <label for="teacherSelect">Öğretmen Seçiniz <span class="badge">Çoklu</span></label>
         <select id="teacherSelect" multiple></select>
-        <div class="info-block">
-          CTRL / CMD ile birden fazla öğretmen seçebilirsin.
-        </div>
+        <div class="info-block">Birden fazla seçim için CTRL tuşuna basılı tutun.</div>
       </div>
       <div class="col">
-        <label>Tarih Aralığı</label>
+        <label>Arama Tarih Aralığı</label>
         <div class="flex" style="gap:8px">
-          <div class="col">
-            <input type="date" id="assignStart" />
-          </div>
-          <div class="col">
-            <input type="date" id="assignEnd" />
-          </div>
+          <div style="flex:1"><input type="date" id="assignStart" /></div>
+          <div style="flex:1"><input type="date" id="assignEnd" /></div>
         </div>
-        <div class="pill-group" style="margin-top:6px">
-          <button type="button" class="secondary" data-quick="7">+ 7 gün</button>
-          <button type="button" class="secondary" data-quick="14">+ 14 gün</button>
-          <button type="button" class="secondary" data-quick="28">+ 28 gün</button>
+        <div class="pill-group" style="margin-top:8px">
+          <button type="button" class="secondary" data-quick="7">+1 Hafta</button>
+          <button type="button" class="secondary" data-quick="14">+2 Hafta</button>
         </div>
-        <div id="assignDatePreview" class="date-preview">Seçili aralık: henüz seçilmedi</div>
+        <div id="assignDatePreview" class="date-preview">Aralık seçilmedi.</div>
       </div>
     </div>
 
-    <div class="flex-between" style="margin-top:14px">
+    <div class="flex-between" style="margin-top:20px; border-top:1px solid #eee; padding-top:15px;">
       <div>
         <button id="selectAllStudentsBtn" class="secondary">Tüm Sınıfı Seç</button>
-        <button id="clearSelectionBtn" class="secondary">Seçimleri Temizle</button>
+        <button id="clearSelectionBtn" class="secondary">Seçimi Kaldır</button>
       </div>
       <div>
-        <button id="assignBtn">Seçili Öğrencilere Seçili Öğretmenleri Ata</button>
+        <button id="assignBtn">✅ Atamayı Oluştur</button>
       </div>
     </div>
 
-    <h3 style="margin-top:18px">Sınıf Öğrenci Listesi</h3>
-    <div class="muted">Listeden öğrenci seç.</div>
-    <div style="max-height:260px; overflow:auto; margin-top:6px;">
+    <h3 style="margin-top:20px; font-size:1.1rem; color:#2d3748;">Öğrenci Listesi</h3>
+    <div class="muted">Sıralama: İsim (A-Z) > Okul No</div>
+    <div style="max-height:300px; overflow:auto; margin-top:8px; border:1px solid #e2e8f0; border-radius:6px;">
       <table>
         <thead>
           <tr>
-            <th><input type="checkbox" id="allRowCheckbox" /></th>
+            <th style="width:40px; text-align:center;"><input type="checkbox" id="allRowCheckbox" /></th>
             <th>İsim</th>
             <th>Soyisim</th>
             <th>Cinsiyet</th>
             <th>Sınıf</th>
-            <th>Okul Numarası</th>
+            <th>Okul No</th>
             <th>Veli Adı</th>
             <th>Veli Soyadı</th>
-            <th>Veli Telefon</th>
+            <th>Veli Tel</th>
           </tr>
         </thead>
         <tbody id="studentsBody"></tbody>
@@ -351,18 +450,18 @@
   <div class="card no-print">
     <div class="flex-between">
       <div>
-        <div class="section-title">3. Yapılan atamalar</div>
-        <div class="muted">Atama listesi yönetimi.</div>
+        <div class="section-title">3. Yapılan Atamalar & Rapor</div>
+        <div class="muted">Oluşturulan listeyi kontrol edin ve yazdırın.</div>
       </div>
-      <div>
-        <button id="saveAssignmentsBtn">Atamaları Firebase'e Kaydet</button>
-        <button id="loadAssignmentsBtn" class="secondary">Firebase'den Yükle</button>
-        <button id="deleteAssignmentsBtn" class="danger">Firebase'i Temizle</button>
-        <button id="printReportsBtn">Raporları Yazdır</button>
+      <div style="display:flex; gap:10px;">
+        <button id="clearLocalListBtn" class="warning">🧹 Listeyi Temizle</button>
+        <button id="saveAssignmentsBtn">💾 Firebase'e Kaydet</button>
+        <button id="deleteAssignmentsBtn" class="danger">🗑️ Firebase'i Sil</button>
+        <button id="printReportsBtn">🖨️ Raporları Yazdır</button>
       </div>
     </div>
 
-    <div style="max-height:260px; overflow:auto; margin-top:8px;">
+    <div style="max-height:300px; overflow:auto; margin-top:15px; border:1px solid #e2e8f0; border-radius:6px;">
       <table>
         <thead>
           <tr>
@@ -372,12 +471,11 @@
             <th>İsim</th>
             <th>Soyisim</th>
             <th>Sınıf</th>
-            <th>Okul Numarası</th>
-            <th>Veli Adı</th>
-            <th>Veli Soyadı</th>
-            <th>Veli Telefon</th>
-            <th>Tarih Aralığı</th>
-            <th>Sil</th>
+            <th>No</th>
+            <th>Veli</th>
+            <th>Tel</th>
+            <th>Tarih</th>
+            <th>İşlem</th>
           </tr>
         </thead>
         <tbody id="assignmentsBody"></tbody>
@@ -473,6 +571,27 @@
     return `${yyyy}-${mm}-${dd}`;
   }
 
+  // --- SIRALAMA FONKSİYONU ---
+  // 1. İsim (Alfabetik)
+  // 2. Okul Numarası (Sayısal)
+  function sortStudentsHelper(a, b) {
+    // İsim karşılaştırma (Türkçe karakter duyarlı)
+    const nameA = (a.isim || a.studentFirstName || "").toLocaleLowerCase('tr');
+    const nameB = (b.isim || b.studentFirstName || "").toLocaleLowerCase('tr');
+    
+    const nameComp = nameA.localeCompare(nameB, 'tr');
+    if (nameComp !== 0) return nameComp;
+
+    // İsimler aynıysa numara kontrolü
+    const numA = parseInt(a.okulNo || a.schoolNumber, 10);
+    const numB = parseInt(b.okulNo || b.schoolNumber, 10);
+    
+    if (!isNaN(numA) && !isNaN(numB)) {
+      return numA - numB;
+    }
+    return (a.okulNo || "").localeCompare(b.okulNo || "");
+  }
+
   const unique = arr => Array.from(new Set(arr));
   const uid = () => "a_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
   const setText = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
@@ -483,21 +602,21 @@
     const res = await fetch(STUDENT_SHEET_CSV_URL);
     const text = await res.text();
     const rows = parseCSV(text);
-    if (!rows.length) { setText("studentStatus","Hiç satır yok"); return; }
+    if (!rows.length) { setText("studentStatus","Veri yok"); return; }
 
     const header = rows[0];
-    const idxIsim      = findColumnIndex(header, "İsim");
-    const idxSoyisim   = findColumnIndex(header, "Soyisim*");
-    const idxCinsiyet  = findColumnIndex(header, "Cinsiyet*");
-    const idxSinif     = findColumnIndex(header, "Sınıf");
-    const idxOkulNo    = findColumnIndex(header, "Okul Numarası");
-    const idxVeliAdi   = findColumnIndex(header, "Veli Adı");
-    const idxVeliSoyad = findColumnIndex(header, "Veli Soyadı");
-    const idxVeliTel   = findColumnIndex(header, "Veli Telefon");
+    const idxIsim       = findColumnIndex(header, "İsim");
+    const idxSoyisim    = findColumnIndex(header, "Soyisim*");
+    const idxCinsiyet   = findColumnIndex(header, "Cinsiyet*");
+    const idxSinif      = findColumnIndex(header, "Sınıf");
+    const idxOkulNo     = findColumnIndex(header, "Okul Numarası");
+    const idxVeliAdi    = findColumnIndex(header, "Veli Adı");
+    const idxVeliSoyad  = findColumnIndex(header, "Veli Soyadı");
+    const idxVeliTel    = findColumnIndex(header, "Veli Telefon");
 
     const required = [idxIsim, idxSoyisim, idxCinsiyet, idxSinif, idxOkulNo];
     if (required.some(i => i === -1)) {
-      setText("studentStatus","Başlıklar bulunamadı.");
+      setText("studentStatus","Hatalı Başlıklar");
       return;
     }
 
@@ -514,7 +633,7 @@
         veliTel:    idxVeliTel    !== -1 ? (r[idxVeliTel]    || "") : ""
       }));
 
-    setText("studentStatus", `Yüklendi (${students.length} öğrenci)`);
+    setText("studentStatus", `${students.length} öğrenci`);
     fillClassFilter();
     renderStudentsTable();
   }
@@ -524,7 +643,7 @@
     const res = await fetch(TEACHER_SHEET_CSV_URL);
     const text = await res.text();
     const rows = parseCSV(text);
-    if (!rows.length) { setText("teacherStatus","Hiç satır yok"); return; }
+    if (!rows.length) { setText("teacherStatus","Veri yok"); return; }
     const header = rows[0];
     const idxId    = findColumnIndex(header, "ID");
     const idxAd    = findColumnIndex(header, "OGRETMEN_ADI");
@@ -538,7 +657,7 @@
         brans: idxBrans !== -1 ? (r[idxBrans] || "") : ""
       }));
 
-    setText("teacherStatus", `Yüklendi (${teachers.length} öğretmen)`);
+    setText("teacherStatus", `${teachers.length} öğretmen`);
     fillTeacherSelect();
   }
 
@@ -591,20 +710,15 @@
     if (!sel.value) { tbody.innerHTML=""; return; }
     const sinif = sel.value;
     let list = students.filter(s => s.sinif === sinif);
-    list.sort((a, b) => {
-      const numA = parseInt(a.okulNo, 10);
-      const numB = parseInt(b.okulNo, 10);
-      if (!isNaN(numA) && !isNaN(numB) && numA !== numB) return numA - numB;
-      const nameCmp = a.isim.localeCompare(b.isim, 'tr', { sensitivity: 'base' });
-      if (nameCmp !== 0) return nameCmp;
-      return a.soyisim.localeCompare(b.soyisim, 'tr', { sensitivity: 'base' });
-    });
+    
+    // SIRALAMA UYGULANIYOR
+    list.sort(sortStudentsHelper);
 
     tbody.innerHTML = "";
     list.forEach(s => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td><input type="checkbox" class="student-checkbox" data-okulno="${s.okulNo}"></td>
+        <td style="text-align:center;"><input type="checkbox" class="student-checkbox" data-okulno="${s.okulNo}"></td>
         <td>${s.isim}</td>
         <td>${s.soyisim}</td>
         <td>${s.cinsiyet}</td>
@@ -621,6 +735,10 @@
   function renderAssignmentsTable() {
     const tbody = document.getElementById("assignmentsBody");
     tbody.innerHTML = "";
+    
+    // Atamaları da isme göre sıralayalım
+    assignments.sort(sortStudentsHelper);
+
     assignments.forEach((a,i) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
@@ -631,27 +749,23 @@
         <td>${a.studentLastName}</td>
         <td>${a.class}</td>
         <td>${a.schoolNumber}</td>
-        <td>${a.parentFirstName}</td>
-        <td>${a.parentLastName}</td>
+        <td>${a.parentFirstName} ${a.parentLastName}</td>
         <td>${a.parentPhone}</td>
-        <td>${toDisplayDateFromISO(a.startDate)} – ${toDisplayDateFromISO(a.endDate)}</td>
-        <td><button type="button" class="secondary" data-del-id="${a.id}">Sil</button></td>
+        <td>${toDisplayDateFromISO(a.startDate)}<br>${toDisplayDateFromISO(a.endDate)}</td>
+        <td><button type="button" class="danger" style="padding:4px 8px; font-size:0.8rem" data-del-id="${a.id}">Sil</button></td>
       `;
       tbody.appendChild(tr);
     });
   }
 
-  /* GÜNCELLEME: Rapor Oluşturma Mantığı */
+  /* RAPOR OLUŞTURMA */
   function renderReports() {
     const cont = document.getElementById("reportContainer");
     cont.innerHTML = "";
     if (!assignments.length) { cont.innerHTML="<p class='muted'>Herhangi bir atama yok.</p>"; return; }
 
     const filtered = assignments.slice();
-    if (!filtered.length) {
-      cont.innerHTML = "<p class='muted'>Herhangi bir atama yok.</p>";
-      return;
-    }
+    if (!filtered.length) return;
     
     // Öğretmen bazında grupla
     const groups = {};
@@ -668,75 +782,66 @@
       const minStart = list.reduce((m,a)=>!m||a.startDate < m ? a.startDate : m, null);
       const maxEnd    = list.reduce((m,a)=>!m||a.endDate > m ? a.endDate : m, null);
 
-      // Sıralama
-      list.sort((a,b) => {
-        const nameCompare = a.studentFirstName.localeCompare(b.studentFirstName, 'tr', { sensitivity: 'base' });
-        if (nameCompare !== 0) return nameCompare;
-        const numA = parseInt(a.schoolNumber,10);
-        const numB = parseInt(b.schoolNumber,10);
-        if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
-        return String(a.schoolNumber).localeCompare(String(b.schoolNumber));
-      });
+      // Rapor sıralaması (İsim > Numara)
+      list.sort(sortStudentsHelper);
 
       const card = document.createElement("div");
       card.className = "report-card";
 
       // Kart Başlığı
       let html = `
-        <div class="report-page-title">Öğretmen Arama Listesi</div>
-        <h3>${tName}</h3>
-        <div class="report-meta">
-          <span class="chip"><span>Branş:</span>${tBranch}</span>
-          <span class="chip"><span>Arama Sayısı:</span>${list.length}</span>
-          <span class="chip"><span>Tarih:</span>${toDisplayDateFromISO(minStart)} – ${toDisplayDateFromISO(maxEnd)}</span>
+        <div class="report-page-title">Öğretmen Veli Arama Takip Listesi</div>
+        <div class="report-header-box">
+          <div class="report-header-info">
+            <h3>${tName}</h3>
+            <div class="report-header-meta">
+              <span><strong>Branş:</strong> ${tBranch}</span>
+              <span>•</span>
+              <span><strong>Öğrenci Sayısı:</strong> ${list.length}</span>
+              <span>•</span>
+              <span><strong>Tarih:</strong> ${toDisplayDateFromISO(minStart)} – ${toDisplayDateFromISO(maxEnd)}</span>
+            </div>
+          </div>
         </div>
       `;
       card.innerHTML = html;
 
-      // Tabloyu oluşturuyoruz
+      // Tablo
       const table = document.createElement("table");
-      // Thead: Her sayfada görünmesi için
       const thead = document.createElement("thead");
       thead.innerHTML = `
         <tr>
-          <th>#</th>
-          <th>İsim</th>
-          <th>Soyisim</th>
-          <th>Cinsiyet</th>
-          <th>Sınıf</th>
-          <th>Okul No</th>
-          <th>Veli Adı</th>
-          <th>Veli Soyadı</th>
-          <th>Veli Telefon</th>
-          <th>Arama?</th>
+          <th style="width:30px">#</th>
+          <th>Öğrenci Adı Soyadı</th>
+          <th style="width:50px">Sınıf</th>
+          <th style="width:60px">No</th>
+          <th>Veli Adı Soyadı</th>
+          <th>İletişim</th>
+          <th style="width:50px; text-align:center;">Arama</th>
         </tr>
       `;
       table.appendChild(thead);
 
-      // Her öğrenci için ayrı bir TBODY oluşturup 'avoid page break' ekleyeceğiz.
-      // Bu, HTML standartlarında tabloları bölmeden tutmanın en sağlam yoludur.
+      // Her öğrenci için ayrı TBODY (Sayfa bölünmesini önlemek için)
       list.forEach((a, i) => {
         const tbody = document.createElement("tbody");
-        tbody.className = "student-print-block"; // CSS'de page-break-inside: avoid var
+        tbody.className = "student-print-block";
 
         tbody.innerHTML = `
           <tr>
-            <td>${i+1}</td>
-            <td>${a.studentFirstName}</td>
-            <td>${a.studentLastName}</td>
-            <td>${a.gender}</td>
+            <td rowspan="2" style="vertical-align:top; font-weight:bold;">${i+1}</td>
+            <td style="font-weight:600">${a.studentFirstName} ${a.studentLastName}</td>
             <td>${a.class}</td>
             <td>${a.schoolNumber}</td>
-            <td>${a.parentFirstName}</td>
-            <td>${a.parentLastName}</td>
+            <td>${a.parentFirstName} ${a.parentLastName}</td>
             <td>${a.parentPhone}</td>
-            <td style="text-align:center;">
+            <td style="text-align:center; vertical-align:middle;">
               <input type="checkbox" class="report-called" data-assignment-id="${a.id}" ${a.called ? "checked" : ""}>
             </td>
           </tr>
           <tr>
-            <td colspan="10">
-              <div style="font-size:0.8rem; font-weight:600; margin-bottom:4px;">Açıklama</div>
+            <td colspan="6" style="border-top:none; padding-top:2px;">
+              <div style="font-size:0.75rem; color:#666; margin-bottom:2px;">Görüşme Notları / Açıklama:</div>
               <textarea class="note-cell" data-assignment-id="${a.id}">${a.note || ""}</textarea>
             </td>
           </tr>
@@ -746,36 +851,44 @@
 
       card.appendChild(table);
 
-      // Footer Not
+      // Footer
       const footerNote = document.createElement("div");
       footerNote.className = "footer-note";
-      footerNote.textContent = "📌 Listeyi lütfen zümre başkanına zamanında teslim ediniz.";
+      footerNote.textContent = "📌 Not: Bu liste tamamlandığında lütfen ilgili müdür yardımcısına veya zümre başkanına teslim ediniz.";
       card.appendChild(footerNote);
 
       cont.appendChild(card);
     });
   }
 
-  /* FIREBASE VE DİĞER FONKSİYONLAR */
+  /* İŞLEVLER */
   async function saveAssignmentsToFirebase() {
     try {
       await set(ref(db, ASSIGNMENTS_PATH), assignments);
-      alert("Atamalar kaydedildi.");
+      alert("Tüm atamalar veritabanına kaydedildi.");
     } catch (e) {
       console.error(e);
-      alert("Hata oluştu.");
+      alert("Kaydetme hatası: " + e.message);
     }
   }
 
   async function deleteAllAssignmentsInFirebase() {
-    if (!confirm("Tüm atamaları silmek istiyor musun?")) return;
+    if (!confirm("⚠️ DİKKAT: Veritabanındaki TÜM atamalar silinecek. Bu işlem geri alınamaz. Emin misiniz?")) return;
     try {
       await remove(ref(db, ASSIGNMENTS_PATH));
       assignments = [];
       renderAssignmentsTable();
       document.getElementById("reportContainer").innerHTML="";
-      alert("Silindi.");
-    } catch (e) { console.error(e); alert("Hata."); }
+      alert("Veritabanı temizlendi.");
+    } catch (e) { console.error(e); alert("Silme hatası."); }
+  }
+
+  // SADECE YEREL LİSTEYİ TEMİZLER
+  function clearLocalList() {
+    if (!confirm("Ekrandaki liste temizlensin mi? (Veritabanından silinmez, sadece görünüm sıfırlanır).")) return;
+    assignments = [];
+    renderAssignmentsTable();
+    document.getElementById("reportContainer").innerHTML="";
   }
 
   const getSelectedTeacherIds = () => Array.from(document.getElementById("teacherSelect").selectedOptions).map(o => o.value);
@@ -789,8 +902,8 @@
     const s = document.getElementById("assignStart").value;
     const e = document.getElementById("assignEnd").value;
     const el = document.getElementById("assignDatePreview");
-    if (!s || !e) { el.textContent="Seçili aralık: henüz seçilmedi"; return; }
-    el.textContent = "Seçili aralık: " + toDisplayDateFromISO(s) + " – " + toDisplayDateFromISO(e);
+    if (!s || !e) { el.textContent="Aralık seçilmedi."; return; }
+    el.textContent = toDisplayDateFromISO(s) + " – " + toDisplayDateFromISO(e);
   }
 
   function applyQuickRange(days) {
@@ -812,13 +925,14 @@
     const s = document.getElementById("assignStart").value;
     const e = document.getElementById("assignEnd").value;
 
-    if (!tids.length || !studs.length || !s || !e) { alert("Eksik seçim."); return; }
-    if (e < s) { alert("Tarih hatası."); return; }
+    if (!tids.length || !studs.length || !s || !e) { alert("Lütfen öğretmen, öğrenci ve tarih aralığı seçiniz."); return; }
+    if (e < s) { alert("Bitiş tarihi başlangıçtan önce olamaz."); return; }
 
     let added=0;
     tids.forEach(tid=>{
       const t=teachers.find(x=>x.id===tid); if(!t) return;
       studs.forEach(st=>{
+        // Mükerrer kayıt kontrolü
         const exists = assignments.some(a => a.teacherId===tid && a.schoolNumber===st.okulNo && a.startDate===s && a.endDate===e);
         if (exists) return;
         assignments.push({
@@ -842,11 +956,16 @@
         added++;
       });
     });
-    if (!added) alert("Yeni atama eklenmedi.");
-    else { renderAssignmentsTable(); alert(added+" atama oluşturuldu."); }
+    if (!added) alert("Seçilen kriterlere uygun yeni atama eklenemedi (zaten ekli olabilir).");
+    else { 
+      renderAssignmentsTable(); 
+      // Otomatik aşağı kaydır
+      document.getElementById("assignmentsBody").scrollIntoView({behavior: "smooth", block: "end"});
+    }
   }
 
   function removeAssignmentById(id) {
+    if(!confirm("Bu atama listeden silinsin mi?")) return;
     assignments = assignments.filter(a=>a.id!==id);
     renderAssignmentsTable();
   }
@@ -864,6 +983,7 @@
     });
   }
 
+  /* EVENT LISTENERS */
   document.getElementById("reloadDataBtn").addEventListener("click", loadAllData);
   document.getElementById("classFilter").addEventListener("change", renderStudentsTable);
   document.getElementById("assignStart").addEventListener("change", updateAssignDatePreview);
@@ -886,17 +1006,18 @@
   document.getElementById("assignBtn").addEventListener("click", createAssignments);
   document.getElementById("assignmentsBody").addEventListener("click",e=>{
     const btn=e.target.closest("button[data-del-id]");
-    if(!btn) return;
-    if(confirm("Silinsin mi?")) removeAssignmentById(btn.getAttribute("data-del-id"));
+    if(btn) removeAssignmentById(btn.getAttribute("data-del-id"));
   });
+  
   document.getElementById("saveAssignmentsBtn").addEventListener("click", async()=>{
     syncReportBackToAssignments();
     await saveAssignmentsToFirebase();
   });
   document.getElementById("deleteAssignmentsBtn").addEventListener("click", deleteAllAssignmentsInFirebase);
-  document.getElementById("loadAssignmentsBtn").addEventListener("click", async()=>{
-    await loadAssignmentsFromFirebase();
-  });
+  
+  // YENİ BUTON İŞLEVİ
+  document.getElementById("clearLocalListBtn").addEventListener("click", clearLocalList);
+  
   document.getElementById("printReportsBtn").addEventListener("click", ()=>{
     syncReportBackToAssignments();
     renderReports();
