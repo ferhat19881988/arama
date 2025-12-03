@@ -389,10 +389,12 @@
   /***********************
    * SABİT AYARLAR
    **********************/
+  /* ÖĞRENCİLER -> 2025-2026 sekmesi */
   const STUDENT_SHEET_CSV_URL =
-    "https://docs.google.com/spreadsheets/d/16BD_BrNLYBaXviCzB8yDKBGS2Vdj5DHi/export?format=csv&gid=0";
+    "https://docs.google.com/spreadsheets/d/16BD_BrNLYBaXviCzB8yDKBGS2Vdj5DHi/gviz/tq?tqx=out:csv&sheet=2025-2026";
+  /* ÖĞRETMENLER -> Ogretmenler sekmesi */
   const TEACHER_SHEET_CSV_URL =
-    "https://docs.google.com/spreadsheets/d/1oJGMO7FOPV4U86peeA63lmMk-wVCKsfWuyw2yefMweg/export?format=csv&gid=0";
+    "https://docs.google.com/spreadsheets/d/1oJGMO7FOPV4U86peeA63lmMk-wVCKsfWuyw2yefMweg/gviz/tq?tqx=out:csv&sheet=Ogretmenler";
 
   // Firebase ayarları (gönderdiğinle aynı)
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
@@ -429,9 +431,61 @@
   /***********************
    * YARDIMCI FONKSİYONLAR
    **********************/
+  function detectSeparator(line) {
+    const commaCount = (line.match(/,/g) || []).length;
+    const semicolonCount = (line.match(/;/g) || []).length;
+    return semicolonCount > commaCount ? ";" : ",";
+  }
+
   function parseCSV(text) {
     const lines = text.trim().split(/\r?\n/);
-    return lines.map(line => line.split(","));
+    if (!lines.length) return [];
+    const sep = detectSeparator(lines[0]);
+
+    const rows = [];
+    for (const line of lines) {
+      const row = [];
+      let current = "";
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') {
+          if (inQuotes && line[i + 1] === '"') {
+            current += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (ch === sep && !inQuotes) {
+          row.push(current);
+          current = "";
+        } else {
+          current += ch;
+        }
+      }
+      row.push(current);
+      rows.push(row.map(c => c.trim()));
+    }
+    return rows;
+  }
+
+  function normalizeHeader(str) {
+    if (!str) return "";
+    // BOM ve yıldız, boşlukları temizle
+    return str
+      .replace(/^\uFEFF/, "")
+      .replace(/\*/g, "")
+      .trim()
+      .toLowerCase();
+  }
+
+  function findColumnIndex(headerRow, keyword) {
+    const target = keyword.toLowerCase();
+    for (let i = 0; i < headerRow.length; i++) {
+      const h = normalizeHeader(headerRow[i]);
+      if (h.startsWith(target)) return i;
+    }
+    return -1;
   }
 
   function toDisplayDateFromISO(iso) {
@@ -441,7 +495,6 @@
   }
 
   function formatDateForStore(d) {
-    // d: Date objesi
     const yyyy = d.getFullYear();
     const mm = String(d.getMonth() + 1).padStart(2, "0");
     const dd = String(d.getDate()).padStart(2, "0");
@@ -449,7 +502,6 @@
   }
 
   function toDisplayDateFromSheet(ddmmyyyy) {
-    // Zaten 24.11.2025 formatında geliyor, aynen döndürelim
     return ddmmyyyy || "";
   }
 
@@ -479,32 +531,43 @@
     const res = await fetch(STUDENT_SHEET_CSV_URL);
     const text = await res.text();
     const rows = parseCSV(text);
+    if (!rows.length) {
+      showMessage("studentStatus", "Hiç satır bulunamadı");
+      return;
+    }
     const header = rows[0];
 
-    const idxIsim = header.indexOf("İsim");
-    const idxSoyisim = header.indexOf("Soyisim*");
-    const idxCinsiyet = header.indexOf("Cinsiyet*");
-    const idxSinif = header.indexOf("Sınıf");
-    const idxOkulNo = header.indexOf("Okul Numarası");
-    const idxVeliAdi = header.indexOf("Veli Adı");
-    const idxVeliSoyadi = header.indexOf("Veli Soyadı");
-    const idxVeliTel = header.indexOf("Veli Telefon");
-    const idxTarih = header.indexOf("Tarih");
+    const idxIsim      = findColumnIndex(header, "isim");
+    const idxSoyisim   = findColumnIndex(header, "soyisim");
+    const idxCinsiyet  = findColumnIndex(header, "cinsiyet");
+    const idxSinif     = findColumnIndex(header, "sınıf");
+    const idxOkulNo    = findColumnIndex(header, "okul numarası");
+    const idxVeliAdi   = findColumnIndex(header, "veli adı");
+    const idxVeliSoyad = findColumnIndex(header, "veli soyadı");
+    const idxVeliTel   = findColumnIndex(header, "veli telefon");
+    const idxTarih     = findColumnIndex(header, "tarih");
+
+    const required = [idxIsim, idxSoyisim, idxCinsiyet, idxSinif, idxOkulNo];
+    if (required.some(i => i === -1)) {
+      console.error("Başlıklar bulunamadı:", header);
+      showMessage("studentStatus", "Başlıklar bulunamadı, lütfen sütun adlarını kontrol edin.");
+      return;
+    }
 
     students = rows
       .slice(1)
       .filter(r => r[idxIsim] && r[idxSinif])
       .map(r => ({
-        studentId: r[idxOkulNo]?.trim() || "",
-        isim: r[idxIsim]?.trim() || "",
-        soyisim: r[idxSoyisim]?.trim() || "",
-        cinsiyet: r[idxCinsiyet]?.trim() || "",
-        sinif: r[idxSinif]?.trim() || "",
-        okulNo: r[idxOkulNo]?.trim() || "",
-        veliAdi: r[idxVeliAdi]?.trim() || "",
-        veliSoyadi: r[idxVeliSoyadi]?.trim() || "",
-        veliTel: r[idxVeliTel]?.trim() || "",
-        tarihHam: r[idxTarih]?.trim() || ""
+        studentId: r[idxOkulNo] || "",
+        isim: r[idxIsim] || "",
+        soyisim: r[idxSoyisim] || "",
+        cinsiyet: r[idxCinsiyet] || "",
+        sinif: r[idxSinif] || "",
+        okulNo: r[idxOkulNo] || "",
+        veliAdi: idxVeliAdi   !== -1 ? (r[idxVeliAdi]   || "") : "",
+        veliSoyadi: idxVeliSoyad !== -1 ? (r[idxVeliSoyad] || "") : "",
+        veliTel: idxVeliTel   !== -1 ? (r[idxVeliTel]   || "") : "",
+        tarihHam: idxTarih    !== -1 ? (r[idxTarih]      || "") : ""
       }));
 
     showMessage("studentStatus", `Yüklendi (${students.length} öğrenci)`);
@@ -517,19 +580,23 @@
     const res = await fetch(TEACHER_SHEET_CSV_URL);
     const text = await res.text();
     const rows = parseCSV(text);
+    if (!rows.length) {
+      showMessage("teacherStatus", "Hiç satır bulunamadı");
+      return;
+    }
     const header = rows[0];
 
-    const idxId = header.indexOf("ID");
-    const idxAd = header.indexOf("OGRETMEN_ADI");
-    const idxBrans = header.indexOf("BRANS");
+    const idxId    = findColumnIndex(header, "id");
+    const idxAd    = findColumnIndex(header, "ogretmen_adi");
+    const idxBrans = findColumnIndex(header, "brans");
 
     teachers = rows
       .slice(1)
       .filter(r => r[idxAd])
       .map(r => ({
-        id: r[idxId]?.trim() || "",
-        ad: r[idxAd]?.trim() || "",
-        brans: r[idxBrans]?.trim() || ""
+        id:    idxId    !== -1 ? (r[idxId]    || "") : "",
+        ad:    idxAd    !== -1 ? (r[idxAd]    || "") : "",
+        brans: idxBrans !== -1 ? (r[idxBrans] || "") : ""
       }));
 
     showMessage("teacherStatus", `Yüklendi (${teachers.length} öğretmen)`);
@@ -645,7 +712,6 @@
       return;
     }
 
-    // Öğretmene göre grupla
     const groups = {};
     filtered.forEach(a => {
       if (!groups[a.teacherId]) groups[a.teacherId] = [];
@@ -695,7 +761,7 @@
           <tbody>
           </tbody>
         </table>
-      `;
+      ";
 
       const tbody = card.querySelector("tbody");
       assignmentsForTeacher.forEach((a, idx) => {
@@ -744,7 +810,7 @@
       if (snapshot.exists()) {
         const value = snapshot.val();
         if (Array.isArray(value)) {
-          assignments = value.filter(Boolean); // null vb. temizle
+          assignments = value.filter(Boolean);
         } else {
           assignments = Object.values(value || {});
         }
@@ -755,7 +821,6 @@
       }
     } catch (err) {
       console.error(err);
-      // İlk kullanımda hata olsa da uygulama çalışmaya devam etsin
     }
   }
 
@@ -850,7 +915,6 @@
       const teacher = teachers.find(t => t.id === tid);
       if (!teacher) return;
       selectedStudents.forEach(s => {
-        // aynı kayıt zaten varsa ekleme
         const exists = assignments.some(
           a =>
             a.teacherId === tid &&
@@ -1002,14 +1066,13 @@
     .getElementById("printReportsBtn")
     .addEventListener("click", () => {
       syncReportControlsBackToAssignments();
-      renderReports(); // son hali ile yazdır
+      renderReports();
       window.print();
     });
 
   /***********************
    * BAŞLANGIÇTA ÇALIŞACAKLAR
    **********************/
-  // sayfa açılır açılmaz verileri yükle
   loadAllData();
 </script>
 </body>
