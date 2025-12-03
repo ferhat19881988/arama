@@ -442,21 +442,19 @@
     return str.replace(/^\uFEFF/, "").replace(/\*/g, "").trim().toLowerCase();
   }
 
- function findColumnIndex(headerRow, expected) {
-  // Başlıktaki yıldızları (*) ve gereksiz boşlukları temizle
-  const normalizedExpected = expected.replace("*", "").trim().toLowerCase();
+ // Başlığı bire bir, Türkçe karakterlere dokunmadan arar
+function findColumnIndex(headerRow, expectedHeader) {
+  const target = expectedHeader.replace(/\*/g, "").trim();  // * işaretini kaldır
 
   for (let i = 0; i < headerRow.length; i++) {
-    if (!headerRow[i]) continue;
-
-    // Hücredeki yıldızı kaldır
-    const h = headerRow[i].replace("*", "").trim().toLowerCase();
-
-    // Türkçe karakter fark etmeksizin doğrudan bire bir karşılaştır
-    if (h === normalizedExpected) return i;
+    const cell = (headerRow[i] || "").replace(/\*/g, "").trim();
+    if (cell === target) {
+      return i;
+    }
   }
   return -1;
 }
+
 
 
   function toDisplayDateFromISO(iso) {
@@ -491,14 +489,15 @@
     if (!rows.length) { setText("studentStatus","Hiç satır yok"); return; }
 
     const header = rows[0];
-   const idxIsim      = findColumnIndex(header, "isim");
-const idxSoyisim   = findColumnIndex(header, "soyisim*");
-const idxCinsiyet  = findColumnIndex(header, "cinsiyet*");
-const idxSinif     = findColumnIndex(header, "sınıf");
-const idxOkulNo    = findColumnIndex(header, "okul numarası");
-const idxVeliAdi   = findColumnIndex(header, "veli adı");
-const idxVeliSoyad = findColumnIndex(header, "veli soyadı");
-const idxVeliTel   = findColumnIndex(header, "veli telefon");
+const idxIsim      = findColumnIndex(header, "İsim");
+const idxSoyisim   = findColumnIndex(header, "Soyisim*");
+const idxCinsiyet  = findColumnIndex(header, "Cinsiyet*");
+const idxSinif     = findColumnIndex(header, "Sınıf");
+const idxOkulNo    = findColumnIndex(header, "Okul Numarası");
+const idxVeliAdi   = findColumnIndex(header, "Veli Adı");
+const idxVeliSoyad = findColumnIndex(header, "Veli Soyadı");
+const idxVeliTel   = findColumnIndex(header, "Veli Telefon");
+
 
     // YIL, Tarih, Burslu mu? var ama kullanılmıyor; bulmaya bile gerek yok.
 
@@ -890,4 +889,5 @@ const idxVeliTel   = findColumnIndex(header, "veli telefon");
 </script>
 </body>
 </html>
+
 
