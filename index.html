@@ -367,6 +367,65 @@
         transform: scale(1.2);
       }
     }
+
+    /*
+     * Responsive tweaks for small screens
+     *
+     * The desktop layout uses flexible rows and columns that work well on wide
+     * screens, but on narrow mobile devices some of the controls (especially
+     * buttons and form fields) can wrap awkwardly or overflow.  To make the
+     * interface easier to use on phones, switch the flex layouts to vertical
+     * stacking, allow elements to take up the full width of the screen and
+     * wrap button groups when the viewport is less than 600px wide.  This
+     * improves readability and prevents the “kayma” (shifting) of buttons the
+     * user reported when viewing the page on a mobile device.
+     */
+    @media (max-width: 600px) {
+      /* Stack flex containers vertically */
+      .flex, .flex-between {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      /* Ensure children of flex containers span the full width */
+      .flex > .col,
+      .flex-between > * {
+        flex: 1 1 auto;
+        min-width: 100%;
+      }
+
+      /* Full‑width buttons for easier tapping on mobile */
+      button {
+        width: 100%;
+        margin-top: 8px;
+      }
+
+      /* Wrap pill group buttons gracefully */
+      .pill-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .pill-group button {
+        flex: 1 1 auto;
+      }
+
+      /* Tweak stat boxes grid for smaller screens */
+      .stat-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 12px;
+      }
+
+      /* Reduce table font size slightly to fit more content */
+      table {
+        font-size: 0.8rem;
+      }
+
+      /* Adjust card padding for compactness */
+      .card {
+        padding: 15px;
+      }
+    }
   </style>
 </head>
 <body>
