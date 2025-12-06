@@ -114,6 +114,32 @@
       opacity: 0.6;
       cursor: not-allowed;
     }
+
+    /*
+     * Atama eylem düğmelerinin düzeni (Listeyi Temizle, Firebase'e Kaydet,
+     * Firebase'i Sil, Raporları Yazdır).  Bu özel kapsayıcı, büyük
+     * ekranlarda tüm düğmeleri yatayda tutar; küçük ekranlarda ise
+     * düğmeler iki sütun halinde kırılır ve yazı/kenar boşlukları
+     * küçültülür.  Kullanıcının isteği üzerine bu düzen yalnızca
+     * mobil görünümde uygulanır.
+     */
+    .assign-button-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+    .assign-button-group button {
+      flex: 1 1 auto;
+    }
+    @media (max-width: 600px) {
+      .assign-button-group button {
+        flex: 1 1 calc(50% - 10px);
+        font-size: 0.8rem;
+        padding: 8px 12px;
+        white-space: nowrap;
+      }
+    }
     .pill-group button {
       padding: 6px 14px;
       font-size: 0.85rem;
@@ -527,7 +553,16 @@
         <div class="section-title">3. Yapılan Atamalar & Rapor</div>
         <div class="muted">Oluşturulan listeyi kontrol edin ve yazdırın.</div>
       </div>
-      <div style="display:flex; gap:10px;">
+      <!--
+        The four action buttons (clear, save, delete, print) are laid out in a horizontal
+        row on larger screens.  On small mobile screens, however, they overflow the
+        viewport.  To solve this without affecting desktop layout, wrap the buttons
+        in a container with a dedicated class (assign-button-group) and move the
+        existing inline flex styles into the stylesheet.  Additional responsive
+        CSS further down the file will cause the buttons to wrap into two columns
+        when the viewport is narrow, making them easier to tap on phones.
+      -->
+      <div class="assign-button-group">
         <button id="clearLocalListBtn" class="warning">🧹 Listeyi Temizle</button>
         <button id="saveAssignmentsBtn">💾 Firebase'e Kaydet</button>
         <button id="deleteAssignmentsBtn" class="danger">🗑️ Firebase'i Sil</button>
