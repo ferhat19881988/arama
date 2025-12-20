@@ -491,8 +491,9 @@
     <div class="section-title">2. Atama İşlemleri</div>
     <div class="flex">
       <div class="col">
-        <label for="classFilter">Sınıf Seçiniz</label>
-        <select id="classFilter"></select>
+        <label for="classFilter">Sınıf Seçiniz <span class="badge">Çoklu</span></label>
+        <select id="classFilter" multiple></select>
+        <div class="info-block">Birden fazla sınıf seçmek için CTRL tuşuna basılı tutun.</div>
       </div>
       <div class="col">
         <label for="teacherSelect">Öğretmen Seçiniz <span class="badge">Çoklu</span></label>
@@ -698,6 +699,8 @@
 
   const unique = arr => Array.from(new Set(arr));
   const uid = () => "a_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+  const studentKey = (s) => `${s.sinif}||${s.okulNo}||${s.isim}||${s.soyisim}`;
+  const assignmentStudentKey = (a) => (a.studentKey || `${a.class}||${a.schoolNumber}||${a.studentFirstName}||${a.studentLastName}`);
   const setText = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
 
   /* VERİ ÇEKME */
@@ -734,8 +737,12 @@
         okulNo: r[idxOkulNo] || "",
         veliAdi:    idxVeliAdi    !== -1 ? (r[idxVeliAdi]    || "") : "",
         veliSoyadi: idxVeliSoyad !== -1 ? (r[idxVeliSoyad] || "") : "",
-        veliTel:    idxVeliTel    !== -1 ? (r[idxVeliTel]    || "") : ""
+        veliTel:    idxVeliTel    !== -1 ? (r[idxVeliTel]    || "") : "",
+        key: ""
       }));
+
+    // Öğrenci anahtarı: sınıf + okul no + ad + soyad (aynı okul numarası farklı sınıflarda tekrar ederse karışmayı engeller)
+    students.forEach(s => { s.key = studentKey(s); });
 
     setText("studentStatus", `${students.length} Öğrenci`);
     fillClassFilter();
@@ -795,7 +802,15 @@
       o.value = s; o.textContent = s;
       sel.appendChild(o);
     });
+
+    // İlk yüklemede en az 1 sınıf seçili olsun
+    if (sel.options.length && sel.selectedOptions.length === 0) {
+      sel.options[0].selected = true;
+    }
   }
+
+  const getSelectedClasses = () =>
+    Array.from(document.getElementById("classFilter").selectedOptions).map(o => o.value);
 
   function fillTeacherSelect() {
     const sel = document.getElementById("teacherSelect");
@@ -810,18 +825,17 @@
 
   function renderStudentsTable() {
     const tbody = document.getElementById("studentsBody");
-    const sel = document.getElementById("classFilter");
-    if (!sel.value) { tbody.innerHTML=""; return; }
-    const sinif = sel.value;
-    let list = students.filter(s => s.sinif === sinif);
-    
+    const selectedClasses = getSelectedClasses();
+    if (!selectedClasses.length) { tbody.innerHTML = ""; return; }
+
+    let list = students.filter(s => selectedClasses.includes(s.sinif));
     list.sort(sortStudentsHelper);
 
     tbody.innerHTML = "";
     list.forEach(s => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td style="text-align:center;"><input type="checkbox" class="student-checkbox" data-okulno="${s.okulNo}"></td>
+        <td style="text-align:center;"><input type="checkbox" class="student-checkbox" data-skey="${s.key}"></td>
         <td>${s.isim}</td>
         <td>${s.soyisim}</td>
         <td>${s.cinsiyet}</td>
@@ -833,6 +847,10 @@
       `;
       tbody.appendChild(tr);
     });
+
+    // Liste değiştiği için "tümünü seç" üst kutusunu sıfırla
+    const allCb = document.getElementById("allRowCheckbox");
+    if (allCb) allCb.checked = false;
   }
 
   function renderAssignmentsTable() {
@@ -990,8 +1008,9 @@
   const getSelectedTeacherIds = () => Array.from(document.getElementById("teacherSelect").selectedOptions).map(o => o.value);
   
   function getSelectedStudents() {
-    const okulNos = Array.from(document.querySelectorAll(".student-checkbox:checked")).map(cb => cb.getAttribute("data-okulno"));
-    return students.filter(s => okulNos.includes(s.okulNo));
+    const keys = Array.from(document.querySelectorAll(".student-checkbox:checked"))
+      .map(cb => cb.getAttribute("data-skey"));
+    return students.filter(s => keys.includes(s.key));
   }
 
   function updateAssignDatePreview() {
@@ -1028,7 +1047,7 @@
     tids.forEach(tid=>{
       const t=teachers.find(x=>x.id===tid); if(!t) return;
       studs.forEach(st=>{
-        const exists = assignments.some(a => a.teacherId===tid && a.schoolNumber===st.okulNo && a.startDate===s && a.endDate===e);
+        const exists = assignments.some(a => a.teacherId===tid && assignmentStudentKey(a)===st.key && a.startDate===s && a.endDate===e);
         if (exists) return;
         assignments.push({
           id: uid(),
@@ -1040,6 +1059,7 @@
           gender: st.cinsiyet,
           class: st.sinif,
           schoolNumber: st.okulNo,
+          studentKey: st.key,
           parentFirstName: st.veliAdi,
           parentLastName: st.veliSoyadi,
           parentPhone: st.veliTel,
