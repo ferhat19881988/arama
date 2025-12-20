@@ -491,8 +491,9 @@
     <div class="section-title">2. Atama İşlemleri</div>
     <div class="flex">
       <div class="col">
-        <label for="classFilter">Sınıf Seçiniz</label>
-        <select id="classFilter"></select>
+        <label for="classFilter">Sınıf Seçiniz <span class="badge">Çoklu</span></label>
+        <select id="classFilter" multiple></select>
+        <div class="info-block">Birden fazla sınıf seçmek için CTRL tuşuna basılı tutun.</div>
       </div>
       <div class="col">
         <label for="teacherSelect">Öğretmen Seçiniz <span class="badge">Çoklu</span></label>
@@ -517,7 +518,7 @@
 
     <div class="flex-between" style="margin-top:20px; border-top:1px solid #eee; padding-top:15px;">
       <div>
-        <button id="selectAllStudentsBtn" class="secondary">Tüm Sınıfı Seç</button>
+        <button id="selectAllStudentsBtn" class="secondary">Tüm Listeyi Seç</button>
         <button id="clearSelectionBtn" class="secondary">Seçimi Kaldır</button>
       </div>
       <div>
@@ -792,9 +793,16 @@
     sel.innerHTML = "";
     siniflar.forEach(s => {
       const o = document.createElement("option");
-      o.value = s; o.textContent = s;
+      o.value = s;
+      o.textContent = s;
       sel.appendChild(o);
     });
+
+    // Varsayılan olarak ilk sınıfı seç (ekran boş kalmasın)
+    if (sel.options.length > 0) {
+      sel.options[0].selected = true;
+    }
+  });
   }
 
   function fillTeacherSelect() {
@@ -811,10 +819,17 @@
   function renderStudentsTable() {
     const tbody = document.getElementById("studentsBody");
     const sel = document.getElementById("classFilter");
-    if (!sel.value) { tbody.innerHTML=""; return; }
-    const sinif = sel.value;
-    let list = students.filter(s => s.sinif === sinif);
-    
+
+    const selectedClasses = Array.from(sel.selectedOptions).map(o => o.value);
+
+    // Hiç sınıf seçilmediyse liste boş kalsın
+    if (!selectedClasses.length) {
+      tbody.innerHTML = "";
+      return;
+    }
+
+    let list = students.filter(s => selectedClasses.includes(s.sinif));
+
     list.sort(sortStudentsHelper);
 
     tbody.innerHTML = "";
@@ -833,6 +848,7 @@
       `;
       tbody.appendChild(tr);
     });
+  });
   }
 
   function renderAssignmentsTable() {
