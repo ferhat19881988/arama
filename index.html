@@ -681,20 +681,60 @@
     return `${yyyy}-${mm}-${dd}`;
   }
 
-  function sortStudentsHelper(a, b) {
+  function sortStudentsHelper(a, b, opts = {}) {
+    const classFirst = !!opts.classFirst;
+
+    // ---- sınıf anahtarı (örn: 6A, 10B) ----
+    function parseClassKey(raw) {
+      const s = String(raw || "").trim();
+      const m = s.match(/^(\d+)\s*([A-Za-zÇĞİÖŞÜçğıöşü])?$/);
+      if (!m) return { grade: Number.POSITIVE_INFINITY, section: s.toLocaleUpperCase('tr'), raw: s };
+      const grade = parseInt(m[1], 10);
+      const section = (m[2] || "").toLocaleUpperCase('tr');
+      return { grade: isNaN(grade) ? Number.POSITIVE_INFINITY : grade, section, raw: s };
+    }
+
+    function compareClass(aCls, bCls) {
+      const ka = parseClassKey(aCls);
+      const kb = parseClassKey(bCls);
+
+      // Önce sayısal sınıf düzeyi (5,6,7,8...)
+      if (ka.grade !== kb.grade) return ka.grade - kb.grade;
+
+      // Sonra şube (A,B,C,Ç...) - Türkçe sıralama
+      const secComp = ka.section.localeCompare(kb.section, 'tr');
+      if (secComp !== 0) return secComp;
+
+      // En son ham metin (beklenmeyen formatlar için)
+      return ka.raw.localeCompare(kb.raw, 'tr');
+    }
+
+    // ---- isim / numara ----
     const nameA = (a.isim || a.studentFirstName || "").toLocaleLowerCase('tr');
     const nameB = (b.isim || b.studentFirstName || "").toLocaleLowerCase('tr');
-    
+
+    const lastA = (a.soyisim || a.studentLastName || "").toLocaleLowerCase('tr');
+    const lastB = (b.soyisim || b.studentLastName || "").toLocaleLowerCase('tr');
+
+    if (classFirst) {
+      const classComp = compareClass(a.sinif || a.class, b.sinif || b.class);
+      if (classComp !== 0) return classComp;
+    }
+
+    // İsim > Soyisim
     const nameComp = nameA.localeCompare(nameB, 'tr');
     if (nameComp !== 0) return nameComp;
 
+    const lastComp = lastA.localeCompare(lastB, 'tr');
+    if (lastComp !== 0) return lastComp;
+
+    // Okul No
     const numA = parseInt(a.okulNo || a.schoolNumber, 10);
     const numB = parseInt(b.okulNo || b.schoolNumber, 10);
-    
-    if (!isNaN(numA) && !isNaN(numB)) {
-      return numA - numB;
-    }
-    return (a.okulNo || "").localeCompare(b.okulNo || "");
+
+    if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+
+    return String(a.okulNo || a.schoolNumber || "").localeCompare(String(b.okulNo || b.schoolNumber || ""), 'tr');
   }
 
   const unique = arr => Array.from(new Set(arr));
@@ -829,7 +869,7 @@
     if (!selectedClasses.length) { tbody.innerHTML = ""; return; }
 
     let list = students.filter(s => selectedClasses.includes(s.sinif));
-    list.sort(sortStudentsHelper);
+    list.sort((a,b)=>sortStudentsHelper(a,b,{classFirst: selectedClasses.length>1}));
 
     tbody.innerHTML = "";
     list.forEach(s => {
@@ -857,7 +897,8 @@
     const tbody = document.getElementById("assignmentsBody");
     tbody.innerHTML = "";
     
-    assignments.sort(sortStudentsHelper);
+    const hasMultipleClasses = new Set(assignments.map(a => (a.class || a.sinif || "").trim())).size > 1;
+    assignments.sort((a,b)=>sortStudentsHelper(a,b,{classFirst: hasMultipleClasses}));
 
     assignments.forEach((a,i) => {
       const tr = document.createElement("tr");
@@ -901,7 +942,7 @@
       const minStart = list.reduce((m,a)=>!m||a.startDate < m ? a.startDate : m, null);
       const maxEnd    = list.reduce((m,a)=>!m||a.endDate > m ? a.endDate : m, null);
 
-      list.sort(sortStudentsHelper);
+      list.sort((a,b)=>sortStudentsHelper(a,b,{classFirst: selectedClasses.length>1}));
 
       const card = document.createElement("div");
       card.className = "report-card";
