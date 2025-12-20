@@ -725,8 +725,7 @@
     });
     return set.size > 1;
   }
-    return (a.okulNo || "").localeCompare(b.okulNo || "");
-  }
+
 
   const unique = arr => Array.from(new Set(arr));
   const uid = () => "a_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
@@ -932,7 +931,8 @@
       const minStart = list.reduce((m,a)=>!m||a.startDate < m ? a.startDate : m, null);
       const maxEnd    = list.reduce((m,a)=>!m||a.endDate > m ? a.endDate : m, null);
 
-      list.sort((a,b)=>sortStudentLike(a,b, (typeof selectedClasses!=="undefined" && selectedClasses.length>1) || listHasMultipleClasses(list)));
+      // Rapor çıktısı: liste birden fazla sınıf içeriyorsa önce sınıfa göre, sonra ada/soyad/no'ya göre sırala
+      list.sort((a,b)=>sortStudentLike(a,b, listHasMultipleClasses(list)));
 
       const card = document.createElement("div");
       card.className = "report-card";
