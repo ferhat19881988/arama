@@ -491,9 +491,8 @@
     <div class="section-title">2. Atama İşlemleri</div>
     <div class="flex">
       <div class="col">
-        <label for="classFilter">Sınıf Seçiniz <span class="badge">Çoklu</span></label>
-        <select id="classFilter" multiple></select>
-        <div class="info-block">Birden fazla seçim için CTRL tuşuna basılı tutun.</div>
+        <label for="classFilter">Sınıf Seçiniz</label>
+        <select id="classFilter"></select>
       </div>
       <div class="col">
         <label for="teacherSelect">Öğretmen Seçiniz <span class="badge">Çoklu</span></label>
@@ -796,8 +795,6 @@
       o.value = s; o.textContent = s;
       sel.appendChild(o);
     });
-    // Çoklu seçim olduğundan, ilk sınıfı varsayılan olarak seç.
-    if (sel.options.length) sel.options[0].selected = true;
   }
 
   function fillTeacherSelect() {
@@ -814,16 +811,10 @@
   function renderStudentsTable() {
     const tbody = document.getElementById("studentsBody");
     const sel = document.getElementById("classFilter");
-    const selectedClasses = getSelectedClassValues();
-
-    // Seçim yoksa tabloyu temizle
-    if (!selectedClasses.length) {
-      tbody.innerHTML = "";
-      document.getElementById("allRowCheckbox").checked = false;
-      return;
-    }
-
-    let list = students.filter(s => selectedClasses.includes(s.sinif));
+    if (!sel.value) { tbody.innerHTML=""; return; }
+    const sinif = sel.value;
+    let list = students.filter(s => s.sinif === sinif);
+    
     list.sort(sortStudentsHelper);
 
     tbody.innerHTML = "";
@@ -842,9 +833,6 @@
       `;
       tbody.appendChild(tr);
     });
-
-    // Sınıf değişince "tümünü seç" kutusu sıfırlansın
-    document.getElementById("allRowCheckbox").checked = false;
   }
 
   function renderAssignmentsTable() {
@@ -1000,8 +988,6 @@
   }
 
   const getSelectedTeacherIds = () => Array.from(document.getElementById("teacherSelect").selectedOptions).map(o => o.value);
-  const getSelectedClassValues = () => Array.from(document.getElementById("classFilter").selectedOptions).map(o => o.value);
-  
   
   function getSelectedStudents() {
     const okulNos = Array.from(document.querySelectorAll(".student-checkbox:checked")).map(cb => cb.getAttribute("data-okulno"));
