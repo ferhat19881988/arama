@@ -681,60 +681,51 @@
     return `${yyyy}-${mm}-${dd}`;
   }
 
-  function sortStudentsHelper(a, b, opts = {}) {
-    const classFirst = !!opts.classFirst;
+  function normalizeStudentLike(obj) {
+    return {
+      cls: (obj.sinif || obj.class || "").toString(),
+      first: (obj.isim || obj.studentFirstName || "").toString(),
+      last: (obj.soyisim || obj.studentLastName || "").toString(),
+      no: (obj.okulNo || obj.schoolNumber || "").toString()
+    };
+  }
 
-    // ---- sınıf anahtarı (örn: 6A, 10B) ----
-    function parseClassKey(raw) {
-      const s = String(raw || "").trim();
-      const m = s.match(/^(\d+)\s*([A-Za-zÇĞİÖŞÜçğıöşü])?$/);
-      if (!m) return { grade: Number.POSITIVE_INFINITY, section: s.toLocaleUpperCase('tr'), raw: s };
-      const grade = parseInt(m[1], 10);
-      const section = (m[2] || "").toLocaleUpperCase('tr');
-      return { grade: isNaN(grade) ? Number.POSITIVE_INFINITY : grade, section, raw: s };
+  function compareClassCode(a, b) {
+    // Class codes like "6A", "5D" - simple locale compare is adequate
+    return a.localeCompare(b, 'tr', { numeric: true, sensitivity: 'base' });
+  }
+
+  function sortStudentLike(a, b, sortByClass) {
+    const A = normalizeStudentLike(a);
+    const B = normalizeStudentLike(b);
+
+    if (sortByClass) {
+      const c = compareClassCode(A.cls, B.cls);
+      if (c !== 0) return c;
     }
 
-    function compareClass(aCls, bCls) {
-      const ka = parseClassKey(aCls);
-      const kb = parseClassKey(bCls);
+    const fn = A.first.toLocaleLowerCase('tr').localeCompare(B.first.toLocaleLowerCase('tr'), 'tr');
+    if (fn !== 0) return fn;
 
-      // Önce sayısal sınıf düzeyi (5,6,7,8...)
-      if (ka.grade !== kb.grade) return ka.grade - kb.grade;
+    const ln = A.last.toLocaleLowerCase('tr').localeCompare(B.last.toLocaleLowerCase('tr'), 'tr');
+    if (ln !== 0) return ln;
 
-      // Sonra şube (A,B,C,Ç...) - Türkçe sıralama
-      const secComp = ka.section.localeCompare(kb.section, 'tr');
-      if (secComp !== 0) return secComp;
-
-      // En son ham metin (beklenmeyen formatlar için)
-      return ka.raw.localeCompare(kb.raw, 'tr');
-    }
-
-    // ---- isim / numara ----
-    const nameA = (a.isim || a.studentFirstName || "").toLocaleLowerCase('tr');
-    const nameB = (b.isim || b.studentFirstName || "").toLocaleLowerCase('tr');
-
-    const lastA = (a.soyisim || a.studentLastName || "").toLocaleLowerCase('tr');
-    const lastB = (b.soyisim || b.studentLastName || "").toLocaleLowerCase('tr');
-
-    if (classFirst) {
-      const classComp = compareClass(a.sinif || a.class, b.sinif || b.class);
-      if (classComp !== 0) return classComp;
-    }
-
-    // İsim > Soyisim
-    const nameComp = nameA.localeCompare(nameB, 'tr');
-    if (nameComp !== 0) return nameComp;
-
-    const lastComp = lastA.localeCompare(lastB, 'tr');
-    if (lastComp !== 0) return lastComp;
-
-    // Okul No
-    const numA = parseInt(a.okulNo || a.schoolNumber, 10);
-    const numB = parseInt(b.okulNo || b.schoolNumber, 10);
-
+    const numA = parseInt(A.no, 10);
+    const numB = parseInt(B.no, 10);
     if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
 
-    return String(a.okulNo || a.schoolNumber || "").localeCompare(String(b.okulNo || b.schoolNumber || ""), 'tr');
+    return A.no.localeCompare(B.no, 'tr', { numeric: true, sensitivity: 'base' });
+  }
+
+  function listHasMultipleClasses(list) {
+    const set = new Set();
+    (list || []).forEach(x => {
+      const cls = (x.sinif || x.class || "").toString().trim();
+      if (cls) set.add(cls);
+    });
+    return set.size > 1;
+  }
+    return (a.okulNo || "").localeCompare(b.okulNo || "");
   }
 
   const unique = arr => Array.from(new Set(arr));
@@ -869,7 +860,7 @@
     if (!selectedClasses.length) { tbody.innerHTML = ""; return; }
 
     let list = students.filter(s => selectedClasses.includes(s.sinif));
-    list.sort((a,b)=>sortStudentsHelper(a,b,{classFirst: selectedClasses.length>1}));
+    list.sort((a,b)=>sortStudentLike(a,b, (typeof selectedClasses!=="undefined" && selectedClasses.length>1) || listHasMultipleClasses(list)));
 
     tbody.innerHTML = "";
     list.forEach(s => {
@@ -897,8 +888,7 @@
     const tbody = document.getElementById("assignmentsBody");
     tbody.innerHTML = "";
     
-    const hasMultipleClasses = new Set(assignments.map(a => (a.class || a.sinif || "").trim())).size > 1;
-    assignments.sort((a,b)=>sortStudentsHelper(a,b,{classFirst: hasMultipleClasses}));
+    assignments.sort((a,b)=>sortStudentLike(a,b, listHasMultipleClasses(assignments)));
 
     assignments.forEach((a,i) => {
       const tr = document.createElement("tr");
@@ -942,7 +932,7 @@
       const minStart = list.reduce((m,a)=>!m||a.startDate < m ? a.startDate : m, null);
       const maxEnd    = list.reduce((m,a)=>!m||a.endDate > m ? a.endDate : m, null);
 
-      list.sort((a,b)=>sortStudentsHelper(a,b,{classFirst: selectedClasses.length>1}));
+      list.sort((a,b)=>sortStudentLike(a,b, (typeof selectedClasses!=="undefined" && selectedClasses.length>1) || listHasMultipleClasses(list)));
 
       const card = document.createElement("div");
       card.className = "report-card";
@@ -1169,28 +1159,11 @@
   });
   document.getElementById("deleteAssignmentsBtn").addEventListener("click", deleteAllAssignmentsInFirebase);
   document.getElementById("clearLocalListBtn").addEventListener("click", clearLocalList);
-    // Yazdırma öncesi raporu otomatik güncelle (tarayıcı kısayolu ile yazdırmada da çalışsın)
-  window.addEventListener("beforeprint", () => {
-    syncReportBackToAssignments();
-    renderReports();
-  });
-
   
   document.getElementById("printReportsBtn").addEventListener("click", ()=>{
-    // Not/arama işaretlerini önce modele geri yaz
     syncReportBackToAssignments();
-
-    // Yazdırma alanını güncelle
     renderReports();
-
-    // Bazı tarayıcılarda (özellikle reportContainer ekranda display:none iken)
-    // DOM güncellemesi print diyalogundan önce tamamlanmayabiliyor.
-    // Çift requestAnimationFrame ile layout’u garanti edip sonra yazdır.
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        window.print();
-      });
-    });
+    window.print();
   });
 
   loadAllData();
