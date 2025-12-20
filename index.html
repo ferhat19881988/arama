@@ -1169,11 +1169,28 @@
   });
   document.getElementById("deleteAssignmentsBtn").addEventListener("click", deleteAllAssignmentsInFirebase);
   document.getElementById("clearLocalListBtn").addEventListener("click", clearLocalList);
-  
-  document.getElementById("printReportsBtn").addEventListener("click", ()=>{
+    // Yazdırma öncesi raporu otomatik güncelle (tarayıcı kısayolu ile yazdırmada da çalışsın)
+  window.addEventListener("beforeprint", () => {
     syncReportBackToAssignments();
     renderReports();
-    window.print();
+  });
+
+  
+  document.getElementById("printReportsBtn").addEventListener("click", ()=>{
+    // Not/arama işaretlerini önce modele geri yaz
+    syncReportBackToAssignments();
+
+    // Yazdırma alanını güncelle
+    renderReports();
+
+    // Bazı tarayıcılarda (özellikle reportContainer ekranda display:none iken)
+    // DOM güncellemesi print diyalogundan önce tamamlanmayabiliyor.
+    // Çift requestAnimationFrame ile layout’u garanti edip sonra yazdır.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.print();
+      });
+    });
   });
 
   loadAllData();
