@@ -348,6 +348,8 @@
       }
 
       #reportContainer { display: block; width: 100%; box-sizing: border-box; padding-right: 2mm; }
+      /* Sayfa numarası sayfa içinde sabit duracağı için, içerik alt bölgede onunla çakışmasın */
+      #reportContainer { padding-bottom: 18mm; }
       #printTitle {
         display: block !important;
         text-align: center;
@@ -604,8 +606,14 @@
       .print-footer{
         display: block !important;
         position: fixed;
-        right: 3mm;
-        bottom: 2mm;
+        /*
+          Sayfa numarasını sayfanın İÇERİSİNDE (alt sağ köşe) tut.
+          Not: Tarayıcı yazdırma ekranındaki "Üstbilgiler ve altbilgiler" AÇIK ise,
+          tarayıcı ayrıca kendi alt bilgi sayfa numarasını da basabilir. Bu CSS bunu
+          kapatamaz; yazdırmadan önce o seçeneği kapatmanız gerekir.
+        */
+        right: 6mm;
+        bottom: 14mm;
         font-size: 8pt;
         font-weight: 700;
         color: #000 !important;
@@ -792,6 +800,11 @@
         <button id="deleteAssignmentsBtn" class="danger">🗑️ Firebase'i Sil</button>
         <button id="printReportsBtn">🖨️ Raporları Yazdır</button>
       </div>
+    </div>
+
+    <div class="muted no-print" style="margin-top:8px;">
+      Not: Yazdırma penceresinde <span style="font-weight:700;">“Üstbilgiler ve altbilgiler”</span> seçeneğini kapatırsanız,
+      sayfa numarası yalnızca sayfa içinde sağ altta görünür.
     </div>
 
     <div style="max-height:300px; overflow:auto; margin-top:15px; border:1px solid #e2e8f0; border-radius:6px;">
