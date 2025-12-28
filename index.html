@@ -304,6 +304,9 @@
       display: none;
     }
 
+    /* Sayfa numarası için sabit yazdırma altlığı (ekranda gizli) */
+    .print-footer { display: none; }
+
     /* YAZDIRMA İÇİN SATIR GRUPLAMA */
     .student-print-block {
       page-break-inside: avoid !important;
@@ -322,7 +325,7 @@
     
 @media print {
       @page {
-        margin: 5mm 8mm; /* Kenar boşluklarını daralttık */
+        margin: 5mm 8mm 12mm 8mm; /* üst-sağ-alt-sol: alt boşluğu sayfa numarası için artırıldı */
         size: A4;
       }
       body {
@@ -595,19 +598,24 @@
         color: #000 !important;
       }
 
-/* Sayfa numarası (her rapor sayfası için) */
-      .report-card { position: relative; padding-bottom: 8mm; }
-      .report-page-number{
-        position: absolute;
+/* Sayfa numarası (her BASILI sayfa için) */
+      .report-page-number { display: none !important; } /* eski sistem (kart bazlı) kapatıldı */
+
+      .print-footer{
+        display: block !important;
+        position: fixed;
         right: 3mm;
         bottom: 2mm;
         font-size: 8pt;
         font-weight: 700;
         color: #000 !important;
+        z-index: 9999;
+      }
+      .print-footer::after{
+        content: "Sayfa " counter(page) " / " counter(pages);
       }
 
-
-    }
+}
 
     /*
      * Responsive tweaks for small screens
@@ -810,6 +818,8 @@
 
   <div id="reportContainer"></div>
 </div>
+
+  <div class="print-footer" aria-hidden="true"></div>
 
 <script type="module">
   /* SABİTLER */
@@ -1185,9 +1195,7 @@ function renderReports() {
 
   const teacherIds = Object.keys(groups);
 
-  const totalPages = teacherIds.length;
-
-  teacherIds.forEach((tid, pageIdx) => {
+  teacherIds.forEach((tid) => {
     const list = groups[tid];
     const tName = list[0].teacherName;
     const tBranch = list[0].teacherBranch;
@@ -1264,12 +1272,6 @@ function renderReports() {
 
     cardWrapper.innerHTML = headerHtml; // Başlığı ekle
     cardWrapper.appendChild(grid); // Kartları ekle
-
-
-    const pageNo = document.createElement("div");
-    pageNo.className = "report-page-number";
-    pageNo.textContent = `Sayfa ${pageIdx + 1} / ${totalPages}`;
-    cardWrapper.appendChild(pageNo);
 
     cont.appendChild(cardWrapper);
   });
