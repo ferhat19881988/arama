@@ -305,92 +305,183 @@
       display: none;
     }
 
-    @media print {
+    
+@media print {
+      @page {
+        margin: 5mm 8mm; /* Kenar boşluklarını daralttık */
+        size: A4;
+      }
       body {
         background: #fff;
         padding: 0;
-        font-family: 'Times New Roman', serif;
-        font-size: 12pt;
+        font-family: 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        color: #000;
+        font-size: 9pt;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
       }
-      .no-print {
+
+      /* Gereksizleri Gizle */
+      .no-print, .assign-button-group, button, 
+      .app-shell > h1, .app-shell > p, .card:not(.report-card) {
         display: none !important;
       }
-      #reportContainer {
-        display: block;
-      }
-      .report-page-title {
-        display: block;
-        text-align: center;
-        font-size: 14pt;
-        font-weight: bold;
-        margin-bottom: 10px;
-        text-transform: uppercase;
-        border-bottom: 1px solid #000;
-        padding-bottom: 5px;
-      }
-      
+
+      #reportContainer { display: block; width: 100%; }
+      #printTitle { display: none !important; }
+      .report-page-title { display: none !important; }
+
+      /* Ana Rapor Kapsayıcısı */
       .report-card {
         border: none;
         box-shadow: none;
-        margin-top: 0;
+        margin: 0;
+        padding: 0;
         page-break-after: always;
       }
-      .report-card:last-child {
-        page-break-after: auto;
-      }
-      
+      .report-card:last-child { page-break-after: auto; }
+
+      /* Rapor Başlığı */
       .report-header-box {
-        background: #f0f0f0 !important;
-        border: 1px solid #000;
-        border-bottom: 2px solid #000;
-        color: #000;
-        padding: 10px;
+        border: 2px solid #333;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        padding: 8px 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f0f0f0 !important;
       }
       .report-header-info h3 {
-        color: #000;
-        font-size: 16pt;
-      }
-      .report-header-meta {
+        margin: 0;
+        font-size: 14pt;
+        font-weight: 800;
+        text-transform: uppercase;
         color: #000 !important;
       }
-      
-      table {
-        font-size: 10pt;
-        margin-top: 10px;
-        border: 1px solid #000;
+      .report-header-meta { font-size: 9pt; font-weight: 600; color: #000 !important; }
+
+      /* --- KART TASARIMI --- */
+      .student-card-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 6px; /* Kartlar arası boşluk */
       }
-      th {
-        background-color: #ddd !important;
-        color: #000;
+
+      .student-card {
+        border: 1px solid #888;
+        border-radius: 5px;
+        overflow: hidden;
+        page-break-inside: avoid; /* Kartın sayfalar arası bölünmesini engeller */
+        break-inside: avoid;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Kartın Üst Kısmı: Bilgiler */
+      .card-top {
+        background-color: #f4f6f8 !important; /* Hafif gri zemin */
+        padding: 6px 10px;
+        border-bottom: 1px solid #ccc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .info-group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+      .st-index { 
+        background: #333 !important;
+        color: #fff !important;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        text-align: center;
+        line-height: 18px;
+        font-size: 7pt;
         font-weight: bold;
-        border: 1px solid #000;
-        padding: 6px;
+        flex: 0 0 auto;
       }
-      td {
+      .st-name { font-weight: 800; font-size: 10pt; color: #000; }
+      .st-class { 
         border: 1px solid #000;
-        padding: 8px;
-      }
-      th:nth-child(2), td:nth-child(2) {
+        padding: 1px 6px;
+        border-radius: 4px;
         font-weight: bold;
+        font-size: 8pt;
       }
-      .student-print-block {
-        border-bottom: 2px solid #000;
+      .st-parent { font-size: 9pt; color: #333; }
+      .st-phone { font-family: 'Courier New', monospace; font-weight: 700; }
+
+      /* Kartın Alt Kısmı: Not Alanı */
+      .card-bottom {
+        padding: 0;
+        display: flex;
+        min-height: 35px; /* Yazı için yeterli yükseklik */
       }
-      textarea.note-cell {
-        border: 1px solid #999;
+
+      .note-area {
+        flex: 1;
+        padding: 10px 10px 6px 10px; /* üstte etiket için pay */
+        position: relative;
+      }
+
+      .note-area::after {
+        content: "Görüşme Notları:";
+        position: absolute;
+        top: 2px;
+        left: 10px;
+        font-size: 6pt;
+        color: #999;
+        text-transform: uppercase;
+      }
+
+      .note-area textarea.note-input {
+        width: 100%;
+        height: 100%;
+        min-height: 26px;
+        border: none;
+        outline: none;
+        resize: none;
         background: transparent;
-        min-height: 50px;
         font-family: inherit;
-      }
-      .footer-note {
-        border: 1px solid #000;
+        font-size: 9pt;
         color: #000;
-        margin-top: 20px;
-        background-color: transparent;
-        font-weight: bold;
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
       }
+
+      .action-area {
+        width: 40px;
+        border-left: 1px solid #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        flex: 0 0 auto;
+      }
+
+      /* Checkbox stilleri */
       input[type="checkbox"] {
-        transform: scale(1.2);
+        width: 16px;
+        height: 16px;
+        border: 2px solid #333;
+        appearance: none;
+        -webkit-appearance: none;
+        border-radius: 3px;
+        display: inline-block;
+      }
+      input[type="checkbox"]:checked { background-color: #333; }
+
+      .footer-note {
+        margin-top: 10px;
+        text-align: center;
+        font-size: 8pt;
+        border-top: 2px dashed #999;
+        padding-top: 5px;
+        background: transparent !important;
+        color: #000 !important;
       }
     }
 
@@ -908,106 +999,97 @@
     });
   }
 
-  /* RAPOR OLUŞTURMA */
-  function renderReports() {
-    const cont = document.getElementById("reportContainer");
-    cont.innerHTML = "";
-    if (!assignments.length) { cont.innerHTML="<p class='muted'>Herhangi bir atama yok.</p>"; return; }
+  /* RAPOR OLUŞTURMA (KARTLI MODERN SİSTEM) */
+function renderReports() {
+  const cont = document.getElementById("reportContainer");
+  cont.innerHTML = "";
+  if (!assignments.length) { cont.innerHTML="<p class='muted'>Herhangi bir atama yok.</p>"; return; }
 
-    const filtered = assignments.slice();
-    if (!filtered.length) return;
-    
-    const groups = {};
-    filtered.forEach(a => {
-      if (!groups[a.teacherId]) groups[a.teacherId] = [];
-      groups[a.teacherId].push(a);
-    });
+  const filtered = assignments.slice();
+  if (!filtered.length) return;
 
-    const teacherIds = Object.keys(groups);
-    teacherIds.forEach((tid) => {
-      const list = groups[tid];
-      const tName = list[0].teacherName;
-      const tBranch = list[0].teacherBranch;
-      const minStart = list.reduce((m,a)=>!m||a.startDate < m ? a.startDate : m, null);
-      const maxEnd    = list.reduce((m,a)=>!m||a.endDate > m ? a.endDate : m, null);
+  // Gruplama
+  const groups = {};
+  filtered.forEach(a => {
+    if (!groups[a.teacherId]) groups[a.teacherId] = [];
+    groups[a.teacherId].push(a);
+  });
 
-      // Rapor çıktısı: liste birden fazla sınıf içeriyorsa önce sınıfa göre, sonra ada/soyad/no'ya göre sırala
-      list.sort((a,b)=>sortStudentLike(a,b, listHasMultipleClasses(list)));
+  const teacherIds = Object.keys(groups);
 
-      const card = document.createElement("div");
-      card.className = "report-card";
+  teacherIds.forEach((tid) => {
+    const list = groups[tid];
+    const tName = list[0].teacherName;
+    const tBranch = list[0].teacherBranch;
+    const minStart = list.reduce((m,a)=>!m||a.startDate < m ? a.startDate : m, null);
+    const maxEnd = list.reduce((m,a)=>!m||a.endDate > m ? a.endDate : m, null);
 
-      let html = `
-        <div class="report-page-title">Öğretmen Veli Arama Takip Listesi</div>
-        <div class="report-header-box">
-          <div class="report-header-info">
-            <h3>${tName}</h3>
-            <div class="report-header-meta">
-              <span><strong>Branş:</strong> ${tBranch}</span>
-              <span>•</span>
-              <span><strong>Öğrenci Sayısı:</strong> ${list.length}</span>
-              <span>•</span>
-              <span><strong>Tarih:</strong> ${toDisplayDateFromISO(minStart)} – ${toDisplayDateFromISO(maxEnd)}</span>
-            </div>
+    // Sıralama
+    list.sort((a,b)=>sortStudentLike(a,b, listHasMultipleClasses(list)));
+
+    const cardWrapper = document.createElement("div");
+    cardWrapper.className = "report-card";
+
+    // 1. Başlık Alanı
+    const headerHtml = `
+      <div class="report-header-box">
+        <div class="report-header-info">
+          <h3>${tName}</h3>
+          <div style="font-size:10pt; font-weight:normal; margin-top:2px;">${tBranch}</div>
+        </div>
+        <div class="report-header-meta" style="text-align:right">
+          <div>${list.length} Öğrenci Atandı</div>
+          <div>${toDisplayDateFromISO(minStart)} – ${toDisplayDateFromISO(maxEnd)}</div>
+        </div>
+      </div>
+    `;
+
+    // 2. Öğrenci Kartları Konteyneri
+    const grid = document.createElement("div");
+    grid.className = "student-card-grid";
+
+    list.forEach((a, i) => {
+      const studentCard = document.createElement("div");
+      studentCard.className = "student-card";
+
+      studentCard.innerHTML = `
+        <div class="card-top">
+          <div class="info-group">
+            <span class="st-index">${i+1}</span>
+            <span class="st-class">${a.class}</span>
+            <span class="st-name">${a.studentFirstName} ${a.studentLastName}</span>
+            <small style="color:#666">(${a.schoolNumber})</small>
+          </div>
+          <div class="info-group" style="font-size:9pt;">
+            <span class="st-parent">Veli: <strong>${a.parentFirstName} ${a.parentLastName}</strong></span>
+            <span class="st-phone">Tel: ${a.parentPhone}</span>
+          </div>
+        </div>
+        <div class="card-bottom">
+          <div class="note-area">
+            <textarea class="note-input" data-assignment-id="${a.id}">${a.note || ""}</textarea>
+          </div>
+          <div class="action-area">
+             <input type="checkbox" class="report-called" data-assignment-id="${a.id}" ${a.called ? "checked" : ""}>
           </div>
         </div>
       `;
-      card.innerHTML = html;
-
-      const table = document.createElement("table");
-      const thead = document.createElement("thead");
-      thead.innerHTML = `
-        <tr>
-          <th style="width:30px">#</th>
-          <th>Öğrenci Adı Soyadı</th>
-          <th style="width:50px">Sınıf</th>
-          <th style="width:60px">No</th>
-          <th>Veli Adı Soyadı</th>
-          <th>İletişim</th>
-          <th style="width:50px; text-align:center;">Arama</th>
-        </tr>
-      `;
-      table.appendChild(thead);
-
-      list.forEach((a, i) => {
-        const tbody = document.createElement("tbody");
-        tbody.className = "student-print-block";
-
-        tbody.innerHTML = `
-          <tr>
-            <td rowspan="2" style="vertical-align:top; font-weight:bold;">${i+1}</td>
-            <td style="font-weight:600">${a.studentFirstName} ${a.studentLastName}</td>
-            <td>${a.class}</td>
-            <td>${a.schoolNumber}</td>
-            <td>${a.parentFirstName} ${a.parentLastName}</td>
-            <td>${a.parentPhone}</td>
-            <td style="text-align:center; vertical-align:middle;">
-              <input type="checkbox" class="report-called" data-assignment-id="${a.id}" ${a.called ? "checked" : ""}>
-            </td>
-          </tr>
-          <tr>
-            <td colspan="6" style="border-top:none; padding-top:2px;">
-              <div style="font-size:0.75rem; color:#666; margin-bottom:2px;">Görüşme Notları / Açıklama:</div>
-              <textarea class="note-cell" data-assignment-id="${a.id}">${a.note || ""}</textarea>
-            </td>
-          </tr>
-        `;
-        table.appendChild(tbody);
-      });
-
-      card.appendChild(table);
-
-      // GÜNCELLENEN FOOTER NOTU
-      const footerNote = document.createElement("div");
-      footerNote.className = "footer-note";
-      footerNote.textContent = "📌 Not: Bu liste tamamlandığında lütfen ilgili zümre başkanına zamanında teslim ediniz.";
-      card.appendChild(footerNote);
-
-      cont.appendChild(card);
+      grid.appendChild(studentCard);
     });
-  }
 
-  /* İŞLEVLER */
+    cardWrapper.innerHTML = headerHtml; // Başlığı ekle
+    cardWrapper.appendChild(grid); // Kartları ekle
+
+    const footerNote = document.createElement("div");
+    footerNote.className = "footer-note";
+    footerNote.textContent = "Öğrenci koçluk görüşmesi tamamlandığında kutucuğu işaretleyip notunuzu düşerek teslim ediniz.";
+    cardWrapper.appendChild(footerNote);
+
+    cont.appendChild(cardWrapper);
+  });
+}
+
+/* İŞLEVLER */
   async function saveAssignmentsToFirebase() {
     try {
       await set(ref(db, ASSIGNMENTS_PATH), assignments);
@@ -1121,7 +1203,7 @@
       const a = assignments.find(x=>x.id===id);
       if (a) a.called = cb.checked;
     });
-    Array.from(document.querySelectorAll(".note-cell")).forEach(t=>{
+    Array.from(document.querySelectorAll(".note-input")).forEach(t=>{
       const id = t.getAttribute("data-assignment-id");
       const a = assignments.find(x=>x.id===id);
       if (a) a.note = t.value;
