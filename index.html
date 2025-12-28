@@ -323,12 +323,6 @@
       @page {
         margin: 5mm 8mm 12mm 8mm; /* üst-sağ-alt-sol: alt boşluğu sayfa numarası için artırıldı */
         size: A4;
-        @bottom-right {
-          content: "Sayfa " counter(page) " / " counter(pages);
-          font-size: 8pt;
-          font-weight: 700;
-          color: #000;
-        }
       }
       body {
         background: #fff;
@@ -602,7 +596,6 @@
 
 /* Sayfa numarası (her BASILI sayfa için) */
       .report-page-number { display: none !important; } /* eski sistem (kart bazlı) kapatıldı */
-
 }
 
     /*
@@ -806,9 +799,6 @@
 
   <div id="reportContainer"></div>
 </div>
-
-<script src="https://unpkg.com/pagedjs/dist/paged.polyfill.js"></script>
-
 <script type="module">
   /* SABİTLER */
   const STUDENT_SHEET_CSV_URL =
@@ -1433,35 +1423,9 @@ function renderReports() {
   document.getElementById("deleteAssignmentsBtn").addEventListener("click", deleteAllAssignmentsInFirebase);
   document.getElementById("clearLocalListBtn").addEventListener("click", clearLocalList);
   
-  // Yazdırma: Sayfa numarası ve toplam sayfa sayısı için Paged.js tabanlı, tarayıcı-bağımsız sayfalama
-  let __pendingPagedPrint = false;
-
-  document.addEventListener("pagedjs:rendered", () => {
-    if (__pendingPagedPrint) {
-      __pendingPagedPrint = false;
-      window.print();
-    }
-  });
-
-  window.addEventListener("afterprint", () => {
-    // Sayfalama çıktısını bir sonraki yazdırma için temizle (ekranda görünmese bile DOM'u şişirmesin)
-    document.querySelectorAll(".pagedjs_pages, .pagedjs_styles, style[data-pagedjs]").forEach(el => el.remove());
-    __pendingPagedPrint = false;
-  });
-
-  document.getElementById("printReportsBtn").addEventListener("click", async () => {
+  document.getElementById("printReportsBtn").addEventListener("click", ()=>{
     syncReportBackToAssignments();
     renderReports();
-
-    // Paged.js mevcutsa önce sayfala, sonra yazdır
-    if (window.PagedPolyfill && typeof window.PagedPolyfill.preview === "function") {
-      __pendingPagedPrint = true;
-      await window.PagedPolyfill.preview();
-      // "pagedjs:rendered" tetiklenince print çağrılacak
-      return;
-    }
-
-    // Geriye dönük: Paged.js yüklenmediyse normal yazdır
     window.print();
   });
 
