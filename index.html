@@ -430,16 +430,55 @@
         letter-spacing: 0.2px;
       }
       .call-emoji{
-        font-size: 11pt;
+        font-size: 9pt;
         line-height: 1;
-        margin-bottom: 4px;
+        margin: 0;
+      }
+
+
+      /* Görüşme Şekli (Kart içi seçimler) */
+      .method-row{
+        display: grid;
+        grid-template-columns: 78px 1fr 1fr 1fr 1fr;
+        align-items: center;
+        gap: 6px;
+        margin-top: 2px;
+        padding-top: 4px;
+        border-top: 1px dashed #cbd5e0;
+        font-size: 8pt;
+      }
+      .method-label{
+        color: #555;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.2px;
+        white-space: nowrap;
+      }
+      .method-item{
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        white-space: nowrap;
+      }
+      .method-item input.method-checkbox{
+        width: 12px;
+        height: 12px;
+        border: 2px solid #333;
+        appearance: none;
+        -webkit-appearance: none;
+        border-radius: 3px;
+        display: inline-block;
+        margin: 0;
+      }
+      .method-item input.method-checkbox:checked{
+        background-color: #333;
       }
 
       /* Kartın Alt Kısmı: Not Alanı */
       .card-bottom {
         padding: 0;
         display: flex;
-        min-height: 42px; /* Yazı için yeterli yükseklik */
+        min-height: 62px; /* Görüşme notları + görüşme şekli için 1 satır daha */
       }
 
       .note-area {
@@ -460,8 +499,8 @@
 
       .note-area textarea.note-input {
         width: 100%;
-        height: 100%;
-        min-height: 34px;
+        flex: 1 1 auto;
+        min-height: 44px; /* 1 satır daha */
         border: none;
         outline: none;
         resize: none;
@@ -475,13 +514,15 @@
       }
 
       .action-area {
-        width: 32px;
+        width: 44px;
         border-left: 1px solid #ccc;
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
+        justify-content: space-between;
         background: #fff;
         flex: 0 0 auto;
+        padding: 6px 0;
       }
 
       /* Checkbox stilleri */
@@ -1118,6 +1159,13 @@ function renderReports() {
         <div class="card-bottom">
           <div class="note-area">
             <textarea class="note-input" data-assignment-id="${a.id}">${a.note || ""}</textarea>
+            <div class="method-row">
+              <span class="method-label">Görüşme Şekli:</span>
+              <label class="method-item"><input type="checkbox" class="method-checkbox" data-assignment-id="${a.id}" data-method="phone" ${a.methodPhone ? "checked" : ""}> Telefon</label>
+              <label class="method-item"><input type="checkbox" class="method-checkbox" data-assignment-id="${a.id}" data-method="whatsapp" ${a.methodWhatsApp ? "checked" : ""}> WhatsApp</label>
+              <label class="method-item"><input type="checkbox" class="method-checkbox" data-assignment-id="${a.id}" data-method="sms" ${a.methodSMS ? "checked" : ""}> Normal Mesaj</label>
+              <label class="method-item"><input type="checkbox" class="method-checkbox" data-assignment-id="${a.id}" data-method="face" ${a.methodFaceToFace ? "checked" : ""}> Yüz Yüze</label>
+            </div>
           </div>
           <div class="action-area">
              <div class="call-emoji" aria-hidden="true">📞</div>
@@ -1230,7 +1278,11 @@ function renderReports() {
           startDate: s,
           endDate: e,
           called: false,
-          note: ""
+          note: "",
+          methodPhone: false,
+          methodWhatsApp: false,
+          methodSMS: false,
+          methodFaceToFace: false
         });
         added++;
       });
@@ -1258,6 +1310,17 @@ function renderReports() {
       const id = t.getAttribute("data-assignment-id");
       const a = assignments.find(x=>x.id===id);
       if (a) a.note = t.value;
+    });
+  
+    Array.from(document.querySelectorAll(".method-checkbox")).forEach(cb=>{
+      const id = cb.getAttribute("data-assignment-id");
+      const method = cb.getAttribute("data-method");
+      const a = assignments.find(x=>x.id===id);
+      if (!a) return;
+      if (method === "phone") a.methodPhone = cb.checked;
+      else if (method === "whatsapp") a.methodWhatsApp = cb.checked;
+      else if (method === "sms") a.methodSMS = cb.checked;
+      else if (method === "face") a.methodFaceToFace = cb.checked;
     });
   }
 
