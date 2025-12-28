@@ -595,16 +595,17 @@
         color: #000 !important;
       }
 
-/* Sayfa numarası (sağ alt) */
-body::after{
-  content: counter(page);
-  position: fixed;
-  right: 3mm;
-  bottom: 2mm;
-  font-size: 8pt;
-  font-weight: 700;
-  color: #000 !important;
-}
+/* Sayfa numarası (her rapor sayfası için) */
+      .report-card { position: relative; padding-bottom: 8mm; }
+      .report-page-number{
+        position: absolute;
+        right: 3mm;
+        bottom: 2mm;
+        font-size: 8pt;
+        font-weight: 700;
+        color: #000 !important;
+      }
+
 
     }
 
@@ -1184,7 +1185,9 @@ function renderReports() {
 
   const teacherIds = Object.keys(groups);
 
-  teacherIds.forEach((tid) => {
+  const totalPages = teacherIds.length;
+
+  teacherIds.forEach((tid, pageIdx) => {
     const list = groups[tid];
     const tName = list[0].teacherName;
     const tBranch = list[0].teacherBranch;
@@ -1261,6 +1264,12 @@ function renderReports() {
 
     cardWrapper.innerHTML = headerHtml; // Başlığı ekle
     cardWrapper.appendChild(grid); // Kartları ekle
+
+
+    const pageNo = document.createElement("div");
+    pageNo.className = "report-page-number";
+    pageNo.textContent = `Sayfa ${pageIdx + 1} / ${totalPages}`;
+    cardWrapper.appendChild(pageNo);
 
     cont.appendChild(cardWrapper);
   });
