@@ -192,17 +192,6 @@
       color: #2d3748;
     }
 
-    /* Telefon bilgisini belirginleştirmek için (ekran + yazdırma) */
-    .phone-pill {
-      display: inline-block;
-      padding: 2px 10px;
-      border-radius: 999px;
-      border: 1px solid #cbd5e0;
-      background: #f8fafc;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-    }
-
     /* YENİ: İstatistik Kutuları (Profesyonel Görünüm İçin) */
     .stat-grid {
       display: grid;
@@ -319,7 +308,7 @@
     
 @media print {
       @page {
-        margin: 4mm 6mm; /* Daha geniş içerik alanı */
+        margin: 5mm 8mm; /* Kenar boşluklarını daralttık */
         size: A4;
       }
       body {
@@ -339,27 +328,16 @@
       }
 
       #reportContainer { display: block; width: 100%; }
-      #printTitle { display: none !important; }
-      .report-page-title { display: block !important; }
-
-      .report-page-title {
+      #printTitle {
+        display: block !important;
         text-align: center;
         font-size: 16pt;
         font-weight: 900;
-        letter-spacing: 0.8px;
+        letter-spacing: 0.5px;
         margin: 0 0 10px 0;
-        padding: 8px 10px;
-        border: 2px solid #000;
-        border-radius: 8px;
-        background: #f5f5f5 !important;
+        text-transform: uppercase;
       }
-      .report-page-subtitle {
-        text-align: center;
-        font-size: 9pt;
-        font-weight: 700;
-        margin-top: -6px;
-        margin-bottom: 12px;
-      }
+      .report-page-title { display: none !important; }
 
       /* Ana Rapor Kapsayıcısı */
       .report-card {
@@ -411,7 +389,7 @@
       /* Kartın Üst Kısmı: Bilgiler */
       .card-top {
         background-color: #f4f6f8 !important; /* Hafif gri zemin */
-        padding: 8px 12px;
+        padding: 7px 12px;
         border-bottom: 1px solid #ccc;
         display: flex;
         justify-content: space-between;
@@ -442,27 +420,40 @@
       }
       .st-parent { font-size: 9pt; color: #333; }
       .st-phone { font-family: 'Courier New', monospace; font-weight: 700; }
-      .phone-pill { border: 1px solid #000 !important; background: #fff !important; }
+      .phone-pill{
+        display:inline-block;
+        padding: 1px 8px;
+        border: 1px solid #000;
+        border-radius: 999px;
+        background: #fff !important;
+        font-weight: 800;
+        letter-spacing: 0.2px;
+      }
+      .call-emoji{
+        font-size: 11pt;
+        line-height: 1;
+        margin-bottom: 4px;
+      }
 
       /* Kartın Alt Kısmı: Not Alanı */
       .card-bottom {
         padding: 0;
         display: flex;
-        min-height: 48px; /* Görüşme notları için daha geniş alan */
+        min-height: 42px; /* Yazı için yeterli yükseklik */
       }
 
       .note-area {
         flex: 1;
-        padding: 12px 12px 8px 12px; /* üstte etiket için pay */
+        padding: 10px 10px 6px 10px; /* üstte etiket için pay */
         position: relative;
       }
 
       .note-area::after {
-        content: "GÖRÜŞME NOTLARI:";
+        content: "Görüşme Notları:";
         position: absolute;
         top: 2px;
         left: 10px;
-        font-size: 7pt;
+        font-size: 6pt;
         color: #999;
         text-transform: uppercase;
       }
@@ -484,7 +475,7 @@
       }
 
       .action-area {
-        width: 40px;
+        width: 32px;
         border-left: 1px solid #ccc;
         display: flex;
         align-items: center;
@@ -582,7 +573,7 @@
   <p style="text-align:center" class="muted no-print">
     Veriler Google Sheets'ten çekilir, atamalar Firebase Realtime Database'e kaydedilir.
   </p>
-  <h1 id="printTitle" style="display:none">Öğretmen Arama Takip Sistemi</h1>
+  <h1 id="printTitle" style="display:none">VELİ ARAMA LİSTESİ</h1>
 
   <div class="card no-print">
     <div class="flex-between">
@@ -662,7 +653,7 @@
             <th>Okul No</th>
             <th>Veli Adı</th>
             <th>Veli Soyadı</th>
-            <th>📞 Veli Tel</th>
+            <th>Veli Tel</th>
           </tr>
         </thead>
         <tbody id="studentsBody"></tbody>
@@ -705,7 +696,7 @@
             <th>Sınıf</th>
             <th>No</th>
             <th>Veli</th>
-            <th>📞 Tel</th>
+            <th>Tel</th>
             <th>Tarih</th>
             <th>İşlem</th>
           </tr>
@@ -803,27 +794,20 @@
     return `${yyyy}-${mm}-${dd}`;
   }
 
-  function normalizePhone(raw) {
-    const s = (raw ?? "").toString().trim();
-    if (!s) return "";
-    // Keep only digits
-    let d = s.replace(/\D/g, "");
-    // Convert +90 / 90XXXXXXXXXX to 0XXXXXXXXXX
-    if (d.length === 12 && d.startsWith("90")) d = "0" + d.slice(2);
-    // If user entered 10 digits starting with 5 (typical GSM), prefix 0
-    if (d.length === 10 && d.startsWith("5")) d = "0" + d;
-    // If already starts with 0 and length is 11, keep as is
-    return d;
-  }
-
-  function formatPhoneDisplay(raw) {
-    const d = normalizePhone(raw);
-    if (!d) return (raw ?? "").toString().trim();
-    // Format: 0XXX XXX XX XX when length is 11
-    if (d.length === 11 && d.startsWith("0")) {
-      return `${d.slice(0,4)} ${d.slice(4,7)} ${d.slice(7,9)} ${d.slice(9,11)}`;
+  function normalizePhoneTR(phoneRaw) {
+    const raw = (phoneRaw || "").toString().trim();
+    if (!raw) return "";
+    // Keep leading +90 if present; otherwise ensure leading 0 for 10/11 digit TR mobiles/landlines
+    const compact = raw.replace(/\s+/g, "").replace(/[-()]/g, "");
+    if (compact.startsWith("+")) return compact; // do not alter international format
+    const digits = compact.replace(/\D/g, "");
+    if (!digits) return raw;
+    if (digits.startsWith("0")) return digits;
+    // If it already includes country code 90, keep as 0XXXXXXXXXX when possible
+    if (digits.startsWith("90") && digits.length >= 12) {
+      return "0" + digits.slice(2);
     }
-    return d;
+    return "0" + digits;
   }
 
   function normalizeStudentLike(obj) {
@@ -871,6 +855,18 @@
     return set.size > 1;
   }
 
+  function classBreakdownText(list) {
+    const counts = {};
+    (list || []).forEach(a => {
+      const cls = (a.class || "").toString().trim();
+      if (!cls) return;
+      counts[cls] = (counts[cls] || 0) + 1;
+    });
+    const keys = Object.keys(counts).sort(compareClassCode);
+    if (!keys.length) return `${(list || []).length} Öğrenci`;
+    return keys.map(k => `${k} ${counts[k]} Kişi`).join(" - ");
+  }
+
 
   const unique = arr => Array.from(new Set(arr));
   const uid = () => "a_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
@@ -912,17 +908,14 @@
         okulNo: r[idxOkulNo] || "",
         veliAdi:    idxVeliAdi    !== -1 ? (r[idxVeliAdi]    || "") : "",
         veliSoyadi: idxVeliSoyad !== -1 ? (r[idxVeliSoyad] || "") : "",
-        veliTel:    idxVeliTel    !== -1 ? (normalizePhone(r[idxVeliTel] || "") || (r[idxVeliTel] || "")) : "",
+        veliTel:    idxVeliTel    !== -1 ? (r[idxVeliTel]    || "") : "",
         key: ""
       }));
 
     // Öğrenci anahtarı: sınıf + okul no + ad + soyad (aynı okul numarası farklı sınıflarda tekrar ederse karışmayı engeller)
     students.forEach(s => { s.key = studentKey(s); });
 
-    const counts = {};
-    students.forEach(s=>{ const c=(s.sinif||"").toString().trim(); if(!c) return; counts[c]=(counts[c]||0)+1; });
-    const breakdown = Object.keys(counts).sort(compareClassCode).map(k=>`${k} ${counts[k]} Kişi`).join(" • ");
-    setText("studentStatus", breakdown ? `${breakdown} (Toplam ${students.length})` : `${students.length} Öğrenci`);
+    setText("studentStatus", `${students.length} Öğrenci`);
     fillClassFilter();
     renderStudentsTable();
   }
@@ -1021,7 +1014,7 @@
         <td>${s.okulNo}</td>
         <td>${s.veliAdi}</td>
         <td>${s.veliSoyadi}</td>
-        <td>${formatPhoneDisplay(s.veliTel)}</td>
+        <td>${s.veliTel}</td>
       `;
       tbody.appendChild(tr);
     });
@@ -1048,7 +1041,7 @@
         <td>${a.class}</td>
         <td>${a.schoolNumber}</td>
         <td>${a.parentFirstName} ${a.parentLastName}</td>
-        <td>📞 ${formatPhoneDisplay(a.parentPhone)}</td>
+        <td>${normalizePhoneTR(a.parentPhone)}</td>
         <td>${toDisplayDateFromISO(a.startDate)}<br>${toDisplayDateFromISO(a.endDate)}</td>
         <td><button type="button" class="danger" style="padding:4px 8px; font-size:0.8rem" data-del-id="${a.id}">Sil</button></td>
       `;
@@ -1056,22 +1049,11 @@
     });
   }
 
-    /* RAPOR OLUŞTURMA (KARTLI MODERN SİSTEM) */
-
+  /* RAPOR OLUŞTURMA (KARTLI MODERN SİSTEM) */
 function renderReports() {
   const cont = document.getElementById("reportContainer");
   cont.innerHTML = "";
-
-  // Yazdırma başlığı (ilk sayfanın en üstü)
-  const pageTitle = document.createElement("div");
-  pageTitle.className = "report-page-title";
-  pageTitle.textContent = "VELİ ARAMA LİSTESİ";
-  cont.appendChild(pageTitle);
-
-  if (!assignments.length) {
-    cont.innerHTML += "<p class='muted'>Herhangi bir atama yok.</p>";
-    return;
-  }
+  if (!assignments.length) { cont.innerHTML="<p class='muted'>Herhangi bir atama yok.</p>"; return; }
 
   const filtered = assignments.slice();
   if (!filtered.length) return;
@@ -1084,10 +1066,6 @@ function renderReports() {
   });
 
   const teacherIds = Object.keys(groups);
-
-  // Uyarı notu (Kullanıcının ilk gönderdiği orijinal metinle birebir aynı olmalıdır.)
-  // Not: Bu sohbet içinde orijinal metin bulunmadığı için mevcut metin korunmuştur; gerekirse aşağıdaki sabit değiştirilebilir.
-  const WARNING_NOTE = "📌 Not: Bu liste tamamlandığında lütfen ilgili zümre başkanına zamanında teslim ediniz.";
 
   teacherIds.forEach((tid) => {
     const list = groups[tid];
@@ -1110,7 +1088,7 @@ function renderReports() {
           <div style="font-size:10pt; font-weight:normal; margin-top:2px;">${tBranch}</div>
         </div>
         <div class="report-header-meta" style="text-align:right">
-          <div>${list.length} Öğrenci Atandı</div>
+          <div>${classBreakdownText(list)}</div>
           <div>${toDisplayDateFromISO(minStart)} – ${toDisplayDateFromISO(maxEnd)}</div>
         </div>
       </div>
@@ -1134,7 +1112,7 @@ function renderReports() {
           </div>
           <div class="info-group" style="font-size:9pt;">
             <span class="st-parent">Veli: <strong>${a.parentFirstName} ${a.parentLastName}</strong></span>
-            <span class="st-phone"><span class="phone-pill">📞 ${formatPhoneDisplay(a.parentPhone)}</span></span>
+            <span class="st-phone">Tel: <span class="phone-pill">${normalizePhoneTR(a.parentPhone)}</span></span>
           </div>
         </div>
         <div class="card-bottom">
@@ -1142,6 +1120,7 @@ function renderReports() {
             <textarea class="note-input" data-assignment-id="${a.id}">${a.note || ""}</textarea>
           </div>
           <div class="action-area">
+             <div class="call-emoji" aria-hidden="true">📞</div>
              <input type="checkbox" class="report-called" data-assignment-id="${a.id}" ${a.called ? "checked" : ""}>
           </div>
         </div>
@@ -1154,13 +1133,12 @@ function renderReports() {
 
     const footerNote = document.createElement("div");
     footerNote.className = "footer-note";
-    footerNote.textContent = WARNING_NOTE;
+    footerNote.textContent = "📌 Not: Bu liste tamamlandığında lütfen ilgili zümre başkanına zamanında teslim ediniz.";
     cardWrapper.appendChild(footerNote);
 
     cont.appendChild(cardWrapper);
   });
 }
-
 
 /* İŞLEVLER */
   async function saveAssignmentsToFirebase() {
@@ -1248,7 +1226,7 @@ function renderReports() {
           studentKey: st.key,
           parentFirstName: st.veliAdi,
           parentLastName: st.veliSoyadi,
-          parentPhone: normalizePhone(st.veliTel) || st.veliTel,
+          parentPhone: normalizePhoneTR(st.veliTel),
           startDate: s,
           endDate: e,
           called: false,
