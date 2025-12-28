@@ -273,140 +273,6 @@
       margin-top: 6px;
     }
 
-
-    /* --- PRINT / PREVIEW (Tasarım 2): Mobil-Uyumlu Kart Yerleşimi --- */
-    .report-body {
-      padding: 16px 18px 8px;
-    }
-
-    .report-student-card {
-      border-top: 1px solid #e2e8f0;
-      padding: 10px 0 12px;
-    }
-    .report-student-card:first-child {
-      border-top: none;
-      padding-top: 0;
-    }
-
-    .student-top-row {
-      display: grid;
-      grid-template-columns: 28px 1fr auto;
-      gap: 10px;
-      align-items: start;
-    }
-    .student-index {
-      font-weight: 800;
-      color: #2d3748;
-      line-height: 1.2;
-    }
-    .student-main {
-      min-width: 0;
-    }
-    .student-name {
-      font-weight: 700;
-      color: #1a202c;
-      font-size: 1rem;
-      line-height: 1.25;
-      word-break: break-word;
-    }
-    .student-meta {
-      margin-top: 4px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      font-size: 0.85rem;
-      color: #4a5568;
-    }
-    .meta-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 3px 8px;
-      border: 1px solid #e2e8f0;
-      border-radius: 999px;
-      background: #f8fafc;
-      white-space: nowrap;
-    }
-    .student-callbox {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      min-width: 70px;
-    }
-    .student-callbox label {
-      margin: 0;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: #4a5568;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-    }
-    .student-callbox input[type="checkbox"] {
-      transform: scale(1.2);
-    }
-
-    .student-notes {
-      margin-top: 8px;
-    }
-    .student-notes .hint {
-      font-size: 0.75rem;
-      color: #718096;
-      margin-bottom: 4px;
-      font-weight: 600;
-    }
-
-    /* Önizleme Modu (Ekranda Yazdırma Önizlemesi) */
-    #printPreviewBar {
-      display: none;
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      background: #0f172a;
-      color: #fff;
-      padding: 10px 12px;
-      border-radius: 12px;
-      margin-top: 16px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.18);
-      gap: 10px;
-      align-items: center;
-      justify-content: space-between;
-    }
-    #printPreviewBar .title {
-      font-weight: 800;
-      font-size: 0.95rem;
-      letter-spacing: 0.2px;
-    }
-    #printPreviewBar .actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-    #printPreviewBar .actions button {
-      width: auto;
-      margin-top: 0;
-    }
-
-    body.preview-mode {
-      background: #e2e8f0;
-      padding: 10px 12px 24px;
-    }
-    body.preview-mode .no-print {
-      display: none !important;
-    }
-    body.preview-mode #printPreviewBar {
-      display: flex !important;
-    }
-    body.preview-mode #reportContainer {
-      display: block;
-    }
-    body.preview-mode .report-card {
-      margin-top: 12px;
-      border-radius: 12px;
-      overflow: hidden;
-    }
-
     /* Alt Not Tasarımı */
     .footer-note {
       margin: 15px;
@@ -727,14 +593,6 @@
     </div>
   </div>
 
-  <div id="printPreviewBar" class="no-print">
-  <div class="title">Yazdırma Önizleme</div>
-  <div class="actions">
-    <button type="button" id="closePreviewBtn" class="secondary">Kapat</button>
-    <button type="button" id="doPrintBtn">🖨️ Yazdır</button>
-  </div>
-</div>
-
   <div id="reportContainer"></div>
 </div>
 
@@ -1050,7 +908,7 @@
     });
   }
 
-    /* RAPOR OLUŞTURMA */
+  /* RAPOR OLUŞTURMA */
   function renderReports() {
     const cont = document.getElementById("reportContainer");
     cont.innerHTML = "";
@@ -1058,7 +916,7 @@
 
     const filtered = assignments.slice();
     if (!filtered.length) return;
-
+    
     const groups = {};
     filtered.forEach(a => {
       if (!groups[a.teacherId]) groups[a.teacherId] = [];
@@ -1079,7 +937,7 @@
       const card = document.createElement("div");
       card.className = "report-card";
 
-      card.innerHTML = `
+      let html = `
         <div class="report-page-title">Öğretmen Veli Arama Takip Listesi</div>
         <div class="report-header-box">
           <div class="report-header-info">
@@ -1094,44 +952,50 @@
           </div>
         </div>
       `;
+      card.innerHTML = html;
 
-      const body = document.createElement("div");
-      body.className = "report-body";
+      const table = document.createElement("table");
+      const thead = document.createElement("thead");
+      thead.innerHTML = `
+        <tr>
+          <th style="width:30px">#</th>
+          <th>Öğrenci Adı Soyadı</th>
+          <th style="width:50px">Sınıf</th>
+          <th style="width:60px">No</th>
+          <th>Veli Adı Soyadı</th>
+          <th>İletişim</th>
+          <th style="width:50px; text-align:center;">Arama</th>
+        </tr>
+      `;
+      table.appendChild(thead);
 
       list.forEach((a, i) => {
-        const row = document.createElement("div");
-        row.className = "report-student-card student-print-block";
+        const tbody = document.createElement("tbody");
+        tbody.className = "student-print-block";
 
-        row.innerHTML = `
-          <div class="student-top-row">
-            <div class="student-index">${i+1}</div>
-
-            <div class="student-main">
-              <div class="student-name">${a.studentFirstName} ${a.studentLastName}</div>
-              <div class="student-meta">
-                <span class="meta-chip"><strong>Sınıf</strong>: ${a.class}</span>
-                <span class="meta-chip"><strong>No</strong>: ${a.schoolNumber}</span>
-                <span class="meta-chip"><strong>Veli</strong>: ${a.parentFirstName} ${a.parentLastName}</span>
-                <span class="meta-chip"><strong>Tel</strong>: ${a.parentPhone}</span>
-              </div>
-            </div>
-
-            <div class="student-callbox">
-              <label>Arandı</label>
+        tbody.innerHTML = `
+          <tr>
+            <td rowspan="2" style="vertical-align:top; font-weight:bold;">${i+1}</td>
+            <td style="font-weight:600">${a.studentFirstName} ${a.studentLastName}</td>
+            <td>${a.class}</td>
+            <td>${a.schoolNumber}</td>
+            <td>${a.parentFirstName} ${a.parentLastName}</td>
+            <td>${a.parentPhone}</td>
+            <td style="text-align:center; vertical-align:middle;">
               <input type="checkbox" class="report-called" data-assignment-id="${a.id}" ${a.called ? "checked" : ""}>
-            </div>
-          </div>
-
-          <div class="student-notes">
-            <div class="hint">Görüşme Notları / Açıklama</div>
-            <textarea class="note-cell" data-assignment-id="${a.id}">${a.note || ""}</textarea>
-          </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="6" style="border-top:none; padding-top:2px;">
+              <div style="font-size:0.75rem; color:#666; margin-bottom:2px;">Görüşme Notları / Açıklama:</div>
+              <textarea class="note-cell" data-assignment-id="${a.id}">${a.note || ""}</textarea>
+            </td>
+          </tr>
         `;
-
-        body.appendChild(row);
+        table.appendChild(tbody);
       });
 
-      card.appendChild(body);
+      card.appendChild(table);
 
       // GÜNCELLENEN FOOTER NOTU
       const footerNote = document.createElement("div");
@@ -1142,7 +1006,6 @@
       cont.appendChild(card);
     });
   }
-
 
   /* İŞLEVLER */
   async function saveAssignmentsToFirebase() {
@@ -1297,31 +1160,10 @@
   document.getElementById("deleteAssignmentsBtn").addEventListener("click", deleteAllAssignmentsInFirebase);
   document.getElementById("clearLocalListBtn").addEventListener("click", clearLocalList);
   
-  function enterPrintPreview() {
-    document.body.classList.add("preview-mode");
-    // reportContainer normalde gizli; preview-mode içinde görünür.
-    window.scrollTo({ top: 0, behavior: "auto" });
-  }
-  function exitPrintPreview() {
-    document.body.classList.remove("preview-mode");
-  }
-  window.addEventListener("afterprint", exitPrintPreview);
-
   document.getElementById("printReportsBtn").addEventListener("click", ()=>{
     syncReportBackToAssignments();
     renderReports();
-    enterPrintPreview();
-    // Mobil tarayıcılarda UI’nin yerleşmesi için küçük gecikme güvenlidir
-    setTimeout(()=>window.print(), 60);
-  });
-
-  document.getElementById("doPrintBtn").addEventListener("click", ()=>{
-    syncReportBackToAssignments();
-    renderReports();
-    setTimeout(()=>window.print(), 60);
-  });
-  document.getElementById("closePreviewBtn").addEventListener("click", ()=>{
-    exitPrintPreview();
+    window.print();
   });
 
   loadAllData();
