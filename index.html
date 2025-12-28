@@ -327,7 +327,7 @@
         display: none !important;
       }
 
-      #reportContainer { display: block; width: 100%; }
+      #reportContainer { display: block; width: 100%; box-sizing: border-box; padding-right: 2mm; }
       #printTitle {
         display: block !important;
         text-align: center;
@@ -377,7 +377,8 @@
       }
 
       .student-card {
-        border: 1px solid #888;
+        border: 2px solid #333;
+        box-sizing: border-box;
         border-radius: 5px;
         overflow: hidden;
         page-break-inside: avoid; /* Kartın sayfalar arası bölünmesini engeller */
@@ -388,16 +389,17 @@
 
       /* Kartın Üst Kısmı: Bilgiler */
       .card-top {
-        background-color: #f4f6f8 !important; /* Hafif gri zemin */
-        padding: 7px 12px;
-        border-bottom: 1px solid #ccc;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 10px;
-      }
+  background-color: #f4f6f8 !important; /* Hafif gri zemin */
+  padding: 7px 12px;
+  border-bottom: 1px solid #ccc;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: 12px;
+}
 
-      .info-group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.info-group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.info-group.right { flex-wrap: nowrap; justify-content: flex-end; }
       .st-index { 
         background: #333 !important;
         color: #fff !important;
@@ -419,7 +421,7 @@
         font-size: 8pt;
       }
       .st-parent { font-size: 9pt; color: #333; }
-      .st-phone { font-family: 'Courier New', monospace; font-weight: 700; }
+      .st-phone { font-family: 'Courier New', monospace; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; }
             .tel-icon{
         font-size: 8pt;
         margin-right: 4px;
@@ -439,29 +441,31 @@
 
       /* Görüşme Şekli (Kart içi seçimler) */
       .method-row{
-        display: flex;
-        align-items: center;
-        flex-wrap: nowrap;
-        gap: 10px;
-        margin-top: 2px;
-        padding-top: 4px;
-        border-top: 1px dashed #cbd5e0;
-        font-size: 8pt;
-      }
-      .method-label{
-        color: #555;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.2px;
-        white-space: nowrap;
-        line-height: 1;
-      }
-      .method-item{
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        white-space: nowrap;
-      }
+  display: grid;
+  grid-template-columns: 110px repeat(4, 1fr);
+  align-items: center;
+  column-gap: 10px;
+  margin-top: 2px;
+  padding-top: 4px;
+  border-top: 1px dashed #cbd5e0;
+  font-size: 8pt;
+}
+.method-label{
+  color: #555;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  line-height: 1;
+  justify-self: start;
+}
+.method-item{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  justify-self: center;
+}
       .method-item input.method-checkbox{
         width: 12px;
         height: 12px;
@@ -558,6 +562,17 @@
         background: transparent !important;
         color: #000 !important;
       }
+/* Sayfa numarası (sağ alt) */
+body::after{
+  content: counter(page);
+  position: fixed;
+  right: 3mm;
+  bottom: 2mm;
+  font-size: 8pt;
+  font-weight: 700;
+  color: #000 !important;
+}
+
     }
 
     /*
@@ -861,7 +876,22 @@
       return "0" + digits.slice(2);
     }
     return "0" + digits;
+  
+
+function formatPhoneMaskedTR(phoneRaw) {
+  const normalized = normalizePhoneTR(phoneRaw);
+  const digits = (normalized || "").toString().replace(/\D/g, "");
+  if (digits.length === 11 && digits.startsWith("0")) {
+    const a = digits.slice(0, 4);  // 0XXX
+    const b = digits.slice(4, 7);  // XXX
+    const c = digits.slice(7, 9);  // XX
+    const d = digits.slice(9, 11); // XX
+    return `(${a}) ${b} ${c} ${d}`;
   }
+  // If it looks like +90... keep original normalized form
+  return normalized;
+}
+}
 
   function normalizeStudentLike(obj) {
     return {
@@ -1094,7 +1124,7 @@
         <td>${a.class}</td>
         <td>${a.schoolNumber}</td>
         <td>${a.parentFirstName} ${a.parentLastName}</td>
-        <td>${normalizePhoneTR(a.parentPhone)}</td>
+        <td>${formatPhoneMaskedTR(a.parentPhone)}</td>
         <td>${toDisplayDateFromISO(a.startDate)}<br>${toDisplayDateFromISO(a.endDate)}</td>
         <td><button type="button" class="danger" style="padding:4px 8px; font-size:0.8rem" data-del-id="${a.id}">Sil</button></td>
       `;
@@ -1163,9 +1193,9 @@ function renderReports() {
             <span class="st-name">${a.studentFirstName} ${a.studentLastName}</span>
             <small style="color:#666">(${a.schoolNumber})</small>
           </div>
-          <div class="info-group" style="font-size:9pt;">
+          <div class="info-group right" style="font-size:9pt;">
             <span class="st-parent">Veli: <strong>${a.parentFirstName} ${a.parentLastName}</strong></span>
-            <span class="st-phone"><span class="tel-icon" aria-hidden="true">☎️</span>Tel: <span class="phone-pill">${normalizePhoneTR(a.parentPhone)}</span></span>
+            <span class="st-phone"><span class="tel-icon" aria-hidden="true">☎️</span>Tel: <span class="phone-pill">${formatPhoneMaskedTR(a.parentPhone)}</span></span>
           </div>
         </div>
         <div class="card-bottom">
