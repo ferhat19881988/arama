@@ -429,19 +429,16 @@
         font-weight: 800;
         letter-spacing: 0.2px;
       }
-      .call-emoji{
-        font-size: 9pt;
-        line-height: 1;
-        margin: 0;
-      }
+
 
 
       /* Görüşme Şekli (Kart içi seçimler) */
       .method-row{
         display: grid;
-        grid-template-columns: 78px 1fr 1fr 1fr 1fr;
+        grid-template-columns: max-content repeat(4, max-content);
         align-items: center;
-        gap: 6px;
+        column-gap: 12px;
+        row-gap: 4px;
         margin-top: 2px;
         padding-top: 4px;
         border-top: 1px dashed #cbd5e0;
@@ -519,10 +516,20 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: space-between;
+        justify-content: center; /* ikon + kutucuk ortalı ve yakın */
+        gap: 6px;
         background: #fff;
         flex: 0 0 auto;
-        padding: 6px 0;
+        padding: 0;
+      }
+      .action-area .report-called { margin: 0; }
+      .call-emoji{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 9pt;
+        line-height: 1;
+        margin: 0;
       }
 
       /* Checkbox stilleri */
