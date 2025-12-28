@@ -286,7 +286,21 @@
       background-color: #f8fafc;
     }
 
-    .report-page-title {
+    
+    /* Kart içi alt not (son öğrenci kartının altında) */
+    .inline-footer-note {
+      margin: 15px;
+      padding: 12px;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: 2px dashed #cbd5e1;
+      border-radius: 8px;
+      color: #475569;
+      background-color: #f8fafc;
+    }
+
+.report-page-title {
       display: none;
     }
 
@@ -319,7 +333,10 @@
         font-size: 9pt;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
-      }
+      
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+}
 
       /* Gereksizleri Gizle */
       .no-print, .assign-button-group, button, 
@@ -373,10 +390,12 @@
       .student-card-grid {
         display: flex;
         flex-direction: column;
-        gap: 6px; /* Kartlar arası boşluk */
+        gap: 0 !important; /* iOS/Safari yazdırmada gap kaymalarını önlemek için */
       }
 
       .student-card {
+        margin-bottom: 6px; /* Kartlar arası boşluk (gap yerine) */
+
         border: 2px solid #333;
         box-sizing: border-box;
         border-radius: 5px;
@@ -387,7 +406,9 @@
         flex-direction: column;
       }
 
-      /* Kartın Üst Kısmı: Bilgiler */
+      
+      .student-card:last-child { margin-bottom: 0; }
+/* Kartın Üst Kısmı: Bilgiler */
       .card-top {
   background-color: #f4f6f8 !important; /* Hafif gri zemin */
   padding: 7px 12px;
@@ -562,6 +583,18 @@
         background: transparent !important;
         color: #000 !important;
       }
+      .inline-footer-note {
+        margin: 6px 10px 10px 10px;
+        padding: 6px 8px;
+        text-align: center;
+        font-size: 8pt;
+        font-weight: 700;
+        border: 2px dashed #999;
+        border-radius: 6px;
+        background: #f8fafc !important;
+        color: #000 !important;
+      }
+
 /* Sayfa numarası (sağ alt) */
 body::after{
   content: counter(page);
@@ -1216,16 +1249,18 @@ function renderReports() {
           </div>
         </div>
       `;
+      // Son kartın en altına notu bağla (yazdırmada kayma olmaması için not kartla birlikte kalsın)
+      if (i === list.length - 1) {
+        const inlineNote = document.createElement("div");
+        inlineNote.className = "inline-footer-note";
+        inlineNote.textContent = "📌 Not: Bu liste tamamlandığında lütfen ilgili zümre başkanına zamanında teslim ediniz.";
+        studentCard.appendChild(inlineNote);
+      }
       grid.appendChild(studentCard);
     });
 
     cardWrapper.innerHTML = headerHtml; // Başlığı ekle
     cardWrapper.appendChild(grid); // Kartları ekle
-
-    const footerNote = document.createElement("div");
-    footerNote.className = "footer-note";
-    footerNote.textContent = "📌 Not: Bu liste tamamlandığında lütfen ilgili zümre başkanına zamanında teslim ediniz.";
-    cardWrapper.appendChild(footerNote);
 
     cont.appendChild(cardWrapper);
   });
