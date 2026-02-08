@@ -594,6 +594,56 @@
         color: #000 !important;
       }
 
+
+      /* --- iOS / iPhone / Mobil Safari Yazdırma Sabitleyici ---
+         Mobil Safari, @media print içinde flex/grid + sayfa kırılması kullanıldığında
+         bazen içerik genişliğini yanlış hesaplayıp “liste kayması / yarısının diğer sayfaya taşması”
+         gibi sorunlar çıkarabiliyor. Aşağıdaki override’lar, yazdırma akışını
+         block layout’a çekerek ve taşmaları engelleyerek bunu stabilize eder. */
+      html, body {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: visible !important;
+      }
+
+      /* Flex yerine blok akış: sayfa kırılmaları daha tutarlı */
+      .student-card-grid {
+        display: block !important;
+      }
+      .student-card {
+        display: block !important;
+      }
+
+      /* Grid yerine flex-wrap: dar ekran/ölçek farklarında taşmayı önler */
+      .card-top {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        align-items: center !important;
+        row-gap: 4px;
+      }
+      .card-top .info-group {
+        width: 100% !important;
+      }
+      .card-top .info-group.right {
+        justify-content: flex-start !important;
+        flex-wrap: wrap !important;
+        width: 100% !important;
+      }
+
+      /* Metin taşmalarını kır (özellikle uzun isim/veli bilgisi) */
+      .st-name, .st-parent, .st-phone, .report-header-meta, .report-header-info h3 {
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      /* Eski Safari'lerde sayfa içinde kırılmayı daha güçlü engelle */
+      .student-card,
+      .report-header-box {
+        break-inside: avoid-page !important;
+        page-break-inside: avoid !important;
+      }
+
+
 /* Sayfa numarası (her BASILI sayfa için) */
       .report-page-number { display: none !important; } /* eski sistem (kart bazlı) kapatıldı */
 }
