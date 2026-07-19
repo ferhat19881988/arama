@@ -383,10 +383,7 @@
       margin-bottom: 12px;
     }
     .app-header h1 { margin: 0; grid-column: 2; }
-    .app-header-actions {
-      grid-column: 3;
-      justify-self: end;
-    }
+    .app-header-actions { grid-column: 3; justify-self: end; }
     .settings-trigger {
       padding: 10px 16px;
       background: #0f172a;
@@ -395,13 +392,13 @@
     .settings-trigger:hover { background: #020617; }
 
     .settings-alert {
-      margin-top: 16px;
+      margin-top: 14px;
       padding: 12px 14px;
-      border-radius: var(--radius-md);
       border: 1px solid #fbbf24;
+      border-radius: 10px;
       background: #fffbeb;
       color: #92400e;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       line-height: 1.45;
     }
     .settings-alert ul { margin: 8px 0 0 20px; padding: 0; }
@@ -446,47 +443,51 @@
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 20px;
-      background: rgba(15, 23, 42, 0.72);
-      backdrop-filter: blur(5px);
+      padding: 12px;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(4px);
       z-index: 1000;
     }
     .modal-overlay.open { display: flex; }
     .modal-panel {
       width: min(520px, 100%);
-      max-height: calc(100vh - 40px);
+      max-height: calc(100vh - 24px);
       display: flex;
       flex-direction: column;
       overflow: hidden;
       background: #fff;
-      border-radius: var(--radius-lg);
-      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
-      border: 1px solid rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.85);
+      border-radius: 16px;
+      box-shadow: 0 28px 80px rgba(15, 23, 42, 0.38);
     }
-    .modal-panel.modal-xl { width: min(1420px, 100%); }
+    .modal-panel.modal-xl {
+      width: min(1680px, calc(100vw - 24px));
+      height: min(94vh, 980px);
+      max-height: 94vh;
+    }
     .modal-header,
     .modal-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
       padding: 16px 20px;
       background: #fff;
-      z-index: 2;
+      z-index: 3;
     }
     .modal-header { border-bottom: 1px solid var(--border-color); }
     .modal-footer {
       border-top: 1px solid var(--border-color);
       flex-wrap: wrap;
-      position: sticky;
-      bottom: 0;
+      box-shadow: 0 -8px 22px rgba(15, 23, 42, 0.04);
     }
-    .modal-title { margin: 0; font-size: 1.2rem; }
-    .modal-body { padding: 20px; overflow: auto; }
+    .modal-title { margin: 0; font-size: 1.25rem; }
+    .modal-body { padding: 18px 20px 28px; overflow: auto; background: #f8fafc; }
     .modal-close {
       width: 40px;
       height: 40px;
       padding: 0;
+      flex: 0 0 auto;
       border-radius: 50%;
       background: #e2e8f0;
       color: #334155;
@@ -496,29 +497,66 @@
     .login-note { color: var(--text-muted); font-size: 0.88rem; margin: 8px 0 16px; }
     .login-error { min-height: 22px; color: var(--danger-color); font-weight: 700; font-size: 0.9rem; }
 
-    .settings-section {
-      margin-bottom: 24px;
-      padding-bottom: 24px;
-      border-bottom: 1px solid var(--border-color);
+    .settings-steps {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
     }
-    .settings-section:last-child { border-bottom: none; margin-bottom: 0; }
+    .settings-step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 54px;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      background: #fff;
+      color: #475569;
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+    .settings-step-number {
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-weight: 900;
+    }
+
+    .settings-section {
+      margin-bottom: 16px;
+      padding: 18px;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: var(--shadow-sm);
+    }
+    .settings-section:last-child { margin-bottom: 0; }
     .settings-section h3 { margin: 0; font-size: 1.05rem; }
-    .settings-section-description { color: var(--text-muted); font-size: 0.86rem; margin: 6px 0 14px; }
+    .settings-section-description { color: var(--text-muted); font-size: 0.86rem; margin: 5px 0 0; }
     .settings-section-heading {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
       flex-wrap: wrap;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
+
     .settings-source-card {
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
+      border-radius: 12px;
       margin-bottom: 12px;
       overflow: hidden;
       background: #fff;
     }
+    .settings-source-card:last-child { margin-bottom: 0; }
     .settings-source-card > summary {
       cursor: pointer;
       list-style: none;
@@ -526,32 +564,75 @@
       justify-content: space-between;
       align-items: center;
       gap: 12px;
-      padding: 14px 16px;
+      padding: 13px 15px;
       background: #f8fafc;
       border-bottom: 1px solid transparent;
     }
     .settings-source-card[open] > summary { border-bottom-color: var(--border-color); }
     .settings-source-card > summary::-webkit-details-marker { display: none; }
-    .settings-source-content { padding: 16px; }
-    .settings-grid {
+    .source-summary-main { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .source-summary-status { color: var(--text-muted); font-size: 0.82rem; font-weight: 700; }
+    .settings-source-content { padding: 15px; }
+    .source-main-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(150px, 1fr));
+      grid-template-columns: minmax(180px, 0.8fr) minmax(360px, 2fr) minmax(180px, 0.8fr);
       gap: 12px;
+      align-items: end;
     }
-    .settings-grid .span-2 { grid-column: span 2; }
-    .settings-grid input,
-    .settings-grid select,
+    .source-main-grid label,
+    .source-advanced-grid label { margin: 0; }
+    .source-main-grid input,
+    .source-main-grid select,
+    .source-advanced-grid input,
+    .source-advanced-grid select,
     .settings-table input,
-    .settings-table select {
-      padding: 9px 10px;
-      font-size: 0.88rem;
+    .settings-table select,
+    .mapping-select {
+      padding: 9px 11px;
+      font-size: 0.9rem;
+      border-width: 1px;
+      border-radius: 9px;
+    }
+    .source-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 14px 0 10px;
+    }
+    .source-actions .primary-action { background: #2563eb; }
+    .source-actions .primary-action:hover { background: #1d4ed8; }
+    .compact-button { padding: 8px 11px; font-size: 0.82rem; box-shadow: none; }
+    .mini-button { padding: 6px 8px; font-size: 0.78rem; min-width: 34px; box-shadow: none; }
+    button:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; }
+    .source-test-status { font-size: 0.82rem; font-weight: 700; }
+    .success-text { color: #047857; }
+    .danger-text { color: #b91c1c; }
+    .muted-text { color: var(--text-muted); }
+
+    .source-advanced {
+      margin-top: 10px;
+      border-top: 1px dashed var(--border-color);
+      padding-top: 10px;
+    }
+    .source-advanced > summary,
+    .settings-advanced > summary {
+      cursor: pointer;
+      color: #475569;
+      font-size: 0.84rem;
+      font-weight: 800;
+    }
+    .source-advanced-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(140px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
     }
     .checkbox-line {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      align-self: end;
-      min-height: 42px;
+      min-height: 40px;
     }
     .checkbox-line input,
     .checkbox-chip input,
@@ -561,37 +642,80 @@
       margin: 0;
       accent-color: var(--primary-color);
     }
-    .source-actions {
+
+    .mapping-board {
+      margin-top: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .mapping-board-title {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       flex-wrap: wrap;
-      margin: 14px 0;
-    }
-    .compact-button { padding: 8px 11px; font-size: 0.8rem; }
-    .mini-button { padding: 6px 8px; font-size: 0.78rem; min-width: 34px; }
-    button:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; }
-    .source-test-status { font-size: 0.82rem; font-weight: 700; }
-    .success-text { color: #047857; }
-    .danger-text { color: #b91c1c; }
-    .mapping-help {
       padding: 10px 12px;
-      margin-bottom: 10px;
-      border-radius: 8px;
       background: #eff6ff;
-      color: #1e40af;
-      font-size: 0.82rem;
+      border-bottom: 1px solid #bfdbfe;
+      color: #1e3a8a;
+      font-size: 0.86rem;
     }
-    .mapping-help code { background: #dbeafe; padding: 2px 5px; border-radius: 4px; }
     .settings-table-wrap {
       overflow: auto;
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
+      border-radius: 10px;
     }
-    .settings-table { min-width: 760px; margin: 0; }
-    .settings-table th { position: static; white-space: nowrap; }
-    .settings-table td { vertical-align: middle; }
+    .mapping-board .settings-table-wrap { border: 0; border-radius: 0; }
+    .settings-table { min-width: 820px; margin: 0; }
+    .settings-table th {
+      position: static;
+      white-space: nowrap;
+      padding: 10px 12px;
+      background: #f8fafc;
+    }
+    .settings-table td { padding: 9px 12px; vertical-align: middle; }
     .settings-table input[type="checkbox"] { display: block; margin: 0 auto; }
+    .mapping-table { min-width: 900px; }
+    .mapping-table td:first-child { width: 32%; }
+    .mapping-table td:nth-child(2) { width: 28%; color: #475569; }
+    .mapping-column-name { display: flex; align-items: center; gap: 8px; }
+    .mapping-column-letter {
+      min-width: 30px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 7px;
+      background: #e2e8f0;
+      color: #334155;
+      font-size: 0.76rem;
+      font-weight: 900;
+    }
+    .mapping-column-name strong { overflow-wrap: anywhere; }
+    .mapping-sample {
+      max-width: 360px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 0.84rem;
+    }
+    .mapping-select { min-width: 280px; }
+    .mapping-empty {
+      padding: 24px;
+      text-align: center;
+      color: var(--text-muted);
+      background: #fff;
+    }
+    .mapping-empty strong { display: block; color: #334155; margin-bottom: 4px; }
+    .mapping-issue {
+      padding: 9px 12px;
+      border-top: 1px solid #fde68a;
+      background: #fffbeb;
+      color: #92400e;
+      font-size: 0.82rem;
+    }
+
     .order-buttons { white-space: nowrap; }
     .checkbox-chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
     .checkbox-chip {
@@ -604,12 +728,21 @@
       border-radius: 999px;
       background: #fff;
     }
+    .settings-advanced {
+      margin-bottom: 16px;
+      padding: 14px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      background: #fff;
+    }
+    .settings-advanced-content { padding-top: 12px; }
     .preview-placeholder {
       padding: 24px;
       text-align: center;
       color: var(--text-muted);
       border: 2px dashed var(--border-color);
-      border-radius: var(--radius-md);
+      border-radius: 10px;
+      background: #fff;
     }
     .preview-summary { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
     .preview-table { min-width: 900px; }
@@ -627,12 +760,19 @@
     }
     .report-extra-item { white-space: nowrap; }
 
+    @media (max-width: 1100px) {
+      .source-main-grid { grid-template-columns: 1fr 1.6fr; }
+      .source-main-grid label:last-child { grid-column: span 2; }
+      .source-advanced-grid { grid-template-columns: repeat(2, minmax(140px, 1fr)); }
+    }
+
     @media (max-width: 900px) {
       .app-header { grid-template-columns: 1fr auto; }
       .app-header h1 { grid-column: 1; text-align: left; font-size: 1.35rem; }
       .app-header-actions { grid-column: 2; }
-      .settings-grid { grid-template-columns: repeat(2, minmax(140px, 1fr)); }
       .student-tools { grid-template-columns: 1fr; }
+      .settings-steps { grid-template-columns: 1fr; }
+      .modal-panel.modal-xl { height: calc(100vh - 16px); max-height: calc(100vh - 16px); }
     }
 
     @media (max-width: 600px) {
@@ -642,8 +782,9 @@
       .modal-header,
       .modal-footer,
       .modal-body { padding: 14px; }
-      .settings-grid { grid-template-columns: 1fr; }
-      .settings-grid .span-2 { grid-column: span 1; }
+      .source-main-grid,
+      .source-advanced-grid { grid-template-columns: 1fr; }
+      .source-main-grid label:last-child { grid-column: span 1; }
       .app-header { display: flex; align-items: stretch; flex-direction: column; }
       .app-header h1 { text-align: center; }
       .app-header-actions { align-self: flex-end; }
@@ -651,8 +792,10 @@
       .modal-footer button,
       .source-actions button,
       .settings-section-heading button { width: auto; margin-top: 0; }
+      .modal-footer-left,
+      .modal-footer-right { width: 100%; }
+      .modal-footer-right { justify-content: flex-end; }
     }
-
     /* --- PRINT STYLES (DOKUNULMADI / UNTOUCHED) --- */
     /* BURADAN AŞAĞISI ORİJİNAL KODUNUZDAKİ YAZDIRMA AYARLARIDIR */
     
@@ -1212,20 +1355,26 @@
   <div class="modal-panel modal-xl">
     <div class="modal-header">
       <div>
-        <h2 id="settingsModalTitle" class="modal-title">Ultra Öğrenci E-Tablo Ayarları</h2>
-        <div class="info-block">Yalnızca öğrenci kaynakları ve öğrenci sütunları değişir. Öğretmen kaynağı ve atamalar bu bölümden etkilenmez.</div>
+        <h2 id="settingsModalTitle" class="modal-title">Öğrenci Veri Ayarları</h2>
+        <div class="info-block">E-tablonuzu bağlayın, gelen sütunların sistemde ne olacağını seçin ve kaydedin.</div>
       </div>
       <button type="button" id="settingsCloseBtn" class="modal-close" aria-label="Kapat">✕</button>
     </div>
 
     <div class="modal-body">
+      <div class="settings-steps" aria-label="Ayar adımları">
+        <div class="settings-step"><span class="settings-step-number">1</span><span>E-tablo adresini ve sayfayı seçin</span></div>
+        <div class="settings-step"><span class="settings-step-number">2</span><span>Her e-tablo sütununun sistemde ne olacağını belirleyin</span></div>
+        <div class="settings-step"><span class="settings-step-number">3</span><span>Liste, arama, filtre ve rapor görünümünü ayarlayın</span></div>
+      </div>
+
       <section class="settings-section">
         <div class="settings-section-heading">
           <div>
-            <h3>1. Öğrenci Veri Kaynakları</h3>
-            <div class="settings-section-description">Birden fazla Google E-Tablo ekleyin, öncelik sırasını değiştirin ve her kaynak için sütun başlıklarını ayrı eşleştirin.</div>
+            <h3>1. Veri Kaynağı ve Sütun Eşleştirme</h3>
+            <div class="settings-section-description">Sütunlar e-tablodan okunur. Aynı başlığa sahip “Veli Adı” ve “Telefon” sütunları ayrı ayrı gösterilir.</div>
           </div>
-          <button type="button" id="addStudentSourceBtn">＋ Yeni Kaynak Ekle</button>
+          <button type="button" id="addStudentSourceBtn">＋ Yeni Kaynak</button>
         </div>
         <div id="settingsSourcesList"></div>
       </section>
@@ -1233,30 +1382,20 @@
       <section class="settings-section">
         <div class="settings-section-heading">
           <div>
-            <h3>2. Çakışma Kontrolü</h3>
-            <div class="settings-section-description">Seçilen alanlar birlikte karşılaştırılır. Numara boşsa mevcut diğer alanlar kullanılır. Aynı tam ad farklı kaynaklarda görülürse ayrıca uyarı oluşturulur.</div>
+            <h3>2. Liste ve Rapor Görünümü</h3>
+            <div class="settings-section-description">Alan adını değiştirin; listede, aramada, filtrede veya raporda kullanılıp kullanılmayacağını seçin.</div>
           </div>
-        </div>
-        <div id="duplicateKeyOptions" class="checkbox-chip-group"></div>
-      </section>
-
-      <section class="settings-section">
-        <div class="settings-section-heading">
-          <div>
-            <h3>3. Öğrenci Sütunları</h3>
-            <div class="settings-section-description">Sütun ekleyin, silin, adlandırın, sıralayın ve arama, filtre veya rapor kullanımını belirleyin.</div>
-          </div>
-          <button type="button" id="addStudentColumnBtn">＋ Yeni Sütun Ekle</button>
+          <button type="button" id="addStudentColumnBtn" class="secondary">＋ Özel Alan Ekle</button>
         </div>
         <div class="settings-table-wrap">
           <table class="settings-table">
             <thead>
               <tr>
                 <th>Sıra</th>
-                <th>Bağlı Alan</th>
-                <th>Görünen Sütun Adı</th>
-                <th>Veri Tipi</th>
-                <th>Görünür</th>
+                <th>Veri Alanı</th>
+                <th>Görünen Ad</th>
+                <th>Tür</th>
+                <th>Liste</th>
                 <th>Arama</th>
                 <th>Filtre</th>
                 <th>Rapor</th>
@@ -1268,12 +1407,21 @@
         </div>
       </section>
 
+      <details class="settings-advanced">
+        <summary>Gelişmiş: Aynı öğrenciyi birden fazla kaynaktan ayırt etme</summary>
+        <div class="settings-advanced-content">
+          <div class="settings-section-description">Seçilen alanlar birlikte karşılaştırılır. Genellikle öğrenci adı ve öğrenci numarası yeterlidir.</div>
+          <div id="duplicateKeyOptions" class="checkbox-chip-group"></div>
+        </div>
+      </details>
+
       <section class="settings-section">
         <div class="settings-section-heading">
           <div>
-            <h3>4. Canlı Önizleme ve Kontrol</h3>
-            <div class="settings-section-description">Kaydetmeden önce ilk 10 kaydı, kaynak sonuçlarını ve çakışma uyarılarını görün.</div>
+            <h3>3. Kontrol Önizlemesi</h3>
+            <div class="settings-section-description">Kaydetmeden önce ilk 10 öğrenciyi ve veli bilgilerinin doğru okunup okunmadığını kontrol edin.</div>
           </div>
+          <button type="button" id="previewSettingsBtn" class="secondary">Önizlemeyi Yenile</button>
         </div>
         <div id="settingsPreview"></div>
       </section>
@@ -1282,11 +1430,10 @@
     <div class="modal-footer">
       <div class="modal-footer-left">
         <button type="button" id="logoutSettingsBtn" class="secondary">Çıkış Yap</button>
-        <button type="button" id="resetStudentSettingsBtn" class="danger">Öğrenci Ayarlarını Resetle</button>
+        <button type="button" id="resetStudentSettingsBtn" class="danger">Varsayılana Dön</button>
       </div>
       <div class="modal-footer-right">
         <span id="settingsSaveStatus" class="settings-save-status"></span>
-        <button type="button" id="previewSettingsBtn" class="secondary">Canlı Önizleme</button>
         <button type="button" id="saveSettingsBtn">💾 Kaydet ve Uygula</button>
       </div>
     </div>
@@ -1317,18 +1464,18 @@
   };
 
   const SYSTEM_FIELD_DEFINITIONS = [
-    { key: "fullName", label: "Öğrenci Tam Adı" },
+    { key: "fullName", label: "Öğrenci Adı Soyadı (tek sütun)" },
     { key: "firstName", label: "Öğrenci Adı" },
     { key: "lastName", label: "Öğrenci Soyadı" },
     { key: "gender", label: "Cinsiyet" },
     { key: "className", label: "Sınıf" },
     { key: "schoolNumber", label: "Öğrenci No" },
-    { key: "parentFullName", label: "1. Veli Tam Adı" },
+    { key: "parentFullName", label: "1. Veli Adı Soyadı" },
     { key: "parentFirstName", label: "1. Veli Adı" },
     { key: "parentLastName", label: "1. Veli Soyadı" },
-    { key: "parentPhone", label: "1. Veli Telefon" },
-    { key: "parent2FullName", label: "2. Veli Tam Adı" },
-    { key: "parent2Phone", label: "2. Veli Telefon" }
+    { key: "parentPhone", label: "1. Veli Telefonu" },
+    { key: "parent2FullName", label: "2. Veli Adı" },
+    { key: "parent2Phone", label: "2. Veli Telefonu" }
   ];
 
   const SYSTEM_FIELD_KEYS = new Set(SYSTEM_FIELD_DEFINITIONS.map(item => item.key));
@@ -1351,16 +1498,16 @@
   ];
 
   const FIELD_ALIASES = {
-    fullName: ["Ad Soyad", "Adı Soyadı", "Öğrenci Ad Soyad", "Öğrenci Adı Soyadı", "İsim Soyisim", "Tam Ad"],
+    fullName: ["İsim*", "Ad Soyad", "Adı Soyadı", "Öğrenci Ad Soyad", "Öğrenci Adı Soyadı", "İsim Soyisim", "Tam Ad"],
     firstName: ["İsim", "Ad", "Öğrenci Adı", "Öğrenci İsmi"],
     lastName: ["Soyisim", "Soyad", "Öğrenci Soyadı"],
-    gender: ["Cinsiyet"],
-    className: ["Sınıf", "Şube", "Sınıfı"],
+    gender: ["Cinsiyet", "Cinsiyet*"],
+    className: ["Sınıf", "Sınıf*", "Şube", "Sınıfı"],
     schoolNumber: ["Öğrenci No", "Öğrenci Numarası", "Okul No", "Okul Numarası", "Numara", "No"],
-    parentFullName: ["Veli Ad Soyad", "Veli Adı Soyadı", "Veli", "1. Veli Adı"],
+    parentFullName: ["Veli Ad Soyad", "Veli Adı Soyadı", "1. Veli Ad Soyad", "1. Veli Adı Soyadı"],
     parentFirstName: ["Veli Adı", "Anne Adı", "1. Veli Adı"],
     parentLastName: ["Veli Soyadı", "1. Veli Soyadı"],
-    parentPhone: ["Veli Telefon", "Veli Telefonu", "Telefon", "Cep Telefonu", "1. Veli Telefon"],
+    parentPhone: ["Telefon", "Veli Telefon", "Veli Telefonu", "Cep Telefonu", "1. Veli Telefon"],
     parent2FullName: ["2. Veli Adı", "2. Veli Ad Soyad", "İkinci Veli"],
     parent2Phone: ["2. Veli Telefon", "2. Telefon", "İkinci Veli Telefon"]
   };
@@ -1384,14 +1531,14 @@
           firstName: "İsim",
           lastName: "Soyisim*",
           gender: "Cinsiyet*",
-          className: "Sınıf",
-          schoolNumber: "Okul Numarası",
+          className: "Sınıf* | Sınıf",
+          schoolNumber: "Öğrenci No | Okul Numarası",
           parentFullName: "",
           parentFirstName: "Veli Adı",
           parentLastName: "Veli Soyadı",
-          parentPhone: "Veli Telefon",
-          parent2FullName: "",
-          parent2Phone: ""
+          parentPhone: "Telefon#1 | Veli Telefon | Telefon",
+          parent2FullName: "Veli Adı#2",
+          parent2Phone: "Telefon#2"
         }
       }
     ],
@@ -1416,6 +1563,7 @@
   let assignments = [];
   let studentConfig = deepClone(DEFAULT_STUDENT_CONFIG);
   let settingsDraft = null;
+  let settingsSourceRuntime = new Map();
   let studentWarnings = [];
   let activeStudentFilters = {};
 
@@ -1602,7 +1750,22 @@
     return rows;
   }
 
+  function normalizeHeaderLiteral(value) {
+    return String(value ?? "")
+      .replace(/^\uFEFF/, "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLocaleLowerCase("tr-TR");
+  }
+
   function findColumnIndexes(headerRow, expectedHeader) {
+    const literalTarget = normalizeHeaderLiteral(expectedHeader);
+    const literalIndexes = [];
+    headerRow.forEach((cell, index) => {
+      if (normalizeHeaderLiteral(cell) === literalTarget) literalIndexes.push(index);
+    });
+    if (literalIndexes.length) return literalIndexes;
+
     const target = normalizeText(expectedHeader);
     const indexes = [];
     headerRow.forEach((cell, index) => {
@@ -1799,14 +1962,18 @@
     });
 
     let firstName = values.firstName || "";
-    let lastName = values.lastName || "";
+    const lastName = values.lastName || "";
     let fullName = values.fullName || `${firstName} ${lastName}`.trim();
+    if (firstName && lastName && normalizeIdentity(fullName) === normalizeIdentity(firstName)) {
+      fullName = `${firstName} ${lastName}`.trim();
+    }
     if (!firstName && !lastName && fullName) firstName = fullName;
     if (!fullName) fullName = `${firstName} ${lastName}`.trim();
 
     let parentFirstName = values.parentFirstName || "";
-    let parentLastName = values.parentLastName || "";
+    const parentLastName = values.parentLastName || "";
     let parentFullName = values.parentFullName || `${parentFirstName} ${parentLastName}`.trim();
+    const parent2FullName = values.parent2FullName || "";
     if (!parentFirstName && !parentLastName && parentFullName) parentFirstName = parentFullName;
     if (!parentFullName) parentFullName = `${parentFirstName} ${parentLastName}`.trim();
 
@@ -1814,6 +1981,9 @@
     const schoolNumber = values.schoolNumber || "";
     const parentPhone = normalizePhoneTR(values.parentPhone || "");
     const parent2Phone = normalizePhoneTR(values.parent2Phone || "");
+    const primaryParentName = parentFullName || parentFirstName || parent2FullName;
+    const primaryParentPhone = parentPhone || parent2Phone;
+    if (!parentFirstName && primaryParentName) parentFirstName = primaryParentName;
 
     Object.assign(values, {
       fullName,
@@ -1821,10 +1991,11 @@
       lastName,
       className,
       schoolNumber,
-      parentFullName,
+      parentFullName: parentFullName || primaryParentName,
       parentFirstName,
       parentLastName,
-      parentPhone,
+      parentPhone: primaryParentPhone,
+      parent2FullName,
       parent2Phone
     });
 
@@ -1835,9 +2006,9 @@
       cinsiyet: values.gender || "",
       sinif: className,
       okulNo: schoolNumber,
-      veliAdi: parentFirstName,
+      veliAdi: primaryParentName,
       veliSoyadi: parentLastName,
-      veliTel: parentPhone,
+      veliTel: primaryParentPhone,
       sourceId: source.id,
       sourceName: source.name,
       values,
@@ -2475,90 +2646,294 @@
 
   function openSettingsModal() {
     settingsDraft = deepClone(studentConfig);
+    settingsSourceRuntime = new Map();
     renderSettingsEditor();
     openModal("settingsModal");
+
+    settingsDraft.sources.forEach(source => {
+      if (String(source.url || "").trim()) {
+        readSourceColumns(source.id, { autoMapMissing: true, quiet: true });
+      }
+    });
   }
 
   function renderSettingsEditor() {
     renderSettingsSources();
     renderSettingsColumns();
     renderDuplicateSettings();
-    document.getElementById("settingsPreview").innerHTML = '<div class="preview-placeholder">Canlı önizleme için “Canlı Önizleme” düğmesine basın.</div>';
+    document.getElementById("settingsPreview").innerHTML = '<div class="preview-placeholder">Önce sütunları okuyun ve eşleştirin. Ardından “Önizlemeyi Yenile” düğmesini kullanın.</div>';
     setText("settingsSaveStatus", "");
+  }
+
+  function columnLetter(index) {
+    let value = Number(index) + 1;
+    let result = "";
+    while (value > 0) {
+      value -= 1;
+      result = String.fromCharCode(65 + (value % 26)) + result;
+      value = Math.floor(value / 26);
+    }
+    return result;
+  }
+
+  function headerDescriptors(header, rows, dataStartIndex) {
+    const totals = new Map();
+    header.forEach(cell => {
+      const key = normalizeText(cell);
+      if (key) totals.set(key, (totals.get(key) || 0) + 1);
+    });
+
+    const seen = new Map();
+    return header.map((cell, index) => {
+      const headerText = String(cell || "").trim();
+      const key = normalizeText(headerText);
+      const occurrence = key ? (seen.get(key) || 0) + 1 : 1;
+      if (key) seen.set(key, occurrence);
+      const total = key ? totals.get(key) || 1 : 1;
+      const sample = rows
+        .slice(dataStartIndex, dataStartIndex + 12)
+        .map(row => String(row[index] ?? "").trim())
+        .find(Boolean) || "";
+      return {
+        index,
+        letter: columnLetter(index),
+        header: headerText,
+        occurrence,
+        total,
+        token: headerText ? (total > 1 ? `${headerText}#${occurrence}` : headerText) : "",
+        sample
+      };
+    }).filter(item => item.header || item.sample);
+  }
+
+  function knownHeaderScore(row) {
+    const aliases = new Set(
+      Object.values(FIELD_ALIASES)
+        .flat()
+        .map(normalizeText)
+        .filter(Boolean)
+    );
+    let known = 0;
+    let nonEmpty = 0;
+    (row || []).forEach(cell => {
+      const normalized = normalizeText(cell);
+      if (!normalized) return;
+      nonEmpty += 1;
+      if (aliases.has(normalized)) known += 1;
+    });
+    return { known, score: (known * 100) + nonEmpty };
+  }
+
+  function detectHeaderIndex(rows, preferredIndex) {
+    const safePreferred = Math.max(0, Math.min(Number(preferredIndex) || 0, Math.max(0, rows.length - 1)));
+    let bestIndex = safePreferred;
+    let best = knownHeaderScore(rows[safePreferred] || []);
+    rows.slice(0, 12).forEach((row, index) => {
+      const current = knownHeaderScore(row);
+      if (current.score > best.score) {
+        best = current;
+        bestIndex = index;
+      }
+    });
+    return best.known >= 2 ? bestIndex : safePreferred;
+  }
+
+  function systemFieldOptionGroups(selectedField, includeNewCustom = false) {
+    const groups = [
+      { label: "Öğrenci", keys: ["fullName", "firstName", "lastName", "gender", "className", "schoolNumber"] },
+      { label: "1. Veli", keys: ["parentFullName", "parentFirstName", "parentLastName", "parentPhone"] },
+      { label: "2. Veli", keys: ["parent2FullName", "parent2Phone"] }
+    ];
+    const definitions = new Map(SYSTEM_FIELD_DEFINITIONS.map(item => [item.key, item]));
+    const html = groups.map(group => `
+      <optgroup label="${escapeAttr(group.label)}">
+        ${group.keys.map(key => {
+          const field = definitions.get(key);
+          return `<option value="${escapeAttr(key)}" ${selectedField === key ? "selected" : ""}>${escapeHtml(field.label)}</option>`;
+        }).join("")}
+      </optgroup>
+    `);
+    const customFields = getCustomFieldKeys(settingsDraft);
+    if (customFields.length) {
+      html.push(`
+        <optgroup label="Özel Alanlar">
+          ${customFields.map(field => `<option value="${escapeAttr(field)}" ${selectedField === field ? "selected" : ""}>${escapeHtml(getFieldLabel(settingsDraft, field))}</option>`).join("")}
+        </optgroup>
+      `);
+    }
+    if (includeNewCustom) html.push('<option value="__new_custom__">＋ Yeni özel alan oluştur…</option>');
+    return html.join("");
+  }
+
+  function getMappedFieldForColumn(source, header, columnIndex) {
+    const definitions = getMappingFieldDefinitions(settingsDraft);
+    for (const field of definitions) {
+      if (findMappedColumnIndex(header, source.mappings?.[field.key]) === columnIndex) return field.key;
+    }
+    return "";
+  }
+
+  function ensureColumnForField(field, options = {}) {
+    if (!field || settingsDraft.columns.some(column => column.field === field)) return;
+    const label = getFieldLabel(settingsDraft, field);
+    const dataType = field.toLowerCase().includes("phone") ? "phone" : (field === "className" || field === "gender" ? "select" : "text");
+    settingsDraft.columns.push(normalizeColumn({
+      id: makeId("column"),
+      field,
+      label,
+      dataType,
+      visible: options.visible !== false,
+      searchable: field !== "gender",
+      filterable: field === "className" || field === "gender",
+      reportVisible: options.reportVisible !== false
+    }, settingsDraft.columns.length));
+  }
+
+  function createCustomField(label) {
+    const cleanLabel = String(label || "").trim();
+    if (!cleanLabel) return "";
+    const field = makeId("custom");
+    settingsDraft.columns.push(normalizeColumn({
+      id: makeId("column"),
+      field,
+      label: cleanLabel,
+      dataType: "text",
+      visible: true,
+      searchable: true,
+      filterable: false,
+      reportVisible: false
+    }, settingsDraft.columns.length));
+    settingsDraft.sources.forEach(source => { source.mappings[field] = ""; });
+    return field;
+  }
+
+  function renderSourceMappingBoard(source) {
+    const runtime = settingsSourceRuntime.get(source.id);
+    if (!runtime) {
+      return `
+        <div class="mapping-empty">
+          <strong>Sütunlar henüz okunmadı.</strong>
+          “Sütunları Oku” düğmesine bastığınızda e-tablodaki gerçek başlıklar burada görünür.
+        </div>
+      `;
+    }
+
+    const mappedCount = runtime.descriptors.filter(item => getMappedFieldForColumn(source, runtime.header, item.index)).length;
+    const unresolvedMappings = Object.entries(source.mappings || {}).filter(([, mapping]) => (
+      String(mapping || "").trim() && findMappedColumnIndex(runtime.header, mapping) < 0
+    ));
+
+    return `
+      <div class="mapping-board">
+        <div class="mapping-board-title">
+          <strong>${runtime.descriptors.length} e-tablo sütunu bulundu</strong>
+          <span>${mappedCount} sütun sisteme bağlandı</span>
+        </div>
+        <div class="settings-table-wrap">
+          <table class="settings-table mapping-table">
+            <thead>
+              <tr>
+                <th>E-Tablo Sütunu</th>
+                <th>Örnek Veri</th>
+                <th>Sistemde Ne Olsun?</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${runtime.descriptors.map(item => {
+                const selectedField = getMappedFieldForColumn(source, runtime.header, item.index);
+                const duplicateNote = item.total > 1 ? ` <span class="badge">${item.occurrence}. aynı başlık</span>` : "";
+                return `
+                  <tr>
+                    <td>
+                      <div class="mapping-column-name">
+                        <span class="mapping-column-letter">${escapeHtml(item.letter)}</span>
+                        <strong>${escapeHtml(item.header || "Başlıksız sütun")}</strong>${duplicateNote}
+                      </div>
+                    </td>
+                    <td><div class="mapping-sample" title="${escapeAttr(item.sample)}">${escapeHtml(item.sample || "—")}</div></td>
+                    <td>
+                      <select class="mapping-select" data-source-mapping-column data-source-id="${escapeAttr(source.id)}" data-source-column-index="${item.index}">
+                        <option value="">Kullanma</option>
+                        ${systemFieldOptionGroups(selectedField, true)}
+                      </select>
+                    </td>
+                  </tr>
+                `;
+              }).join("")}
+            </tbody>
+          </table>
+        </div>
+        ${unresolvedMappings.length ? `<div class="mapping-issue">E-tabloda artık bulunamayan ${unresolvedMappings.length} eski eşleştirme var. “Otomatik Eşleştir” ile yenileyebilirsiniz.</div>` : ""}
+      </div>
+    `;
   }
 
   function renderSettingsSources() {
     const container = document.getElementById("settingsSourcesList");
-    const mappingFields = getMappingFieldDefinitions(settingsDraft);
-    container.innerHTML = settingsDraft.sources.map((source, index) => `
-      <details class="settings-source-card" open data-source-card="${escapeAttr(source.id)}">
-        <summary>
-          <span><strong>${index + 1}. ${escapeHtml(source.name)}</strong> <span class="badge">Öncelik ${index + 1}</span></span>
-          <span>${source.active ? "Aktif" : "Pasif"}</span>
-        </summary>
-        <div class="settings-source-content">
-          <div class="settings-grid">
-            <label>Kaynak adı
-              <input type="text" value="${escapeAttr(source.name)}" data-source-id="${escapeAttr(source.id)}" data-source-prop="name">
-            </label>
-            <label class="span-2">Google E-Tablo veya CSV adresi
-              <input type="url" value="${escapeAttr(source.url)}" data-source-id="${escapeAttr(source.id)}" data-source-prop="url" placeholder="https://docs.google.com/spreadsheets/d/...">
-            </label>
-            <label>Sayfa adı
-              <input type="text" value="${escapeAttr(source.sheetName)}" data-source-id="${escapeAttr(source.id)}" data-source-prop="sheetName" placeholder="Örn. 2026 YAZ LGS">
-            </label>
-            <label>GID
-              <input type="text" value="${escapeAttr(source.gid)}" data-source-id="${escapeAttr(source.id)}" data-source-prop="gid" placeholder="Sayfa adı boşsa kullanılır">
-            </label>
-            <label>Başlık satırı
-              <input type="number" min="1" value="${source.headerRow}" data-source-id="${escapeAttr(source.id)}" data-source-prop="headerRow">
-            </label>
-            <label>Verinin başladığı satır
-              <input type="number" min="1" value="${source.dataStartRow}" data-source-id="${escapeAttr(source.id)}" data-source-prop="dataStartRow">
-            </label>
-            <label class="checkbox-line"><input type="checkbox" ${source.active ? "checked" : ""} data-source-id="${escapeAttr(source.id)}" data-source-prop="active"> Kaynak aktif</label>
-          </div>
+    container.innerHTML = settingsDraft.sources.map((source, index) => {
+      const runtime = settingsSourceRuntime.get(source.id);
+      const statusText = runtime ? `${runtime.descriptors.length} sütun okundu` : "Sütunlar bekleniyor";
+      return `
+        <details class="settings-source-card" open data-source-card="${escapeAttr(source.id)}">
+          <summary>
+            <span class="source-summary-main"><strong>${index + 1}. ${escapeHtml(source.name)}</strong><span class="badge">Öncelik ${index + 1}</span></span>
+            <span class="source-summary-status">${source.active ? "Aktif" : "Pasif"} • ${statusText}</span>
+          </summary>
+          <div class="settings-source-content">
+            <div class="source-main-grid">
+              <label>Kaynak adı
+                <input type="text" value="${escapeAttr(source.name)}" data-source-id="${escapeAttr(source.id)}" data-source-prop="name">
+              </label>
+              <label>Google E-Tablo veya CSV adresi
+                <input type="url" value="${escapeAttr(source.url)}" data-source-id="${escapeAttr(source.id)}" data-source-prop="url" placeholder="https://docs.google.com/spreadsheets/d/...">
+              </label>
+              <label>Sayfa adı
+                <input type="text" value="${escapeAttr(source.sheetName)}" data-source-id="${escapeAttr(source.id)}" data-source-prop="sheetName" placeholder="Örn. 2026 YAZ LGS">
+              </label>
+            </div>
 
-          <div class="source-actions">
-            <button type="button" class="secondary compact-button" data-source-action="move-up" data-source-id="${escapeAttr(source.id)}" ${index === 0 ? "disabled" : ""}>↑ Yukarı</button>
-            <button type="button" class="secondary compact-button" data-source-action="move-down" data-source-id="${escapeAttr(source.id)}" ${index === settingsDraft.sources.length - 1 ? "disabled" : ""}>↓ Aşağı</button>
-            <button type="button" class="secondary compact-button" data-source-action="auto-map" data-source-id="${escapeAttr(source.id)}">✨ Başlıkları Otomatik Eşleştir</button>
-            <button type="button" class="secondary compact-button" data-source-action="test" data-source-id="${escapeAttr(source.id)}">Bağlantıyı Test Et</button>
-            <button type="button" class="danger compact-button" data-source-action="delete" data-source-id="${escapeAttr(source.id)}" ${settingsDraft.sources.length === 1 ? "disabled" : ""}>Kaynağı Sil</button>
-            <span class="source-test-status" id="sourceTestStatus_${escapeAttr(source.id)}"></span>
-          </div>
+            <div class="source-actions">
+              <button type="button" class="compact-button primary-action" data-source-action="read-columns" data-source-id="${escapeAttr(source.id)}">↻ Sütunları Oku</button>
+              <button type="button" class="secondary compact-button" data-source-action="auto-map" data-source-id="${escapeAttr(source.id)}">✨ Otomatik Eşleştir</button>
+              <button type="button" class="secondary compact-button" data-source-action="move-up" data-source-id="${escapeAttr(source.id)}" ${index === 0 ? "disabled" : ""}>↑ Önceliği Artır</button>
+              <button type="button" class="secondary compact-button" data-source-action="move-down" data-source-id="${escapeAttr(source.id)}" ${index === settingsDraft.sources.length - 1 ? "disabled" : ""}>↓ Önceliği Azalt</button>
+              <button type="button" class="danger compact-button" data-source-action="delete" data-source-id="${escapeAttr(source.id)}" ${settingsDraft.sources.length === 1 ? "disabled" : ""}>Kaynağı Sil</button>
+              <span class="source-test-status muted-text" id="sourceTestStatus_${escapeAttr(source.id)}"></span>
+            </div>
 
-          <div class="mapping-help">Sütun başlığı alternatifleri için <code>İsim* | Ad Soyad</code>; aynı isimli ikinci sütun için <code>Telefon#2</code> yazabilirsiniz.</div>
-          <div class="settings-table-wrap">
-            <table class="settings-table">
-              <thead><tr><th>Sistem alanı</th><th>Bu kaynaktaki sütun başlığı</th></tr></thead>
-              <tbody>
-                ${mappingFields.map(field => `
-                  <tr>
-                    <td>${escapeHtml(field.label)}</td>
-                    <td><input type="text" value="${escapeAttr(source.mappings?.[field.key] || "")}" data-source-id="${escapeAttr(source.id)}" data-mapping-key="${escapeAttr(field.key)}" placeholder="E-tablodaki başlık"></td>
-                  </tr>
-                `).join("")}
-              </tbody>
-            </table>
+            ${renderSourceMappingBoard(source)}
+
+            <details class="source-advanced">
+              <summary>Gelişmiş kaynak ayarları</summary>
+              <div class="source-advanced-grid">
+                <label>GID
+                  <input type="text" value="${escapeAttr(source.gid)}" data-source-id="${escapeAttr(source.id)}" data-source-prop="gid" placeholder="Sayfa adı boşsa kullanılır">
+                </label>
+                <label>Başlık satırı
+                  <input type="number" min="1" value="${source.headerRow}" data-source-id="${escapeAttr(source.id)}" data-source-prop="headerRow">
+                </label>
+                <label>Verinin başladığı satır
+                  <input type="number" min="1" value="${source.dataStartRow}" data-source-id="${escapeAttr(source.id)}" data-source-prop="dataStartRow">
+                </label>
+                <label class="checkbox-line"><input type="checkbox" ${source.active ? "checked" : ""} data-source-id="${escapeAttr(source.id)}" data-source-prop="active"> Kaynak aktif</label>
+              </div>
+            </details>
           </div>
-        </div>
-      </details>
-    `).join("");
+        </details>
+      `;
+    }).join("");
   }
 
   function fieldSelectOptions(selectedField) {
-    const systemOptions = SYSTEM_FIELD_DEFINITIONS.map(field => (
-      `<option value="${escapeAttr(field.key)}" ${selectedField === field.key ? "selected" : ""}>${escapeHtml(field.label)}</option>`
-    ));
-    const customFields = getCustomFieldKeys(settingsDraft).map(field => (
-      `<option value="${escapeAttr(field)}" ${selectedField === field ? "selected" : ""}>Özel alan: ${escapeHtml(getFieldLabel(settingsDraft, field))}</option>`
-    ));
-    return [...systemOptions, ...customFields].join("");
+    return systemFieldOptionGroups(selectedField, false);
   }
 
   function renderSettingsColumns() {
     const body = document.getElementById("settingsColumnsBody");
+    if (!settingsDraft.columns.length) {
+      body.innerHTML = '<tr><td colspan="9" class="mapping-empty">Henüz görünüm alanı yok. E-tablo sütununu eşleştirin veya “Özel Alan Ekle” düğmesini kullanın.</td></tr>';
+      return;
+    }
     body.innerHTML = settingsDraft.columns.map((column, index) => `
       <tr data-column-id="${escapeAttr(column.id)}">
         <td class="order-buttons">
@@ -2568,10 +2943,10 @@
         <td><select data-column-id="${escapeAttr(column.id)}" data-column-prop="field">${fieldSelectOptions(column.field)}</select></td>
         <td><input type="text" value="${escapeAttr(column.label)}" data-column-id="${escapeAttr(column.id)}" data-column-prop="label"></td>
         <td><select data-column-id="${escapeAttr(column.id)}" data-column-prop="dataType">${DATA_TYPE_OPTIONS.map(option => `<option value="${option.value}" ${column.dataType === option.value ? "selected" : ""}>${option.label}</option>`).join("")}</select></td>
-        <td><input type="checkbox" ${column.visible ? "checked" : ""} data-column-id="${escapeAttr(column.id)}" data-column-prop="visible"></td>
-        <td><input type="checkbox" ${column.searchable ? "checked" : ""} data-column-id="${escapeAttr(column.id)}" data-column-prop="searchable"></td>
-        <td><input type="checkbox" ${column.filterable ? "checked" : ""} data-column-id="${escapeAttr(column.id)}" data-column-prop="filterable"></td>
-        <td><input type="checkbox" ${column.reportVisible ? "checked" : ""} data-column-id="${escapeAttr(column.id)}" data-column-prop="reportVisible"></td>
+        <td><input type="checkbox" ${column.visible ? "checked" : ""} data-column-id="${escapeAttr(column.id)}" data-column-prop="visible" aria-label="Listede göster"></td>
+        <td><input type="checkbox" ${column.searchable ? "checked" : ""} data-column-id="${escapeAttr(column.id)}" data-column-prop="searchable" aria-label="Aramada kullan"></td>
+        <td><input type="checkbox" ${column.filterable ? "checked" : ""} data-column-id="${escapeAttr(column.id)}" data-column-prop="filterable" aria-label="Filtrede kullan"></td>
+        <td><input type="checkbox" ${column.reportVisible ? "checked" : ""} data-column-id="${escapeAttr(column.id)}" data-column-prop="reportVisible" aria-label="Raporda göster"></td>
         <td><button type="button" class="danger mini-button" data-column-action="delete" data-column-id="${escapeAttr(column.id)}">Sil</button></td>
       </tr>
     `).join("");
@@ -2587,18 +2962,25 @@
     `).join("");
   }
 
+  function setSourceStatus(sourceId, message, type = "muted") {
+    const status = document.getElementById(`sourceTestStatus_${sourceId}`);
+    if (!status) return;
+    status.textContent = message;
+    status.className = `source-test-status ${type === "success" ? "success-text" : type === "danger" ? "danger-text" : "muted-text"}`;
+  }
+
   function updateSourceDraftFromInput(input) {
     const source = settingsDraft.sources.find(item => item.id === input.dataset.sourceId);
     if (!source) return;
     const property = input.dataset.sourceProp;
-    if (property) {
-      if (input.type === "checkbox") source[property] = input.checked;
-      else if (input.type === "number") source[property] = Math.max(1, Number(input.value || 1));
-      else source[property] = input.value;
-      return;
+    if (!property) return;
+    if (input.type === "checkbox") source[property] = input.checked;
+    else if (input.type === "number") source[property] = Math.max(1, Number(input.value || 1));
+    else source[property] = input.value;
+
+    if (["url", "sheetName", "gid", "headerRow", "dataStartRow"].includes(property)) {
+      settingsSourceRuntime.delete(source.id);
     }
-    const mappingKey = input.dataset.mappingKey;
-    if (mappingKey) source.mappings[mappingKey] = input.value;
   }
 
   function updateColumnDraftFromInput(input) {
@@ -2615,65 +2997,163 @@
     [array[index], array[target]] = [array[target], array[index]];
   }
 
-  async function testSource(sourceId) {
-    const source = settingsDraft.sources.find(item => item.id === sourceId);
-    const status = document.getElementById(`sourceTestStatus_${sourceId}`);
-    if (!source || !status) return;
-    status.textContent = "Test ediliyor...";
-    try {
-      const rows = await fetchCsvRows(source);
-      const header = rows[Math.max(0, source.headerRow - 1)] || [];
-      status.textContent = `Başarılı: ${header.length} sütun, ${Math.max(0, rows.length - source.dataStartRow + 1)} veri satırı.`;
-      status.className = "source-test-status success-text";
-    } catch (error) {
-      status.textContent = `Hata: ${error.message}`;
-      status.className = "source-test-status danger-text";
+  async function loadSourceRuntime(source) {
+    const rows = await fetchCsvRows(source);
+    const preferredIndex = Math.max(0, source.headerRow - 1);
+    const headerIndex = detectHeaderIndex(rows, preferredIndex);
+    if (headerIndex !== preferredIndex) {
+      source.headerRow = headerIndex + 1;
+      source.dataStartRow = headerIndex + 2;
     }
+    const dataStartIndex = Math.max(headerIndex + 1, source.dataStartRow - 1);
+    const header = rows[headerIndex] || [];
+    const runtime = {
+      rows,
+      header,
+      headerIndex,
+      dataStartIndex,
+      descriptors: headerDescriptors(header, rows, dataStartIndex)
+    };
+    settingsSourceRuntime.set(source.id, runtime);
+    return runtime;
+  }
+
+  function exactHeaderCandidate(header, aliases, occurrence = 1) {
+    for (const alias of aliases) {
+      const target = normalizeHeaderLiteral(alias);
+      const indexes = [];
+      header.forEach((cell, index) => {
+        if (normalizeHeaderLiteral(cell) === target) indexes.push(index);
+      });
+      if (indexes.length >= occurrence) {
+        const headerValue = String(header[indexes[occurrence - 1]] || "").trim();
+        return occurrence > 1 ? `${headerValue}#${occurrence}` : headerValue;
+      }
+    }
+    return "";
   }
 
   function headerCandidate(header, aliases, occurrence = 1) {
     for (const alias of aliases) {
       const indexes = findColumnIndexes(header, alias);
-      if (indexes.length >= occurrence) return occurrence > 1 ? `${header[indexes[occurrence - 1]]}#${occurrence}` : header[indexes[0]];
+      if (indexes.length >= occurrence) {
+        const headerValue = String(header[indexes[occurrence - 1]] || "").trim();
+        return occurrence > 1 ? `${headerValue}#${occurrence}` : headerValue;
+      }
     }
     return "";
   }
 
+  function applyAutoMapping(source, header, onlyEmpty = true) {
+    const assign = (field, aliases, occurrence = 1, exact = false) => {
+      const existing = String(source.mappings?.[field] || "").trim();
+      if (onlyEmpty && existing && findMappedColumnIndex(header, existing) >= 0) return;
+      const candidate = exact
+        ? exactHeaderCandidate(header, aliases, occurrence)
+        : headerCandidate(header, aliases, occurrence);
+      if (candidate) source.mappings[field] = candidate;
+    };
+
+    if (!onlyEmpty) {
+      SYSTEM_FIELD_DEFINITIONS.forEach(field => { source.mappings[field.key] = ""; });
+    }
+
+    const exactStarName = exactHeaderCandidate(header, ["İsim*", "Ad Soyad*", "Öğrenci*"], 1);
+    const hasLastName = Boolean(headerCandidate(header, FIELD_ALIASES.lastName));
+
+    if (exactStarName) source.mappings.fullName = exactStarName;
+    else if (!hasLastName) assign("fullName", FIELD_ALIASES.fullName.concat(["İsim"]));
+
+    if (hasLastName || !String(source.mappings.fullName || "").trim()) {
+      assign("firstName", FIELD_ALIASES.firstName);
+    }
+    assign("lastName", FIELD_ALIASES.lastName);
+    assign("gender", FIELD_ALIASES.gender);
+    assign("className", FIELD_ALIASES.className);
+    assign("schoolNumber", FIELD_ALIASES.schoolNumber);
+    assign("parentFullName", FIELD_ALIASES.parentFullName);
+    assign("parentFirstName", FIELD_ALIASES.parentFirstName, 1);
+    assign("parentLastName", FIELD_ALIASES.parentLastName);
+    assign("parentPhone", FIELD_ALIASES.parentPhone, 1);
+    assign("parent2FullName", FIELD_ALIASES.parent2FullName, 1);
+    if (!String(source.mappings.parent2FullName || "").trim()) {
+      assign("parent2FullName", ["Veli Adı", "Veli"], 2);
+    }
+    assign("parent2Phone", FIELD_ALIASES.parent2Phone, 1);
+    if (!String(source.mappings.parent2Phone || "").trim()) {
+      assign("parent2Phone", ["Telefon", "Veli Telefon", "Veli Telefonu"], 2);
+    }
+
+    getCustomFieldKeys(settingsDraft).forEach(field => {
+      if (onlyEmpty && String(source.mappings[field] || "").trim()) return;
+      const candidate = headerCandidate(header, [getFieldLabel(settingsDraft, field)]);
+      if (candidate) source.mappings[field] = candidate;
+    });
+  }
+
+  async function readSourceColumns(sourceId, options = {}) {
+    const source = settingsDraft.sources.find(item => item.id === sourceId);
+    if (!source) return;
+    setSourceStatus(sourceId, "Sütunlar okunuyor…");
+    try {
+      const runtime = await loadSourceRuntime(source);
+      if (options.autoMapMissing !== false) applyAutoMapping(source, runtime.header, true);
+      renderSettingsSources();
+      renderSettingsColumns();
+      setSourceStatus(sourceId, `${runtime.descriptors.length} sütun ve ${Math.max(0, runtime.rows.length - runtime.dataStartIndex)} veri satırı okundu.`, "success");
+    } catch (error) {
+      console.error(error);
+      setSourceStatus(sourceId, `Okuma hatası: ${error.message}`, "danger");
+      if (!options.quiet) alert(`E-tablo sütunları okunamadı: ${error.message}`);
+    }
+  }
+
   async function autoMapSource(sourceId) {
     const source = settingsDraft.sources.find(item => item.id === sourceId);
-    const status = document.getElementById(`sourceTestStatus_${sourceId}`);
-    if (!source || !status) return;
-    status.textContent = "Başlıklar okunuyor...";
+    if (!source) return;
+    setSourceStatus(sourceId, "Otomatik eşleştiriliyor…");
     try {
-      const rows = await fetchCsvRows(source);
-      const header = rows[Math.max(0, source.headerRow - 1)] || [];
-      const hasLastName = Boolean(headerCandidate(header, FIELD_ALIASES.lastName));
-
-      SYSTEM_FIELD_DEFINITIONS.forEach(field => {
-        let candidate = headerCandidate(header, FIELD_ALIASES[field.key] || [field.label]);
-        if (field.key === "fullName" && !candidate && !hasLastName) candidate = headerCandidate(header, ["İsim", "İsim*"]);
-        if (field.key === "fullName" && hasLastName) candidate = "";
-        if (field.key === "parent2FullName" && !candidate) candidate = headerCandidate(header, ["Veli Adı", "Veli"], 2);
-        if (field.key === "parent2Phone" && !candidate) candidate = headerCandidate(header, ["Telefon", "Veli Telefon"], 2);
-        if (candidate) source.mappings[field.key] = candidate;
-      });
-
-      getCustomFieldKeys(settingsDraft).forEach(field => {
-        const label = getFieldLabel(settingsDraft, field);
-        const candidate = headerCandidate(header, [label]);
-        if (candidate) source.mappings[field] = candidate;
-      });
-
+      const runtime = settingsSourceRuntime.get(sourceId) || await loadSourceRuntime(source);
+      applyAutoMapping(source, runtime.header, false);
       renderSettingsSources();
-      const refreshedStatus = document.getElementById(`sourceTestStatus_${sourceId}`);
-      if (refreshedStatus) {
-        refreshedStatus.textContent = "Otomatik eşleştirme tamamlandı. Kaydetmeden önce kontrol edin.";
-        refreshedStatus.className = "source-test-status success-text";
-      }
+      renderSettingsColumns();
+      setSourceStatus(sourceId, "Eşleştirme tamamlandı. Veli Adı ve Telefon sütunlarını kontrol edin.", "success");
     } catch (error) {
-      status.textContent = `Hata: ${error.message}`;
-      status.className = "source-test-status danger-text";
+      console.error(error);
+      setSourceStatus(sourceId, `Eşleştirme hatası: ${error.message}`, "danger");
     }
+  }
+
+  function updateSourceColumnMapping(select) {
+    const source = settingsDraft.sources.find(item => item.id === select.dataset.sourceId);
+    const runtime = settingsSourceRuntime.get(select.dataset.sourceId);
+    if (!source || !runtime) return;
+    const columnIndex = Number(select.dataset.sourceColumnIndex);
+    const descriptor = runtime.descriptors.find(item => item.index === columnIndex);
+    if (!descriptor) return;
+
+    let nextField = select.value;
+    if (nextField === "__new_custom__") {
+      const label = prompt(`“${descriptor.header}” sütunu sistemde hangi adla görünsün?`, descriptor.header);
+      nextField = createCustomField(label);
+      if (!nextField) {
+        renderSettingsSources();
+        return;
+      }
+    }
+
+    Object.keys(source.mappings || {}).forEach(field => {
+      const mappedIndex = findMappedColumnIndex(runtime.header, source.mappings[field]);
+      if (mappedIndex === columnIndex || (nextField && field === nextField)) source.mappings[field] = "";
+    });
+
+    if (nextField) {
+      source.mappings[nextField] = descriptor.token;
+      ensureColumnForField(nextField);
+    }
+
+    renderSettingsSources();
+    renderSettingsColumns();
   }
 
   async function renderSettingsPreview() {
@@ -2684,7 +3164,7 @@
       return;
     }
 
-    preview.innerHTML = '<div class="preview-placeholder">Veriler okunuyor...</div>';
+    preview.innerHTML = '<div class="preview-placeholder">Veriler okunuyor…</div>';
     try {
       const result = await fetchStudentsFromConfig(settingsDraft);
       const visibleColumns = settingsDraft.columns.filter(column => column.visible);
@@ -2694,7 +3174,7 @@
           <strong>${result.students.length} öğrenci bulundu.</strong>
           ${result.sourceResults.map(item => `<span class="badge">${escapeHtml(item.sourceName)}: ${item.count}${item.skipped ? ` / ${item.skipped} atlandı` : ""}</span>`).join(" ")}
         </div>
-        ${result.warnings.length ? `<div class="settings-alert warning"><strong>Uyarılar:</strong><ul>${result.warnings.map(warning => `<li>${escapeHtml(warning)}</li>`).join("")}</ul></div>` : '<div class="settings-alert success">Çakışma veya bağlantı uyarısı bulunmadı.</div>'}
+        ${result.warnings.length ? `<div class="settings-alert warning"><strong>Uyarılar:</strong><ul>${result.warnings.map(warning => `<li>${escapeHtml(warning)}</li>`).join("")}</ul></div>` : '<div class="settings-alert success">Bağlantı ve eşleştirme kontrolü başarılı.</div>'}
         <div class="settings-table-wrap">
           <table class="settings-table preview-table">
             <thead><tr><th>Kaynak</th>${visibleColumns.map(column => `<th>${escapeHtml(column.label)}</th>`).join("")}</tr></thead>
@@ -2803,11 +3283,16 @@
   });
 
   document.getElementById("settingsSourcesList").addEventListener("input", event => {
-    const input = event.target.closest("[data-source-id]");
+    const input = event.target.closest("[data-source-id][data-source-prop]");
     if (input) updateSourceDraftFromInput(input);
   });
   document.getElementById("settingsSourcesList").addEventListener("change", event => {
-    const input = event.target.closest("[data-source-id]");
+    const mappingSelect = event.target.closest("select[data-source-mapping-column]");
+    if (mappingSelect) {
+      updateSourceColumnMapping(mappingSelect);
+      return;
+    }
+    const input = event.target.closest("[data-source-id][data-source-prop]");
     if (input) updateSourceDraftFromInput(input);
   });
   document.getElementById("settingsSourcesList").addEventListener("click", event => {
@@ -2817,18 +3302,25 @@
     const index = settingsDraft.sources.findIndex(source => source.id === sourceId);
     const action = button.dataset.sourceAction;
 
+    if (action === "read-columns") {
+      readSourceColumns(sourceId, { autoMapMissing: true });
+      return;
+    }
+    if (action === "auto-map") {
+      autoMapSource(sourceId);
+      return;
+    }
     if (action === "move-up") moveArrayItem(settingsDraft.sources, index, -1);
     if (action === "move-down") moveArrayItem(settingsDraft.sources, index, 1);
     if (action === "delete") {
       if (!confirm("Bu öğrenci veri kaynağı silinsin mi?")) return;
       settingsDraft.sources.splice(index, 1);
+      settingsSourceRuntime.delete(sourceId);
     }
     if (["move-up", "move-down", "delete"].includes(action)) {
       settingsDraft.sources.forEach((source, sourceIndex) => { source.priority = sourceIndex + 1; });
       renderSettingsSources();
     }
-    if (action === "test") testSource(sourceId);
-    if (action === "auto-map") autoMapSource(sourceId);
   });
 
   document.getElementById("settingsColumnsBody").addEventListener("input", event => {
