@@ -5,9 +5,11 @@
   <title>Öğrenci-Öğretmen Atama ve Arama Raporu</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    
+    /* MODERN TEMA DEĞİŞKENLERİ 
+      2026 Modern UI Standartları
+    */
     :root {
-      --primary-color: #3b82f6; 
+      --primary-color: #3b82f6; /* Canlı Mavi */
       --primary-hover: #2563eb;
       --secondary-bg: #f1f5f9;
       --text-main: #1e293b;
@@ -33,6 +35,7 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    /* Ana Kapsayıcı */
     .app-shell {
       max-width: 1200px;
       margin: 0 auto;
@@ -52,6 +55,7 @@
       margin-bottom: 30px;
     }
 
+    /* MODERN KART TASARIMI */
     .card {
       background: var(--card-bg);
       border-radius: var(--radius-lg);
@@ -61,7 +65,8 @@
       border: 1px solid rgba(255,255,255,0.5);
       transition: transform 0.2s ease;
     }
-
+    
+    /* Kart başlıkları */
     .section-title {
       font-size: 1.25rem;
       font-weight: 700;
@@ -81,6 +86,7 @@
       border-radius: 4px;
     }
 
+    /* FORM ELEMANLARI (Input, Select) */
     label {
       font-size: 0.9rem;
       font-weight: 600;
@@ -92,16 +98,17 @@
     select, input[type="date"], input[type="text"], input[type="password"], input[type="number"], input[type="search"], input[type="url"], textarea {
       width: 100%;
       box-sizing: border-box;
-      padding: 12px 16px; 
+      padding: 12px 16px; /* Daha geniş dokunma alanı */
       border-radius: var(--radius-md);
       border: 2px solid var(--border-color);
       background-color: #fff;
       font-size: 1rem;
       color: var(--text-main);
       transition: all 0.2s ease;
-      appearance: none; 
+      appearance: none; /* Tarayıcı varsayılan stilini kaldır */
     }
 
+    /* Select için özel ok ikonu (Pure CSS) */
     select {
       background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
       background-position: right 0.5rem center;
@@ -122,10 +129,11 @@
       box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
     }
 
+    /* MODERN BUTONLAR */
     button {
       border: none;
       border-radius: var(--radius-md);
-      padding: 14px 24px; 
+      padding: 14px 24px; /* Büyük, parmak dostu butonlar */
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
@@ -152,6 +160,7 @@
       box-shadow: none;
     }
 
+    /* Buton Varyasyonları */
     button.secondary {
       background: #e2e8f0;
       color: #475569;
@@ -179,6 +188,7 @@
       background: #d97706;
     }
 
+    /* Grid Sistemleri (Responsive) */
     .flex {
       display: flex;
       gap: 20px;
@@ -198,6 +208,7 @@
       min-width: 280px;
     }
 
+    /* Pill Group (Hızlı Tarih Seçimi) */
     .pill-group {
       display: flex;
       gap: 8px;
@@ -220,6 +231,7 @@
       transform: translateY(-1px);
     }
 
+    /* TABLO TASARIMI */
     table {
       width: 100%;
       border-collapse: separate;
@@ -252,6 +264,7 @@
       background-color: #f8fafc;
     }
 
+    /* İSTATİSTİK KUTULARI */
     .stat-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -284,12 +297,14 @@
       color: var(--primary-color);
     }
 
+    /* Atama Buton Grubu */
     .assign-button-group {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
     }
 
+    /* Rozetler ve Yardımcılar */
     .badge {
       background: #eff6ff;
       color: var(--primary-color);
@@ -311,6 +326,9 @@
       color: var(--primary-color);
     }
 
+    /* MOBİL UYUMLULUK (Responsive) 
+      Telefonlarda görünümün bozulmaması için
+    */
     @media (max-width: 768px) {
       body {
         padding: 10px;
@@ -322,12 +340,14 @@
         border-radius: 12px;
       }
 
+      /* Mobilde butonlar tam genişlikte olsun */
       button {
         width: 100%;
         margin-top: 8px;
-        padding: 16px; 
+        padding: 16px; /* Daha kolay tıklama */
       }
-
+      
+      /* Buton grupları yan yana değil alt alta */
       .assign-button-group button, 
       .pill-group button,
       .flex-between button {
@@ -343,13 +363,15 @@
         height: 140px;
       }
 
+      /* Tablo mobilde yatay scroll olsun */
       div[style*="overflow:auto"] {
         border: 1px solid var(--border-color);
         border-radius: var(--radius-md);
       }
     }
 
-    
+
+    /* AYARLAR, MODAL VE GELİŞMİŞ ÖĞRENCİ LİSTESİ */
     .hidden { display: none !important; }
     body.modal-open { overflow: hidden; }
 
@@ -475,6 +497,37 @@
     .login-note { color: var(--text-muted); font-size: 0.88rem; margin: 8px 0 16px; }
     .login-error { min-height: 22px; color: var(--danger-color); font-weight: 700; font-size: 0.9rem; }
 
+    .settings-steps {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .settings-step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 54px;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      background: #fff;
+      color: #475569;
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+    .settings-step-number {
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-weight: 900;
+    }
 
     .settings-section {
       margin-bottom: 16px;
@@ -707,77 +760,6 @@
     }
     .report-extra-item { white-space: nowrap; }
 
-    .settings-tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-      padding: 6px;
-      overflow-x: auto;
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      background: #fff;
-    }
-    .settings-tab {
-      flex: 1 0 170px;
-      padding: 10px 14px;
-      background: transparent;
-      color: #475569;
-      box-shadow: none;
-      white-space: nowrap;
-    }
-    .settings-tab:hover {
-      background: #eff6ff;
-      color: #1d4ed8;
-      transform: none;
-      box-shadow: none;
-    }
-    .settings-tab.active {
-      background: #1d4ed8;
-      color: #fff;
-    }
-    .settings-tab-panel[hidden] { display: none; }
-    .required-fields-note {
-      margin-bottom: 14px;
-      padding: 12px 14px;
-      border: 1px solid #fca5a5;
-      border-radius: 10px;
-      background: #fef2f2;
-      color: #991b1b;
-      font-size: 0.88rem;
-      line-height: 1.45;
-    }
-    .field-add-row {
-      display: grid;
-      grid-template-columns: minmax(240px, 2fr) minmax(170px, 1fr) auto;
-      gap: 10px;
-      align-items: end;
-      margin-bottom: 14px;
-    }
-    .field-add-row label { margin: 0; }
-    .field-add-row button { min-height: 42px; }
-    .fields-table { min-width: 760px; }
-    .fields-table td { vertical-align: middle; }
-    .field-required-badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: #fee2e2;
-      color: #b91c1c;
-      font-size: 0.72rem;
-      font-weight: 800;
-    }
-    .field-optional-badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: #e2e8f0;
-      color: #475569;
-      font-size: 0.72rem;
-      font-weight: 800;
-    }
-
     @media (max-width: 1100px) {
       .source-main-grid { grid-template-columns: 1fr 1.6fr; }
       .source-main-grid label:last-child { grid-column: span 2; }
@@ -789,6 +771,7 @@
       .app-header h1 { grid-column: 1; text-align: left; font-size: 1.35rem; }
       .app-header-actions { grid-column: 2; }
       .student-tools { grid-template-columns: 1fr; }
+      .settings-steps { grid-template-columns: 1fr; }
       .modal-panel.modal-xl { height: calc(100vh - 16px); max-height: calc(100vh - 16px); }
     }
 
@@ -801,7 +784,6 @@
       .modal-body { padding: 14px; }
       .source-main-grid,
       .source-advanced-grid { grid-template-columns: 1fr; }
-      .field-add-row { grid-template-columns: 1fr; }
       .source-main-grid label:last-child { grid-column: span 1; }
       .app-header { display: flex; align-items: stretch; flex-direction: column; }
       .app-header h1 { text-align: center; }
@@ -814,7 +796,8 @@
       .modal-footer-right { width: 100%; }
       .modal-footer-right { justify-content: flex-end; }
     }
-
+    /* --- PRINT STYLES (DOKUNULMADI / UNTOUCHED) --- */
+    /* BURADAN AŞAĞISI ORİJİNAL KODUNUZDAKİ YAZDIRMA AYARLARIDIR */
     
     .report-card {
       border: 1px solid #e2e8f0;
@@ -1306,7 +1289,15 @@
         <div class="section-title">3. Yapılan Atamalar & Rapor</div>
         <div class="muted">Oluşturulan listeyi kontrol edin ve yazdırın.</div>
       </div>
-      
+      <!--
+        The four action buttons (clear, save, delete, print) are laid out in a horizontal
+        row on larger screens.  On small mobile screens, however, they overflow the
+        viewport.  To solve this without affecting desktop layout, wrap the buttons
+        in a container with a dedicated class (assign-button-group) and move the
+        existing inline flex styles into the stylesheet.  Additional responsive
+        CSS further down the file will cause the buttons to wrap into two columns
+        when the viewport is narrow, making them easier to tap on phones.
+      -->
       <div class="assign-button-group">
         <button id="clearLocalListBtn" class="warning">🧹 Listeyi Temizle</button>
         <button id="saveAssignmentsBtn">💾 Firebase'e Kaydet</button>
@@ -1371,117 +1362,69 @@
     </div>
 
     <div class="modal-body">
-      <div class="settings-tabs" role="tablist" aria-label="Ayar bölümleri">
-        <button type="button" class="settings-tab active" role="tab" aria-selected="true" data-settings-tab="sources">Veri Kaynakları</button>
-        <button type="button" class="settings-tab" role="tab" aria-selected="false" data-settings-tab="fields">Sistemde Ne Var?</button>
-        <button type="button" class="settings-tab" role="tab" aria-selected="false" data-settings-tab="columns">Liste ve Rapor</button>
-        <button type="button" class="settings-tab" role="tab" aria-selected="false" data-settings-tab="preview">Kontrol</button>
+      <div class="settings-steps" aria-label="Ayar adımları">
+        <div class="settings-step"><span class="settings-step-number">1</span><span>E-tablo adresini ve sayfayı seçin</span></div>
+        <div class="settings-step"><span class="settings-step-number">2</span><span>Her e-tablo sütununun sistemde ne olacağını belirleyin</span></div>
+        <div class="settings-step"><span class="settings-step-number">3</span><span>Liste, arama, filtre ve rapor görünümünü ayarlayın</span></div>
       </div>
 
-      <div class="settings-tab-panel active" data-settings-panel="sources">
-        <section class="settings-section">
-          <div class="settings-section-heading">
-            <div>
-              <h3>Veri Kaynağı ve Sütun Eşleştirme</h3>
-              <div class="settings-section-description">E-tablo sütunlarını okuyun ve sistem alanlarıyla eşleştirin.</div>
-            </div>
-            <button type="button" id="addStudentSourceBtn">＋ Yeni Kaynak</button>
+      <section class="settings-section">
+        <div class="settings-section-heading">
+          <div>
+            <h3>1. Veri Kaynağı ve Sütun Eşleştirme</h3>
+            <div class="settings-section-description">Sütunlar e-tablodan okunur. Aynı başlığa sahip “Veli Adı” ve “Telefon” sütunları ayrı ayrı gösterilir.</div>
           </div>
-          <div id="settingsSourcesList"></div>
-        </section>
-      </div>
+          <button type="button" id="addStudentSourceBtn">＋ Yeni Kaynak</button>
+        </div>
+        <div id="settingsSourcesList"></div>
+      </section>
 
-      <div class="settings-tab-panel" data-settings-panel="fields" hidden>
-        <section class="settings-section">
-          <div class="settings-section-heading">
-            <div>
-              <h3>Sistemde Ne Var?</h3>
-              <div class="settings-section-description">Buradaki aktif alanlar, sütun eşleştirme combobox'ında görünür.</div>
-            </div>
+      <section class="settings-section">
+        <div class="settings-section-heading">
+          <div>
+            <h3>2. Liste ve Rapor Görünümü</h3>
+            <div class="settings-section-description">Alan adını değiştirin; listede, aramada, filtrede veya raporda kullanılıp kullanılmayacağını seçin.</div>
           </div>
-          <div class="required-fields-note">
-            <strong>Yazdırma için zorunlu:</strong> Öğrenci adı, öğrenci numarası, veli adı ve veli telefonu. Bu alanlardan biri eksikse yazdırma durdurulur.
-          </div>
-          <form id="systemFieldAddForm" class="field-add-row">
-            <label>Yeni alan adı
-              <input type="text" id="newSystemFieldLabel" maxlength="80" placeholder="Örn. Doğum Tarihi" required>
-            </label>
-            <label>Grup
-              <select id="newSystemFieldGroup">
-                <option value="Öğrenci">Öğrenci</option>
-                <option value="1. Veli">1. Veli</option>
-                <option value="2. Veli">2. Veli</option>
-                <option value="Özel Alanlar" selected>Özel Alanlar</option>
-              </select>
-            </label>
-            <button type="submit">＋ Alan Ekle</button>
-          </form>
-          <div class="settings-table-wrap">
-            <table class="settings-table fields-table">
-              <thead>
-                <tr>
-                  <th>Alan Adı</th>
-                  <th>Grup</th>
-                  <th>Combobox'ta Göster</th>
-                  <th>Durum</th>
-                  <th>İşlem</th>
-                </tr>
-              </thead>
-              <tbody id="systemFieldsBody"></tbody>
-            </table>
-          </div>
-        </section>
-      </div>
+          <button type="button" id="addStudentColumnBtn" class="secondary">＋ Özel Alan Ekle</button>
+        </div>
+        <div class="settings-table-wrap">
+          <table class="settings-table">
+            <thead>
+              <tr>
+                <th>Sıra</th>
+                <th>Veri Alanı</th>
+                <th>Görünen Ad</th>
+                <th>Tür</th>
+                <th>Liste</th>
+                <th>Arama</th>
+                <th>Filtre</th>
+                <th>Rapor</th>
+                <th>İşlem</th>
+              </tr>
+            </thead>
+            <tbody id="settingsColumnsBody"></tbody>
+          </table>
+        </div>
+      </section>
 
-      <div class="settings-tab-panel" data-settings-panel="columns" hidden>
-        <section class="settings-section">
-          <div class="settings-section-heading">
-            <div>
-              <h3>Liste ve Rapor Görünümü</h3>
-              <div class="settings-section-description">Alanların liste, arama, filtre ve rapor kullanımını belirleyin.</div>
-            </div>
-            <button type="button" id="addStudentColumnBtn" class="secondary">＋ Görünüm Alanı Ekle</button>
-          </div>
-          <div class="settings-table-wrap">
-            <table class="settings-table">
-              <thead>
-                <tr>
-                  <th>Sıra</th>
-                  <th>Veri Alanı</th>
-                  <th>Görünen Ad</th>
-                  <th>Tür</th>
-                  <th>Liste</th>
-                  <th>Arama</th>
-                  <th>Filtre</th>
-                  <th>Rapor</th>
-                  <th>İşlem</th>
-                </tr>
-              </thead>
-              <tbody id="settingsColumnsBody"></tbody>
-            </table>
-          </div>
-        </section>
+      <details class="settings-advanced">
+        <summary>Gelişmiş: Aynı öğrenciyi birden fazla kaynaktan ayırt etme</summary>
+        <div class="settings-advanced-content">
+          <div class="settings-section-description">Seçilen alanlar birlikte karşılaştırılır. Genellikle öğrenci adı ve öğrenci numarası yeterlidir.</div>
+          <div id="duplicateKeyOptions" class="checkbox-chip-group"></div>
+        </div>
+      </details>
 
-        <details class="settings-advanced">
-          <summary>Aynı öğrenciyi ayırt etme</summary>
-          <div class="settings-advanced-content">
-            <div id="duplicateKeyOptions" class="checkbox-chip-group"></div>
+      <section class="settings-section">
+        <div class="settings-section-heading">
+          <div>
+            <h3>3. Kontrol Önizlemesi</h3>
+            <div class="settings-section-description">Kaydetmeden önce ilk 10 öğrenciyi ve veli bilgilerinin doğru okunup okunmadığını kontrol edin.</div>
           </div>
-        </details>
-      </div>
-
-      <div class="settings-tab-panel" data-settings-panel="preview" hidden>
-        <section class="settings-section">
-          <div class="settings-section-heading">
-            <div>
-              <h3>Kontrol Önizlemesi</h3>
-              <div class="settings-section-description">İlk 10 kaydı ve zorunlu yazdırma alanlarını kontrol edin.</div>
-            </div>
-            <button type="button" id="previewSettingsBtn" class="secondary">Önizlemeyi Yenile</button>
-          </div>
-          <div id="settingsPreview"></div>
-        </section>
-      </div>
+          <button type="button" id="previewSettingsBtn" class="secondary">Önizlemeyi Yenile</button>
+        </div>
+        <div id="settingsPreview"></div>
+      </section>
     </div>
 
     <div class="modal-footer">
@@ -1501,6 +1444,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
   import { getDatabase, ref, set, get, remove } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
 
+  /* UYGULAMA SABİTLERİ */
   const TEACHER_SHEET_CSV_URL =
     "https://docs.google.com/spreadsheets/d/1oJGMO7FOPV4U86peeA63lmMk-wVCKsfWuyw2yefMweg/export?format=csv&gid=0";
   const ASSIGNMENTS_PATH = "assignments";
@@ -1519,28 +1463,22 @@
     measurementId: "G-4Q99NQRB38"
   };
 
-  const BASE_FIELD_DEFINITIONS = [
-    { key: "fullName", label: "Öğrenci Adı Soyadı (tek sütun)", group: "Öğrenci" },
-    { key: "firstName", label: "Öğrenci Adı", group: "Öğrenci" },
-    { key: "lastName", label: "Öğrenci Soyadı", group: "Öğrenci" },
-    { key: "gender", label: "Cinsiyet", group: "Öğrenci" },
-    { key: "className", label: "Sınıf", group: "Öğrenci" },
-    { key: "schoolNumber", label: "Öğrenci No", group: "Öğrenci" },
-    { key: "parentFullName", label: "1. Veli Adı Soyadı", group: "1. Veli" },
-    { key: "parentFirstName", label: "1. Veli Adı", group: "1. Veli" },
-    { key: "parentLastName", label: "1. Veli Soyadı", group: "1. Veli" },
-    { key: "parentPhone", label: "1. Veli Telefonu", group: "1. Veli" },
-    { key: "parent2FullName", label: "2. Veli Adı", group: "2. Veli" },
-    { key: "parent2Phone", label: "2. Veli Telefonu", group: "2. Veli" }
+  const SYSTEM_FIELD_DEFINITIONS = [
+    { key: "fullName", label: "Öğrenci Adı Soyadı (tek sütun)" },
+    { key: "firstName", label: "Öğrenci Adı" },
+    { key: "lastName", label: "Öğrenci Soyadı" },
+    { key: "gender", label: "Cinsiyet" },
+    { key: "className", label: "Sınıf" },
+    { key: "schoolNumber", label: "Öğrenci No" },
+    { key: "parentFullName", label: "1. Veli Adı Soyadı" },
+    { key: "parentFirstName", label: "1. Veli Adı" },
+    { key: "parentLastName", label: "1. Veli Soyadı" },
+    { key: "parentPhone", label: "1. Veli Telefonu" },
+    { key: "parent2FullName", label: "2. Veli Adı" },
+    { key: "parent2Phone", label: "2. Veli Telefonu" }
   ];
 
-  const BASE_FIELD_KEYS = new Set(BASE_FIELD_DEFINITIONS.map(item => item.key));
-  const PRINT_REQUIRED_GROUPS = [
-    { key: "studentName", label: "Öğrenci adı", fields: ["fullName", "firstName"] },
-    { key: "schoolNumber", label: "Öğrenci numarası", fields: ["schoolNumber"] },
-    { key: "parentName", label: "Veli adı", fields: ["parentFullName", "parentFirstName", "parent2FullName"] },
-    { key: "parentPhone", label: "Veli telefonu", fields: ["parentPhone", "parent2Phone"] }
-  ];
+  const SYSTEM_FIELD_KEYS = new Set(SYSTEM_FIELD_DEFINITIONS.map(item => item.key));
 
   const DATA_TYPE_OPTIONS = [
     { value: "text", label: "Metin" },
@@ -1575,8 +1513,7 @@
   };
 
   const DEFAULT_STUDENT_CONFIG = {
-    version: 3,
-    fields: BASE_FIELD_DEFINITIONS.map(field => ({ ...field, enabled: true })),
+    version: 2,
     duplicateKeys: ["fullName", "schoolNumber"],
     sources: [
       {
@@ -1620,6 +1557,7 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
+  /* UYGULAMA DURUMU */
   let students = [];
   let teachers = [];
   let assignments = [];
@@ -1629,6 +1567,7 @@
   let studentWarnings = [];
   let activeStudentFilters = {};
 
+  /* GENEL YARDIMCILAR */
   function deepClone(value) {
     return JSON.parse(JSON.stringify(value));
   }
@@ -1764,6 +1703,7 @@
   const studentKey = student => `${student.sinif}||${student.okulNo}||${student.fullName}`;
   const assignmentStudentKey = assignment => assignment.studentKey || `${assignment.class}||${assignment.schoolNumber}||${assignment.studentFullName || `${assignment.studentFirstName} ${assignment.studentLastName}`.trim()}`;
 
+  /* CSV VE GOOGLE E-TABLO YARDIMCILARI */
   function detectSeparator(text) {
     const firstLine = String(text || "").split(/\r?\n/, 1)[0] || "";
     const comma = (firstLine.match(/,/g) || []).length;
@@ -1886,17 +1826,8 @@
     return rows;
   }
 
-  function normalizeField(field, index) {
-    const base = BASE_FIELD_DEFINITIONS.find(item => item.key === field?.key);
-    return {
-      key: String(field?.key || makeId("custom")),
-      label: String(field?.label || base?.label || `Yeni Alan ${index + 1}`),
-      group: String(field?.group || base?.group || "Özel Alanlar"),
-      enabled: field?.enabled !== false
-    };
-  }
-
-  function normalizeSource(source, index, fields = BASE_FIELD_DEFINITIONS) {
+  /* AYAR MODELİ */
+  function normalizeSource(source, index) {
     const fallback = DEFAULT_STUDENT_CONFIG.sources[0];
     const normalized = {
       id: String(source?.id || makeId("source")),
@@ -1911,7 +1842,7 @@
       mappings: { ...(source?.mappings || {}) }
     };
 
-    fields.forEach(field => {
+    SYSTEM_FIELD_DEFINITIONS.forEach(field => {
       if (typeof normalized.mappings[field.key] !== "string") {
         normalized.mappings[field.key] = source ? "" : (fallback.mappings[field.key] || "");
       }
@@ -1935,56 +1866,30 @@
 
   function normalizeStudentConfig(rawConfig) {
     if (!rawConfig || typeof rawConfig !== "object") return deepClone(DEFAULT_STUDENT_CONFIG);
-    const rawColumns = Array.isArray(rawConfig.columns) ? rawConfig.columns.map(normalizeColumn) : deepClone(DEFAULT_STUDENT_CONFIG.columns);
-    const fields = Array.isArray(rawConfig.fields) && rawConfig.fields.length
-      ? rawConfig.fields.map(normalizeField)
-      : [
-          ...BASE_FIELD_DEFINITIONS.map(field => ({ ...field, enabled: true })),
-          ...rawColumns
-            .filter(column => !BASE_FIELD_KEYS.has(column.field))
-            .map(column => ({ key: column.field, label: column.label, group: "Özel Alanlar", enabled: true }))
-        ];
-
-    PRINT_REQUIRED_GROUPS.forEach(requiredGroup => {
-      if (requiredGroup.fields.some(key => fields.some(field => field.key === key && field.enabled))) return;
-      const fallbackKey = requiredGroup.fields[0];
-      const base = BASE_FIELD_DEFINITIONS.find(field => field.key === fallbackKey);
-      const existing = fields.find(field => field.key === fallbackKey);
-      if (existing) existing.enabled = true;
-      else fields.push({ ...base, enabled: true });
-    });
-
-    const enabledFieldKeys = new Set(fields.filter(field => field.enabled).map(field => field.key));
-    const columns = rawColumns.filter(column => enabledFieldKeys.has(column.field));
     const sources = Array.isArray(rawConfig.sources) && rawConfig.sources.length
-      ? rawConfig.sources.map((source, index) => normalizeSource(source, index, fields))
-      : deepClone(DEFAULT_STUDENT_CONFIG.sources).map((source, index) => normalizeSource(source, index, fields));
-    const disabledFieldKeys = fields.filter(field => !field.enabled).map(field => field.key);
-    sources.forEach(source => disabledFieldKeys.forEach(fieldKey => { source.mappings[fieldKey] = ""; }));
+      ? rawConfig.sources.map(normalizeSource)
+      : deepClone(DEFAULT_STUDENT_CONFIG.sources);
+    const columns = Array.isArray(rawConfig.columns)
+      ? rawConfig.columns.map(normalizeColumn)
+      : deepClone(DEFAULT_STUDENT_CONFIG.columns);
     const duplicateKeys = Array.isArray(rawConfig.duplicateKeys) && rawConfig.duplicateKeys.length
       ? rawConfig.duplicateKeys.filter(key => DUPLICATE_FIELD_OPTIONS.some(option => option.value === key))
       : deepClone(DEFAULT_STUDENT_CONFIG.duplicateKeys);
 
     return {
-      version: 3,
-      fields,
+      version: 2,
       duplicateKeys: duplicateKeys.length ? duplicateKeys : ["fullName"],
       sources: sources.map((source, index) => ({ ...source, priority: index + 1 })),
       columns
     };
   }
 
-  function getFieldDefinitions(config, enabledOnly = false) {
-    const fields = Array.isArray(config?.fields) ? config.fields : [];
-    return enabledOnly ? fields.filter(field => field.enabled) : fields;
-  }
-
   function getCustomFieldKeys(config) {
-    return getFieldDefinitions(config, true).map(field => field.key).filter(field => !BASE_FIELD_KEYS.has(field));
+    return unique((config.columns || []).map(column => column.field).filter(field => !SYSTEM_FIELD_KEYS.has(field)));
   }
 
   function cleanupUnusedCustomMappings(config) {
-    const allowedFields = new Set(getFieldDefinitions(config).map(field => field.key));
+    const allowedFields = new Set([...SYSTEM_FIELD_KEYS, ...getCustomFieldKeys(config)]);
     config.sources.forEach(source => {
       Object.keys(source.mappings || {}).forEach(key => {
         if (!allowedFields.has(key)) delete source.mappings[key];
@@ -1993,43 +1898,23 @@
   }
 
   function getMappingFieldDefinitions(config) {
-    return getFieldDefinitions(config, true);
+    const customLabels = new Map();
+    (config.columns || []).forEach(column => {
+      if (!SYSTEM_FIELD_KEYS.has(column.field) && !customLabels.has(column.field)) {
+        customLabels.set(column.field, column.label || column.field);
+      }
+    });
+    return [
+      ...SYSTEM_FIELD_DEFINITIONS,
+      ...Array.from(customLabels, ([key, label]) => ({ key, label: `Özel: ${label}` }))
+    ];
   }
 
   function getFieldLabel(config, fieldKey) {
-    return getFieldDefinitions(config).find(item => item.key === fieldKey)?.label || fieldKey;
-  }
-
-  function getRequiredGroupForField(fieldKey) {
-    return PRINT_REQUIRED_GROUPS.find(group => group.fields.includes(fieldKey));
-  }
-
-  function isLastEnabledRequiredField(config, fieldKey) {
-    const group = getRequiredGroupForField(fieldKey);
-    if (!group) return false;
-    return group.fields.filter(key => getFieldDefinitions(config).some(field => field.key === key && field.enabled)).length === 1;
-  }
-
-  function isMapped(source, fields) {
-    return fields.some(field => String(source.mappings?.[field] || "").trim());
-  }
-
-  function isReportGroupEnabled(config, fields) {
-    return config.columns.some(column => fields.includes(column.field) && column.reportVisible);
-  }
-
-  function getPrintConfigErrors(config) {
-    const errors = [];
-    const activeSources = config.sources.filter(source => source.active);
-    activeSources.forEach(source => {
-      PRINT_REQUIRED_GROUPS.forEach(group => {
-        if (!isMapped(source, group.fields)) errors.push(`“${source.name}” kaynağında ${group.label} eşleştirilmelidir.`);
-      });
-    });
-    PRINT_REQUIRED_GROUPS.forEach(group => {
-      if (!isReportGroupEnabled(config, group.fields)) errors.push(`${group.label} raporda görünür olmalıdır.`);
-    });
-    return errors;
+    const system = SYSTEM_FIELD_DEFINITIONS.find(item => item.key === fieldKey);
+    if (system) return system.label;
+    const column = (config.columns || []).find(item => item.field === fieldKey);
+    return column?.label || fieldKey;
   }
 
   function validateStudentConfig(config) {
@@ -2038,10 +1923,12 @@
     if (!activeSources.length) errors.push("En az bir öğrenci veri kaynağı aktif olmalıdır.");
     activeSources.forEach((source, index) => {
       if (!String(source.url || "").trim()) errors.push(`${index + 1}. aktif kaynağın e-tablo adresi boş.`);
+      const mappings = source.mappings || {};
+      const hasName = String(mappings.fullName || "").trim() || String(mappings.firstName || "").trim();
+      if (!hasName) errors.push(`“${source.name}” kaynağında öğrenci adı veya tam adı eşleştirilmelidir.`);
     });
-    errors.push(...getPrintConfigErrors(config));
     if (!config.duplicateKeys.length) errors.push("En az bir çakışma kontrol alanı seçilmelidir.");
-    return unique(errors);
+    return errors;
   }
 
   async function loadStudentConfigFromFirebase() {
@@ -2063,6 +1950,7 @@
     studentConfig = cleanConfig;
   }
 
+  /* ÖĞRENCİ VERİ ADAPTÖRÜ */
   function valueAt(row, index) {
     return index >= 0 ? String(row[index] ?? "").trim() : "";
   }
@@ -2212,6 +2100,7 @@
     return { students: collected, warnings: unique(warnings), sourceResults };
   }
 
+  /* VERİ YÜKLEME */
   async function loadStudents() {
     setText("studentStatus", "Yükleniyor...");
     const result = await fetchStudentsFromConfig(studentConfig);
@@ -2282,6 +2171,7 @@
     }
   }
 
+  /* ÖĞRENCİ LİSTESİ EKRANI */
   function getSelectedClasses() {
     return Array.from(document.getElementById("classFilter").selectedOptions).map(option => option.value);
   }
@@ -2418,6 +2308,7 @@
     setText("studentVisibleCount", `${list.length} kayıt gösteriliyor`);
   }
 
+  /* ATAMA TABLOSU VE RAPOR */
   function renderAssignmentsTable() {
     const body = document.getElementById("assignmentsBody");
     assignments.sort((a, b) => sortStudentLike(a, b, listHasMultipleClasses(assignments)));
@@ -2471,30 +2362,6 @@
     return items.length ? `<div class="report-extra-fields">${items.join("")}</div>` : "";
   }
 
-  function getAssignmentPrintErrors(list) {
-    const missing = new Map();
-    list.forEach(assignment => {
-      const checks = [
-        ["Öğrenci adı", assignmentFieldValue(assignment, "fullName")],
-        ["Öğrenci numarası", assignment.schoolNumber],
-        ["Veli adı", assignmentFieldValue(assignment, "parentFullName")],
-        ["Veli telefonu", assignment.parentPhone]
-      ];
-      checks.forEach(([label, value]) => {
-        if (!String(value || "").trim()) missing.set(label, (missing.get(label) || 0) + 1);
-      });
-    });
-    return Array.from(missing, ([label, count]) => `${label}: ${count} kayıtta eksik`);
-  }
-
-  function validatePrintService() {
-    const errors = [...getPrintConfigErrors(studentConfig), ...getAssignmentPrintErrors(assignments)];
-    if (!assignments.length) errors.push("Yazdırılacak atama bulunmuyor.");
-    if (!errors.length) return true;
-    alert(`Yazdırma başlatılamadı:\n\n${unique(errors).join("\n")}\n\nAyarlar > Sistemde Ne Var? ve sütun eşleştirmelerini kontrol edin.`);
-    return false;
-  }
-
   function renderReports() {
     const container = document.getElementById("reportContainer");
     container.innerHTML = "";
@@ -2537,11 +2404,11 @@
       list.forEach((assignment, index) => {
         const studentCard = document.createElement("div");
         studentCard.className = "student-card";
-        const showName = isReportGroupEnabled(studentConfig, ["fullName", "firstName", "lastName"]);
+        const showName = reportFieldEnabled("fullName") || reportFieldEnabled("firstName") || reportFieldEnabled("lastName");
         const showClass = reportFieldEnabled("className");
-        const showNumber = isReportGroupEnabled(studentConfig, ["schoolNumber"]);
-        const showParent = isReportGroupEnabled(studentConfig, ["parentFullName", "parentFirstName", "parentLastName", "parent2FullName"]);
-        const showPhone = isReportGroupEnabled(studentConfig, ["parentPhone", "parent2Phone"]);
+        const showNumber = reportFieldEnabled("schoolNumber");
+        const showParent = reportFieldEnabled("parentFullName") || reportFieldEnabled("parentFirstName") || reportFieldEnabled("parentLastName");
+        const showPhone = reportFieldEnabled("parentPhone");
         const studentName = assignmentFieldValue(assignment, "fullName");
         const parentName = assignmentFieldValue(assignment, "parentFullName");
 
@@ -2591,6 +2458,7 @@
     });
   }
 
+  /* ATAMA İŞLEMLERİ */
   async function saveAssignmentsToFirebase() {
     try {
       await set(ref(db, ASSIGNMENTS_PATH), assignments);
@@ -2746,6 +2614,7 @@
     });
   }
 
+  /* AYARLAR MODALI */
   function isAdminAuthenticated() {
     return localStorage.getItem(ADMIN_SESSION_KEY) === "true";
   }
@@ -2790,25 +2659,10 @@
 
   function renderSettingsEditor() {
     renderSettingsSources();
-    renderSystemFields();
     renderSettingsColumns();
     renderDuplicateSettings();
-    document.getElementById("settingsPreview").innerHTML = '<div class="preview-placeholder">Önizlemeyi yenileyerek ayarları kontrol edin.</div>';
+    document.getElementById("settingsPreview").innerHTML = '<div class="preview-placeholder">Önce sütunları okuyun ve eşleştirin. Ardından “Önizlemeyi Yenile” düğmesini kullanın.</div>';
     setText("settingsSaveStatus", "");
-    activateSettingsTab("sources");
-  }
-
-  function activateSettingsTab(tabName) {
-    document.querySelectorAll("[data-settings-tab]").forEach(button => {
-      const active = button.dataset.settingsTab === tabName;
-      button.classList.toggle("active", active);
-      button.setAttribute("aria-selected", String(active));
-    });
-    document.querySelectorAll("[data-settings-panel]").forEach(panel => {
-      const active = panel.dataset.settingsPanel === tabName;
-      panel.classList.toggle("active", active);
-      panel.hidden = !active;
-    });
   }
 
   function columnLetter(index) {
@@ -2885,22 +2739,29 @@
   }
 
   function systemFieldOptionGroups(selectedField, includeNewCustom = false) {
-    const groups = ["Öğrenci", "1. Veli", "2. Veli", "Özel Alanlar"];
-    const fields = getFieldDefinitions(settingsDraft, true);
-    const html = groups.map(group => {
-      const groupFields = fields.filter(field => field.group === group);
-      if (!groupFields.length) return "";
-      return `
-        <optgroup label="${escapeAttr(group)}">
-          ${groupFields.map(field => {
-            const required = getRequiredGroupForField(field.key);
-            const label = required ? `${field.label} • zorunlu` : field.label;
-            return `<option value="${escapeAttr(field.key)}" ${selectedField === field.key ? "selected" : ""}>${escapeHtml(label)}</option>`;
-          }).join("")}
+    const groups = [
+      { label: "Öğrenci", keys: ["fullName", "firstName", "lastName", "gender", "className", "schoolNumber"] },
+      { label: "1. Veli", keys: ["parentFullName", "parentFirstName", "parentLastName", "parentPhone"] },
+      { label: "2. Veli", keys: ["parent2FullName", "parent2Phone"] }
+    ];
+    const definitions = new Map(SYSTEM_FIELD_DEFINITIONS.map(item => [item.key, item]));
+    const html = groups.map(group => `
+      <optgroup label="${escapeAttr(group.label)}">
+        ${group.keys.map(key => {
+          const field = definitions.get(key);
+          return `<option value="${escapeAttr(key)}" ${selectedField === key ? "selected" : ""}>${escapeHtml(field.label)}</option>`;
+        }).join("")}
+      </optgroup>
+    `);
+    const customFields = getCustomFieldKeys(settingsDraft);
+    if (customFields.length) {
+      html.push(`
+        <optgroup label="Özel Alanlar">
+          ${customFields.map(field => `<option value="${escapeAttr(field)}" ${selectedField === field ? "selected" : ""}>${escapeHtml(getFieldLabel(settingsDraft, field))}</option>`).join("")}
         </optgroup>
-      `;
-    }).filter(Boolean);
-    if (includeNewCustom) html.push('<option value="__new_custom__">＋ Yeni alan oluştur…</option>');
+      `);
+    }
+    if (includeNewCustom) html.push('<option value="__new_custom__">＋ Yeni özel alan oluştur…</option>');
     return html.join("");
   }
 
@@ -2928,15 +2789,10 @@
     }, settingsDraft.columns.length));
   }
 
-  function createCustomField(label, group = "Özel Alanlar") {
+  function createCustomField(label) {
     const cleanLabel = String(label || "").trim();
     if (!cleanLabel) return "";
-    if (getFieldDefinitions(settingsDraft).some(field => normalizeText(field.label) === normalizeText(cleanLabel))) {
-      alert("Bu adla bir sistem alanı zaten var.");
-      return "";
-    }
     const field = makeId("custom");
-    settingsDraft.fields.push({ key: field, label: cleanLabel, group, enabled: true });
     settingsDraft.columns.push(normalizeColumn({
       id: makeId("column"),
       field,
@@ -2949,12 +2805,6 @@
     }, settingsDraft.columns.length));
     settingsDraft.sources.forEach(source => { source.mappings[field] = ""; });
     return field;
-  }
-
-  function removeField(fieldKey) {
-    settingsDraft.fields = settingsDraft.fields.filter(field => field.key !== fieldKey);
-    settingsDraft.columns = settingsDraft.columns.filter(column => column.field !== fieldKey);
-    settingsDraft.sources.forEach(source => { delete source.mappings[fieldKey]; });
   }
 
   function renderSourceMappingBoard(source) {
@@ -3074,40 +2924,14 @@
     }).join("");
   }
 
-  function renderSystemFields() {
-    const body = document.getElementById("systemFieldsBody");
-    body.innerHTML = getFieldDefinitions(settingsDraft).map(field => {
-      const requiredGroup = getRequiredGroupForField(field.key);
-      const isCustom = !BASE_FIELD_KEYS.has(field.key);
-      const lockEnabled = field.enabled && isLastEnabledRequiredField(settingsDraft, field.key);
-      return `
-        <tr data-system-field="${escapeAttr(field.key)}">
-          <td><input type="text" value="${escapeAttr(field.label)}" data-field-key="${escapeAttr(field.key)}" data-field-prop="label"></td>
-          <td>
-            <select data-field-key="${escapeAttr(field.key)}" data-field-prop="group">
-              ${["Öğrenci", "1. Veli", "2. Veli", "Özel Alanlar"].map(group => `<option value="${escapeAttr(group)}" ${field.group === group ? "selected" : ""}>${escapeHtml(group)}</option>`).join("")}
-            </select>
-          </td>
-          <td><input type="checkbox" ${field.enabled ? "checked" : ""} ${lockEnabled ? "disabled" : ""} data-field-key="${escapeAttr(field.key)}" data-field-prop="enabled" aria-label="Combobox'ta göster"></td>
-          <td>${requiredGroup ? `<span class="field-required-badge">Zorunlu: ${escapeHtml(requiredGroup.label)}</span>` : '<span class="field-optional-badge">İsteğe bağlı</span>'}</td>
-          <td>${isCustom ? `<button type="button" class="danger mini-button" data-field-action="delete" data-field-key="${escapeAttr(field.key)}">Sil</button>` : "—"}</td>
-        </tr>
-      `;
-    }).join("");
-  }
-
   function fieldSelectOptions(selectedField) {
-    const selected = getFieldDefinitions(settingsDraft).find(field => field.key === selectedField);
-    const currentOption = selected && !selected.enabled
-      ? `<option value="${escapeAttr(selected.key)}" selected>${escapeHtml(selected.label)} (pasif)</option>`
-      : "";
-    return currentOption + systemFieldOptionGroups(selectedField, false);
+    return systemFieldOptionGroups(selectedField, false);
   }
 
   function renderSettingsColumns() {
     const body = document.getElementById("settingsColumnsBody");
     if (!settingsDraft.columns.length) {
-      body.innerHTML = '<tr><td colspan="9" class="mapping-empty">Henüz görünüm alanı yok. E-tablo sütununu eşleştirin veya “Görünüm Alanı Ekle” düğmesini kullanın.</td></tr>';
+      body.innerHTML = '<tr><td colspan="9" class="mapping-empty">Henüz görünüm alanı yok. E-tablo sütununu eşleştirin veya “Özel Alan Ekle” düğmesini kullanın.</td></tr>';
       return;
     }
     body.innerHTML = settingsDraft.columns.map((column, index) => `
@@ -3116,7 +2940,7 @@
           <button type="button" class="secondary mini-button" data-column-action="move-up" data-column-id="${escapeAttr(column.id)}" ${index === 0 ? "disabled" : ""}>↑</button>
           <button type="button" class="secondary mini-button" data-column-action="move-down" data-column-id="${escapeAttr(column.id)}" ${index === settingsDraft.columns.length - 1 ? "disabled" : ""}>↓</button>
         </td>
-        <td><select data-column-id="${escapeAttr(column.id)}" data-column-prop="field">${fieldSelectOptions(column.field)}</select>${getRequiredGroupForField(column.field) ? `<div class="danger-text" style="font-size:.72rem;font-weight:700;margin-top:4px">Yazdırma alanı</div>` : ""}</td>
+        <td><select data-column-id="${escapeAttr(column.id)}" data-column-prop="field">${fieldSelectOptions(column.field)}</select></td>
         <td><input type="text" value="${escapeAttr(column.label)}" data-column-id="${escapeAttr(column.id)}" data-column-prop="label"></td>
         <td><select data-column-id="${escapeAttr(column.id)}" data-column-prop="dataType">${DATA_TYPE_OPTIONS.map(option => `<option value="${option.value}" ${column.dataType === option.value ? "selected" : ""}>${option.label}</option>`).join("")}</select></td>
         <td><input type="checkbox" ${column.visible ? "checked" : ""} data-column-id="${escapeAttr(column.id)}" data-column-prop="visible" aria-label="Listede göster"></td>
@@ -3231,7 +3055,7 @@
     };
 
     if (!onlyEmpty) {
-      getFieldDefinitions(settingsDraft).forEach(field => { source.mappings[field.key] = ""; });
+      SYSTEM_FIELD_DEFINITIONS.forEach(field => { source.mappings[field.key] = ""; });
     }
 
     const exactStarName = exactHeaderCandidate(header, ["İsim*", "Ad Soyad*", "Öğrenci*"], 1);
@@ -3329,7 +3153,6 @@
     }
 
     renderSettingsSources();
-    renderSystemFields();
     renderSettingsColumns();
   }
 
@@ -3410,6 +3233,7 @@
     alert("Ayarlar oturumu kapatıldı. Ayarlar bölümüne yeniden girmek için şifre gerekecek.");
   }
 
+  /* OLAY BAĞLANTILARI */
   document.getElementById("settingsBtn").addEventListener("click", requestSettingsAccess);
   document.getElementById("loginCloseBtn").addEventListener("click", () => closeModal("loginModal"));
   document.getElementById("settingsCloseBtn").addEventListener("click", () => closeModal("settingsModal"));
@@ -3442,67 +3266,18 @@
   });
 
   document.getElementById("addStudentColumnBtn").addEventListener("click", () => {
-    const available = getFieldDefinitions(settingsDraft, true).find(field => !settingsDraft.columns.some(column => column.field === field.key));
-    if (!available) {
-      activateSettingsTab("fields");
-      document.getElementById("newSystemFieldLabel").focus();
-      return;
-    }
-    ensureColumnForField(available.key);
-    renderSettingsColumns();
-  });
-
-  document.querySelector(".settings-tabs").addEventListener("click", event => {
-    const button = event.target.closest("[data-settings-tab]");
-    if (button) activateSettingsTab(button.dataset.settingsTab);
-  });
-
-  document.getElementById("systemFieldAddForm").addEventListener("submit", event => {
-    event.preventDefault();
-    const input = document.getElementById("newSystemFieldLabel");
-    const group = document.getElementById("newSystemFieldGroup").value;
-    const field = createCustomField(input.value, group);
-    if (!field) return;
-    input.value = "";
-    renderSystemFields();
-    renderSettingsColumns();
-    renderSettingsSources();
-  });
-
-  document.getElementById("systemFieldsBody").addEventListener("input", event => {
-    const input = event.target.closest('[data-field-key][data-field-prop="label"]');
-    if (!input) return;
-    const field = settingsDraft.fields.find(item => item.key === input.dataset.fieldKey);
-    if (field) field.label = input.value;
-  });
-
-  document.getElementById("systemFieldsBody").addEventListener("change", event => {
-    const input = event.target.closest("[data-field-key][data-field-prop]");
-    if (!input) return;
-    const field = settingsDraft.fields.find(item => item.key === input.dataset.fieldKey);
-    if (!field) return;
-    const property = input.dataset.fieldProp;
-    if (property === "enabled" && !input.checked && isLastEnabledRequiredField(settingsDraft, field.key)) {
-      input.checked = true;
-      alert("Bu zorunlu grupta en az bir alan aktif kalmalıdır.");
-      return;
-    }
-    field[property] = input.type === "checkbox" ? input.checked : input.value;
-    if (property === "enabled" && !field.enabled) {
-      settingsDraft.columns = settingsDraft.columns.filter(column => column.field !== field.key);
-      settingsDraft.sources.forEach(source => { source.mappings[field.key] = ""; });
-    }
-    renderSystemFields();
-    renderSettingsColumns();
-    renderSettingsSources();
-  });
-
-  document.getElementById("systemFieldsBody").addEventListener("click", event => {
-    const button = event.target.closest("[data-field-action=delete]");
-    if (!button) return;
-    if (!confirm("Bu özel alan ve tüm eşleştirmeleri silinsin mi?")) return;
-    removeField(button.dataset.fieldKey);
-    renderSystemFields();
+    const customField = makeId("custom");
+    settingsDraft.columns.push(normalizeColumn({
+      id: makeId("column"),
+      field: customField,
+      label: "Yeni Sütun",
+      dataType: "text",
+      visible: true,
+      searchable: false,
+      filterable: false,
+      reportVisible: false
+    }, settingsDraft.columns.length));
+    settingsDraft.sources.forEach(source => { source.mappings[customField] = ""; });
     renderSettingsColumns();
     renderSettingsSources();
   });
@@ -3555,24 +3330,13 @@
   document.getElementById("settingsColumnsBody").addEventListener("change", event => {
     const input = event.target.closest("[data-column-id][data-column-prop]");
     if (!input) return;
-    const currentColumn = settingsDraft.columns.find(column => column.id === input.dataset.columnId);
-    const previousField = currentColumn?.field;
-    if (input.dataset.columnProp === "reportVisible" && !input.checked) {
-      const requiredGroup = getRequiredGroupForField(currentColumn?.field);
-      const otherVisible = requiredGroup && settingsDraft.columns.some(column => column.id !== currentColumn.id && requiredGroup.fields.includes(column.field) && column.reportVisible);
-      if (requiredGroup && !otherVisible) {
-        input.checked = true;
-        alert(`${requiredGroup.label} yazdırma için raporda görünür kalmalıdır.`);
-        return;
-      }
-    }
+    const previousField = settingsDraft.columns.find(column => column.id === input.dataset.columnId)?.field;
     updateColumnDraftFromInput(input);
     if (input.dataset.columnProp === "field" && previousField !== input.value) {
       settingsDraft.sources.forEach(source => {
         if (typeof source.mappings[input.value] !== "string") source.mappings[input.value] = "";
       });
       cleanupUnusedCustomMappings(settingsDraft);
-      renderSystemFields();
       renderSettingsColumns();
       renderSettingsSources();
     }
@@ -3585,13 +3349,6 @@
     if (action === "move-up") moveArrayItem(settingsDraft.columns, index, -1);
     if (action === "move-down") moveArrayItem(settingsDraft.columns, index, 1);
     if (action === "delete") {
-      const column = settingsDraft.columns[index];
-      const requiredGroup = getRequiredGroupForField(column?.field);
-      const otherVisible = requiredGroup && settingsDraft.columns.some(item => item.id !== column.id && requiredGroup.fields.includes(item.field) && item.reportVisible);
-      if (requiredGroup && column.reportVisible && !otherVisible) {
-        alert(`${requiredGroup.label} yazdırma için raporda görünür kalmalıdır.`);
-        return;
-      }
       if (!confirm("Bu görünüm sütunu silinsin mi?")) return;
       settingsDraft.columns.splice(index, 1);
       cleanupUnusedCustomMappings(settingsDraft);
@@ -3662,7 +3419,6 @@
   document.getElementById("clearLocalListBtn").addEventListener("click", clearLocalList);
   document.getElementById("printReportsBtn").addEventListener("click", () => {
     syncReportBackToAssignments();
-    if (!validatePrintService()) return;
     renderReports();
     window.print();
   });
