@@ -1372,7 +1372,7 @@
         <div class="settings-section-heading">
           <div>
             <h3>1. Veri Kaynağı ve Sütun Eşleştirme</h3>
-            <div class="settings-section-description">Sütunlar e-tablodan okunur. Aynı başlığa sahip “Veli Adı” ve “Telefon” sütunları ayrı ayrı gösterilir.</div>
+            <div class="settings-section-description">Sütunlar e-tablodan okunur. “Kullanma” eşleşmeyi kaldırır; özel alanlar aynı menüden eklenebilir veya sistemden tamamen çıkarılabilir.</div>
           </div>
           <button type="button" id="addStudentSourceBtn">＋ Yeni Kaynak</button>
         </div>
@@ -1566,6 +1566,7 @@
   let settingsSourceRuntime = new Map();
   let studentWarnings = [];
   let activeStudentFilters = {};
+  let studentLookupByKey = new Map();
 
   /* GENEL YARDIMCILAR */
   function deepClone(value) {
@@ -1692,7 +1693,7 @@
   function classBreakdownText(list) {
     const counts = {};
     (list || []).forEach(item => {
-      const cls = String(item.class || "").trim();
+      const cls = String(item?.studentFields ? assignmentFieldValue(item, "className") : (item.class || item.sinif || "")).trim();
       if (cls) counts[cls] = (counts[cls] || 0) + 1;
     });
     const keys = Object.keys(counts).sort(compareClassCode);
@@ -2105,6 +2106,7 @@
     setText("studentStatus", "Yükleniyor...");
     const result = await fetchStudentsFromConfig(studentConfig);
     students = result.students;
+    studentLookupByKey = new Map(students.map(student => [student.key, student]));
     studentWarnings = result.warnings;
     activeStudentFilters = {};
 
@@ -2333,7 +2335,34 @@
     return studentConfig.columns.some(column => column.field === field && column.reportVisible);
   }
 
+  function findCurrentStudentForAssignment(assignment) {
+    const directKey = assignmentStudentKey(assignment);
+    if (directKey && studentLookupByKey.has(directKey)) return studentLookupByKey.get(directKey);
+
+    const storedFields = assignment.studentFields || {};
+    const targetNumber = String(storedFields.schoolNumber || assignment.schoolNumber || "").replace(/\D/g, "");
+    const targetName = normalizeIdentity(storedFields.fullName || assignment.studentFullName || `${assignment.studentFirstName || ""} ${assignment.studentLastName || ""}`);
+    const targetClass = normalizeIdentity(storedFields.className || assignment.class || "");
+    const targetSource = String(assignment.studentSourceId || "");
+
+    return students.find(student => {
+      if (targetSource && student.sourceId !== targetSource) return false;
+      const studentNumber = String(student.values?.schoolNumber || student.okulNo || "").replace(/\D/g, "");
+      const studentName = normalizeIdentity(student.values?.fullName || student.fullName || "");
+      const studentClass = normalizeIdentity(student.values?.className || student.sinif || "");
+
+      if (targetNumber && studentNumber) {
+        return targetNumber === studentNumber && (!targetClass || !studentClass || targetClass === studentClass);
+      }
+      return Boolean(targetName && studentName && targetName === studentName && (!targetClass || !studentClass || targetClass === studentClass));
+    }) || null;
+  }
+
   function assignmentFieldValue(assignment, field) {
+    const currentStudent = findCurrentStudentForAssignment(assignment);
+    if (currentStudent?.values && Object.prototype.hasOwnProperty.call(currentStudent.values, field)) {
+      return currentStudent.values[field];
+    }
     if (assignment.studentFields && Object.prototype.hasOwnProperty.call(assignment.studentFields, field)) {
       return assignment.studentFields[field];
     }
@@ -2410,19 +2439,22 @@
         const showParent = reportFieldEnabled("parentFullName") || reportFieldEnabled("parentFirstName") || reportFieldEnabled("parentLastName");
         const showPhone = reportFieldEnabled("parentPhone");
         const studentName = assignmentFieldValue(assignment, "fullName");
+        const className = assignmentFieldValue(assignment, "className");
+        const schoolNumber = assignmentFieldValue(assignment, "schoolNumber");
         const parentName = assignmentFieldValue(assignment, "parentFullName");
+        const parentPhone = assignmentFieldValue(assignment, "parentPhone");
 
         studentCard.innerHTML = `
           <div class="card-top">
             <div class="info-group">
               <span class="st-index">${index + 1}</span>
-              ${showClass ? `<span class="st-class">${escapeHtml(assignment.class)}</span>` : ""}
+              ${showClass ? `<span class="st-class">${escapeHtml(className)}</span>` : ""}
               ${showName ? `<span class="st-name">${escapeHtml(studentName)}</span>` : ""}
-              ${showNumber ? `<small style="color:#666">(${escapeHtml(assignment.schoolNumber)})</small>` : ""}
+              ${showNumber ? `<small style="color:#666">(${escapeHtml(schoolNumber)})</small>` : ""}
             </div>
             <div class="info-group right" style="font-size:9pt;">
               ${showParent ? `<span class="st-parent">Veli: <strong>${escapeHtml(parentName)}</strong></span>` : ""}
-              ${showPhone ? `<span class="st-phone"><span class="tel-icon" aria-hidden="true">☎️</span>Tel: <span class="phone-pill">${escapeHtml(formatPhoneMaskedTR(assignment.parentPhone))}</span></span>` : ""}
+              ${showPhone ? `<span class="st-phone"><span class="tel-icon" aria-hidden="true">☎️</span>Tel: <span class="phone-pill">${escapeHtml(formatPhoneMaskedTR(parentPhone))}</span></span>` : ""}
             </div>
             ${renderReportExtraFields(assignment)}
           </div>
@@ -2560,6 +2592,7 @@
           class: student.sinif,
           schoolNumber: student.okulNo,
           studentKey: student.key,
+          studentSourceId: student.sourceId,
           studentFields: deepClone(student.values),
           parentFirstName: student.veliAdi,
           parentLastName: student.veliSoyadi,
@@ -2738,7 +2771,7 @@
     return best.known >= 2 ? bestIndex : safePreferred;
   }
 
-  function systemFieldOptionGroups(selectedField, includeNewCustom = false) {
+  function systemFieldOptionGroups(selectedField, includeNewCustom = false, includeRemoveCustom = false) {
     const groups = [
       { label: "Öğrenci", keys: ["fullName", "firstName", "lastName", "gender", "className", "schoolNumber"] },
       { label: "1. Veli", keys: ["parentFullName", "parentFirstName", "parentLastName", "parentPhone"] },
@@ -2762,6 +2795,9 @@
       `);
     }
     if (includeNewCustom) html.push('<option value="__new_custom__">＋ Yeni özel alan oluştur…</option>');
+    if (includeRemoveCustom && selectedField && !SYSTEM_FIELD_KEYS.has(selectedField)) {
+      html.push('<option value="__remove_custom__">− Bu özel alanı sistemden kaldır…</option>');
+    }
     return html.join("");
   }
 
@@ -2789,7 +2825,7 @@
     }, settingsDraft.columns.length));
   }
 
-  function createCustomField(label) {
+  function createCustomField(label, options = {}) {
     const cleanLabel = String(label || "").trim();
     if (!cleanLabel) return "";
     const field = makeId("custom");
@@ -2797,14 +2833,27 @@
       id: makeId("column"),
       field,
       label: cleanLabel,
-      dataType: "text",
-      visible: true,
-      searchable: true,
-      filterable: false,
-      reportVisible: false
+      dataType: options.dataType || "text",
+      visible: options.visible !== false,
+      searchable: options.searchable !== false,
+      filterable: Boolean(options.filterable),
+      reportVisible: Boolean(options.reportVisible)
     }, settingsDraft.columns.length));
     settingsDraft.sources.forEach(source => { source.mappings[field] = ""; });
     return field;
+  }
+
+  function removeCustomField(field, { askConfirmation = true } = {}) {
+    if (!field || SYSTEM_FIELD_KEYS.has(field)) return false;
+    const label = getFieldLabel(settingsDraft, field);
+    if (askConfirmation && !confirm(`“${label}” özel alanı tüm kaynak eşleşmelerinden, listeden ve rapor ayarlarından kaldırılsın mı?`)) {
+      return false;
+    }
+
+    settingsDraft.columns = settingsDraft.columns.filter(column => column.field !== field);
+    settingsDraft.sources.forEach(source => { delete source.mappings[field]; });
+    cleanupUnusedCustomMappings(settingsDraft);
+    return true;
   }
 
   function renderSourceMappingBoard(source) {
@@ -2854,7 +2903,7 @@
                     <td>
                       <select class="mapping-select" data-source-mapping-column data-source-id="${escapeAttr(source.id)}" data-source-column-index="${item.index}">
                         <option value="">Kullanma</option>
-                        ${systemFieldOptionGroups(selectedField, true)}
+                        ${systemFieldOptionGroups(selectedField, true, true)}
                       </select>
                     </td>
                   </tr>
@@ -3132,6 +3181,7 @@
     const descriptor = runtime.descriptors.find(item => item.index === columnIndex);
     if (!descriptor) return;
 
+    const currentField = getMappedFieldForColumn(source, runtime.header, columnIndex);
     let nextField = select.value;
     if (nextField === "__new_custom__") {
       const label = prompt(`“${descriptor.header}” sütunu sistemde hangi adla görünsün?`, descriptor.header);
@@ -3140,6 +3190,15 @@
         renderSettingsSources();
         return;
       }
+    }
+    if (nextField === "__remove_custom__") {
+      if (removeCustomField(currentField)) {
+        renderSettingsSources();
+        renderSettingsColumns();
+      } else {
+        renderSettingsSources();
+      }
+      return;
     }
 
     Object.keys(source.mappings || {}).forEach(field => {
@@ -3266,18 +3325,7 @@
   });
 
   document.getElementById("addStudentColumnBtn").addEventListener("click", () => {
-    const customField = makeId("custom");
-    settingsDraft.columns.push(normalizeColumn({
-      id: makeId("column"),
-      field: customField,
-      label: "Yeni Sütun",
-      dataType: "text",
-      visible: true,
-      searchable: false,
-      filterable: false,
-      reportVisible: false
-    }, settingsDraft.columns.length));
-    settingsDraft.sources.forEach(source => { source.mappings[customField] = ""; });
+    createCustomField("Yeni Sütun", { searchable: false });
     renderSettingsColumns();
     renderSettingsSources();
   });
@@ -3349,8 +3397,14 @@
     if (action === "move-up") moveArrayItem(settingsDraft.columns, index, -1);
     if (action === "move-down") moveArrayItem(settingsDraft.columns, index, 1);
     if (action === "delete") {
-      if (!confirm("Bu görünüm sütunu silinsin mi?")) return;
-      settingsDraft.columns.splice(index, 1);
+      const column = settingsDraft.columns[index];
+      if (!column) return;
+      if (!SYSTEM_FIELD_KEYS.has(column.field)) {
+        if (!removeCustomField(column.field)) return;
+      } else {
+        if (!confirm("Bu görünüm sütunu silinsin mi? E-tablo eşleşmesi korunacaktır.")) return;
+        settingsDraft.columns.splice(index, 1);
+      }
       cleanupUnusedCustomMappings(settingsDraft);
       renderSettingsSources();
     }
