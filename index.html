@@ -95,7 +95,7 @@
       display: block;
     }
 
-    select, input[type="date"], textarea {
+    select, input[type="date"], input[type="text"], input[type="password"], input[type="number"], input[type="search"], input[type="url"], textarea {
       width: 100%;
       box-sizing: border-box;
       padding: 12px 16px; /* Daha geniş dokunma alanı */
@@ -370,6 +370,289 @@
       }
     }
 
+
+    /* AYARLAR, MODAL VE GELİŞMİŞ ÖĞRENCİ LİSTESİ */
+    .hidden { display: none !important; }
+    body.modal-open { overflow: hidden; }
+
+    .app-header {
+      display: grid;
+      grid-template-columns: 1fr minmax(0, auto) 1fr;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+    .app-header h1 { margin: 0; grid-column: 2; }
+    .app-header-actions {
+      grid-column: 3;
+      justify-self: end;
+    }
+    .settings-trigger {
+      padding: 10px 16px;
+      background: #0f172a;
+      box-shadow: var(--shadow-sm);
+    }
+    .settings-trigger:hover { background: #020617; }
+
+    .settings-alert {
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid #fbbf24;
+      background: #fffbeb;
+      color: #92400e;
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+    .settings-alert ul { margin: 8px 0 0 20px; padding: 0; }
+    .settings-alert.danger { border-color: #fca5a5; background: #fef2f2; color: #991b1b; }
+    .settings-alert.success { border-color: #86efac; background: #f0fdf4; color: #166534; }
+    .settings-alert.warning { border-color: #fcd34d; background: #fffbeb; color: #92400e; }
+
+    .student-tools {
+      display: grid;
+      grid-template-columns: minmax(240px, 1fr) minmax(0, 2fr);
+      gap: 12px;
+      align-items: end;
+      margin: 12px 0;
+    }
+    .student-tools label { margin: 0; }
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 10px;
+    }
+    .compact-field span {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .compact-field select,
+    .compact-field input { padding: 9px 12px; font-size: 0.9rem; }
+    .student-list-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-panel {
+      width: min(520px, 100%);
+      max-height: calc(100vh - 40px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #fff;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
+      border: 1px solid rgba(255,255,255,0.8);
+    }
+    .modal-panel.modal-xl { width: min(1420px, 100%); }
+    .modal-header,
+    .modal-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      background: #fff;
+      z-index: 2;
+    }
+    .modal-header { border-bottom: 1px solid var(--border-color); }
+    .modal-footer {
+      border-top: 1px solid var(--border-color);
+      flex-wrap: wrap;
+      position: sticky;
+      bottom: 0;
+    }
+    .modal-title { margin: 0; font-size: 1.2rem; }
+    .modal-body { padding: 20px; overflow: auto; }
+    .modal-close {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border-radius: 50%;
+      background: #e2e8f0;
+      color: #334155;
+      box-shadow: none;
+    }
+    .modal-close:hover { background: #cbd5e1; }
+    .login-note { color: var(--text-muted); font-size: 0.88rem; margin: 8px 0 16px; }
+    .login-error { min-height: 22px; color: var(--danger-color); font-weight: 700; font-size: 0.9rem; }
+
+    .settings-section {
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .settings-section:last-child { border-bottom: none; margin-bottom: 0; }
+    .settings-section h3 { margin: 0; font-size: 1.05rem; }
+    .settings-section-description { color: var(--text-muted); font-size: 0.86rem; margin: 6px 0 14px; }
+    .settings-section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .settings-source-card {
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      margin-bottom: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .settings-source-card > summary {
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: #f8fafc;
+      border-bottom: 1px solid transparent;
+    }
+    .settings-source-card[open] > summary { border-bottom-color: var(--border-color); }
+    .settings-source-card > summary::-webkit-details-marker { display: none; }
+    .settings-source-content { padding: 16px; }
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(150px, 1fr));
+      gap: 12px;
+    }
+    .settings-grid .span-2 { grid-column: span 2; }
+    .settings-grid input,
+    .settings-grid select,
+    .settings-table input,
+    .settings-table select {
+      padding: 9px 10px;
+      font-size: 0.88rem;
+    }
+    .checkbox-line {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      align-self: end;
+      min-height: 42px;
+    }
+    .checkbox-line input,
+    .checkbox-chip input,
+    .settings-table input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin: 0;
+      accent-color: var(--primary-color);
+    }
+    .source-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 14px 0;
+    }
+    .compact-button { padding: 8px 11px; font-size: 0.8rem; }
+    .mini-button { padding: 6px 8px; font-size: 0.78rem; min-width: 34px; }
+    button:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; }
+    .source-test-status { font-size: 0.82rem; font-weight: 700; }
+    .success-text { color: #047857; }
+    .danger-text { color: #b91c1c; }
+    .mapping-help {
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      background: #eff6ff;
+      color: #1e40af;
+      font-size: 0.82rem;
+    }
+    .mapping-help code { background: #dbeafe; padding: 2px 5px; border-radius: 4px; }
+    .settings-table-wrap {
+      overflow: auto;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+    }
+    .settings-table { min-width: 760px; margin: 0; }
+    .settings-table th { position: static; white-space: nowrap; }
+    .settings-table td { vertical-align: middle; }
+    .settings-table input[type="checkbox"] { display: block; margin: 0 auto; }
+    .order-buttons { white-space: nowrap; }
+    .checkbox-chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
+    .checkbox-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 12px;
+      margin: 0;
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      background: #fff;
+    }
+    .preview-placeholder {
+      padding: 24px;
+      text-align: center;
+      color: var(--text-muted);
+      border: 2px dashed var(--border-color);
+      border-radius: var(--radius-md);
+    }
+    .preview-summary { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .preview-table { min-width: 900px; }
+    .modal-footer-left,
+    .modal-footer-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .settings-save-status { color: var(--text-muted); font-size: 0.84rem; font-weight: 700; }
+    .report-extra-fields {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 14px;
+      padding-top: 5px;
+      font-size: 8pt;
+      color: #334155;
+    }
+    .report-extra-item { white-space: nowrap; }
+
+    @media (max-width: 900px) {
+      .app-header { grid-template-columns: 1fr auto; }
+      .app-header h1 { grid-column: 1; text-align: left; font-size: 1.35rem; }
+      .app-header-actions { grid-column: 2; }
+      .settings-grid { grid-template-columns: repeat(2, minmax(140px, 1fr)); }
+      .student-tools { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .modal-overlay { padding: 0; }
+      .modal-panel,
+      .modal-panel.modal-xl { width: 100%; height: 100%; max-height: 100vh; border-radius: 0; }
+      .modal-header,
+      .modal-footer,
+      .modal-body { padding: 14px; }
+      .settings-grid { grid-template-columns: 1fr; }
+      .settings-grid .span-2 { grid-column: span 1; }
+      .app-header { display: flex; align-items: stretch; flex-direction: column; }
+      .app-header h1 { text-align: center; }
+      .app-header-actions { align-self: flex-end; }
+      .app-header .settings-trigger { width: auto; margin-top: 0; }
+      .modal-footer button,
+      .source-actions button,
+      .settings-section-heading button { width: auto; margin-top: 0; }
+    }
+
     /* --- PRINT STYLES (DOKUNULMADI / UNTOUCHED) --- */
     /* BURADAN AŞAĞISI ORİJİNAL KODUNUZDAKİ YAZDIRMA AYARLARIDIR */
     
@@ -472,7 +755,7 @@
         text-size-adjust: 100%;
       }
 
-      .no-print, .assign-button-group, button, 
+      .no-print, .modal-overlay, .assign-button-group, button, 
       .app-shell > h1, .app-shell > p, .card:not(.report-card) {
         display: none !important;
       }
@@ -763,7 +1046,13 @@
 </head>
 <body>
 <div class="app-shell">
-  <h1 class="no-print">Öğrenci – Öğretmen Atama ve Arama Takip Sistemi</h1>
+  <div class="app-header no-print">
+    <div></div>
+    <h1>Öğrenci – Öğretmen Atama ve Arama Takip Sistemi</h1>
+    <div class="app-header-actions">
+      <button type="button" id="settingsBtn" class="settings-trigger">⚙️ Ayarlar</button>
+    </div>
+  </div>
   <h1 id="printTitle" style="display:none">VELİ ARAMA LİSTESİ</h1>
 
   <div class="card no-print">
@@ -789,6 +1078,7 @@
         <span id="teacherStatus" class="stat-value">Yükleniyor...</span>
       </div>
     </div>
+    <div id="studentDataWarnings" class="settings-alert hidden"></div>
   </div>
 
   <div class="card no-print">
@@ -831,22 +1121,20 @@
     </div>
 
     <h3 style="margin-top:20px; font-size:1.1rem; color:#2d3748;">Öğrenci Listesi</h3>
-    <div class="muted">Sıralama: İsim (A-Z) > Okul No</div>
+    <div class="student-list-meta">
+      <span>Sıralama: Sınıf > Tam Ad (A-Z) > Öğrenci No</span>
+      <span id="studentVisibleCount">0 kayıt gösteriliyor</span>
+    </div>
+    <div class="student-tools">
+      <label class="compact-field">
+        <span>Öğrenci Ara</span>
+        <input type="search" id="studentSearchInput" placeholder="Ayarlarda aramaya açılan sütunlarda ara...">
+      </label>
+      <div id="dynamicStudentFilters" class="filter-grid hidden"></div>
+    </div>
     <div style="max-height:300px; overflow:auto; margin-top:8px; border:1px solid #e2e8f0; border-radius:6px;">
-      <table>
-        <thead>
-          <tr>
-            <th style="width:40px; text-align:center;"><input type="checkbox" id="allRowCheckbox" /></th>
-            <th>İsim</th>
-            <th>Soyisim</th>
-            <th>Cinsiyet</th>
-            <th>Sınıf</th>
-            <th>Okul No</th>
-            <th>Veli Adı</th>
-            <th>Veli Soyadı</th>
-            <th>Veli Tel</th>
-          </tr>
-        </thead>
+      <table id="studentsTable">
+        <thead><tr id="studentsHeadRow"></tr></thead>
         <tbody id="studentsBody"></tbody>
       </table>
     </div>
@@ -899,15 +1187,123 @@
 
   <div id="reportContainer"></div>
 </div>
-<script type="module">
-  /* SABİTLER */
-  const STUDENT_SHEET_CSV_URL =
-    "https://docs.google.com/spreadsheets/d/16BD_BrNLYBaXviCzB8yDKBGS2Vdj5DHi/gviz/tq?tqx=out:csv&sheet=2025-2026";
-  const TEACHER_SHEET_CSV_URL =
-    "https://docs.google.com/spreadsheets/d/1oJGMO7FOPV4U86peeA63lmMk-wVCKsfWuyw2yefMweg/export?format=csv&gid=0";
+<div id="loginModal" class="modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="loginModalTitle">
+  <div class="modal-panel">
+    <div class="modal-header">
+      <h2 id="loginModalTitle" class="modal-title">Ayarlar Girişi</h2>
+      <button type="button" id="loginCloseBtn" class="modal-close" aria-label="Kapat">✕</button>
+    </div>
+    <form id="settingsLoginForm">
+      <div class="modal-body">
+        <label for="settingsPassword">Yönetici şifresi</label>
+        <input type="password" id="settingsPassword" inputmode="numeric" autocomplete="current-password" maxlength="20" required>
+        <div class="login-note">Giriş açık kaldığı sürece yeniden şifre istenmez. “Çıkış Yap” kullanıldığında tekrar şifre gerekir.</div>
+        <div id="loginError" class="login-error" role="alert"></div>
+      </div>
+      <div class="modal-footer">
+        <div></div>
+        <button type="submit">Giriş Yap</button>
+      </div>
+    </form>
+  </div>
+</div>
 
+<div id="settingsModal" class="modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+  <div class="modal-panel modal-xl">
+    <div class="modal-header">
+      <div>
+        <h2 id="settingsModalTitle" class="modal-title">Ultra Öğrenci E-Tablo Ayarları</h2>
+        <div class="info-block">Yalnızca öğrenci kaynakları ve öğrenci sütunları değişir. Öğretmen kaynağı ve atamalar bu bölümden etkilenmez.</div>
+      </div>
+      <button type="button" id="settingsCloseBtn" class="modal-close" aria-label="Kapat">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <section class="settings-section">
+        <div class="settings-section-heading">
+          <div>
+            <h3>1. Öğrenci Veri Kaynakları</h3>
+            <div class="settings-section-description">Birden fazla Google E-Tablo ekleyin, öncelik sırasını değiştirin ve her kaynak için sütun başlıklarını ayrı eşleştirin.</div>
+          </div>
+          <button type="button" id="addStudentSourceBtn">＋ Yeni Kaynak Ekle</button>
+        </div>
+        <div id="settingsSourcesList"></div>
+      </section>
+
+      <section class="settings-section">
+        <div class="settings-section-heading">
+          <div>
+            <h3>2. Çakışma Kontrolü</h3>
+            <div class="settings-section-description">Seçilen alanlar birlikte karşılaştırılır. Numara boşsa mevcut diğer alanlar kullanılır. Aynı tam ad farklı kaynaklarda görülürse ayrıca uyarı oluşturulur.</div>
+          </div>
+        </div>
+        <div id="duplicateKeyOptions" class="checkbox-chip-group"></div>
+      </section>
+
+      <section class="settings-section">
+        <div class="settings-section-heading">
+          <div>
+            <h3>3. Öğrenci Sütunları</h3>
+            <div class="settings-section-description">Sütun ekleyin, silin, adlandırın, sıralayın ve arama, filtre veya rapor kullanımını belirleyin.</div>
+          </div>
+          <button type="button" id="addStudentColumnBtn">＋ Yeni Sütun Ekle</button>
+        </div>
+        <div class="settings-table-wrap">
+          <table class="settings-table">
+            <thead>
+              <tr>
+                <th>Sıra</th>
+                <th>Bağlı Alan</th>
+                <th>Görünen Sütun Adı</th>
+                <th>Veri Tipi</th>
+                <th>Görünür</th>
+                <th>Arama</th>
+                <th>Filtre</th>
+                <th>Rapor</th>
+                <th>İşlem</th>
+              </tr>
+            </thead>
+            <tbody id="settingsColumnsBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="settings-section">
+        <div class="settings-section-heading">
+          <div>
+            <h3>4. Canlı Önizleme ve Kontrol</h3>
+            <div class="settings-section-description">Kaydetmeden önce ilk 10 kaydı, kaynak sonuçlarını ve çakışma uyarılarını görün.</div>
+          </div>
+        </div>
+        <div id="settingsPreview"></div>
+      </section>
+    </div>
+
+    <div class="modal-footer">
+      <div class="modal-footer-left">
+        <button type="button" id="logoutSettingsBtn" class="secondary">Çıkış Yap</button>
+        <button type="button" id="resetStudentSettingsBtn" class="danger">Öğrenci Ayarlarını Resetle</button>
+      </div>
+      <div class="modal-footer-right">
+        <span id="settingsSaveStatus" class="settings-save-status"></span>
+        <button type="button" id="previewSettingsBtn" class="secondary">Canlı Önizleme</button>
+        <button type="button" id="saveSettingsBtn">💾 Kaydet ve Uygula</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
   import { getDatabase, ref, set, get, remove } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+
+  /* UYGULAMA SABİTLERİ */
+  const TEACHER_SHEET_CSV_URL =
+    "https://docs.google.com/spreadsheets/d/1oJGMO7FOPV4U86peeA63lmMk-wVCKsfWuyw2yefMweg/export?format=csv&gid=0";
+  const ASSIGNMENTS_PATH = "assignments";
+  const CONFIG_PATH = "system/config";
+  const ADMIN_PASSWORD = "13579";
+  const ADMIN_SESSION_KEY = "studentSettingsAdminAuthenticated";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAIzu6aNQstwQCdMWODyIwiaVVBm63OeGw",
@@ -920,114 +1316,203 @@
     measurementId: "G-4Q99NQRB38"
   };
 
+  const SYSTEM_FIELD_DEFINITIONS = [
+    { key: "fullName", label: "Öğrenci Tam Adı" },
+    { key: "firstName", label: "Öğrenci Adı" },
+    { key: "lastName", label: "Öğrenci Soyadı" },
+    { key: "gender", label: "Cinsiyet" },
+    { key: "className", label: "Sınıf" },
+    { key: "schoolNumber", label: "Öğrenci No" },
+    { key: "parentFullName", label: "1. Veli Tam Adı" },
+    { key: "parentFirstName", label: "1. Veli Adı" },
+    { key: "parentLastName", label: "1. Veli Soyadı" },
+    { key: "parentPhone", label: "1. Veli Telefon" },
+    { key: "parent2FullName", label: "2. Veli Tam Adı" },
+    { key: "parent2Phone", label: "2. Veli Telefon" }
+  ];
+
+  const SYSTEM_FIELD_KEYS = new Set(SYSTEM_FIELD_DEFINITIONS.map(item => item.key));
+
+  const DATA_TYPE_OPTIONS = [
+    { value: "text", label: "Metin" },
+    { value: "number", label: "Sayı" },
+    { value: "phone", label: "Telefon" },
+    { value: "date", label: "Tarih" },
+    { value: "email", label: "E-posta" },
+    { value: "select", label: "Seçim" },
+    { value: "checkbox", label: "Onay Kutusu" }
+  ];
+
+  const DUPLICATE_FIELD_OPTIONS = [
+    { value: "fullName", label: "Öğrenci tam adı" },
+    { value: "schoolNumber", label: "Öğrenci numarası (varsa)" },
+    { value: "className", label: "Sınıf" },
+    { value: "parentPhone", label: "Veli telefonu" }
+  ];
+
+  const FIELD_ALIASES = {
+    fullName: ["Ad Soyad", "Adı Soyadı", "Öğrenci Ad Soyad", "Öğrenci Adı Soyadı", "İsim Soyisim", "Tam Ad"],
+    firstName: ["İsim", "Ad", "Öğrenci Adı", "Öğrenci İsmi"],
+    lastName: ["Soyisim", "Soyad", "Öğrenci Soyadı"],
+    gender: ["Cinsiyet"],
+    className: ["Sınıf", "Şube", "Sınıfı"],
+    schoolNumber: ["Öğrenci No", "Öğrenci Numarası", "Okul No", "Okul Numarası", "Numara", "No"],
+    parentFullName: ["Veli Ad Soyad", "Veli Adı Soyadı", "Veli", "1. Veli Adı"],
+    parentFirstName: ["Veli Adı", "Anne Adı", "1. Veli Adı"],
+    parentLastName: ["Veli Soyadı", "1. Veli Soyadı"],
+    parentPhone: ["Veli Telefon", "Veli Telefonu", "Telefon", "Cep Telefonu", "1. Veli Telefon"],
+    parent2FullName: ["2. Veli Adı", "2. Veli Ad Soyad", "İkinci Veli"],
+    parent2Phone: ["2. Veli Telefon", "2. Telefon", "İkinci Veli Telefon"]
+  };
+
+  const DEFAULT_STUDENT_CONFIG = {
+    version: 2,
+    duplicateKeys: ["fullName", "schoolNumber"],
+    sources: [
+      {
+        id: "default_students",
+        name: "Varsayılan Öğrenci Listesi",
+        url: "https://docs.google.com/spreadsheets/d/16BD_BrNLYBaXviCzB8yDKBGS2Vdj5DHi/gviz/tq?tqx=out:csv&sheet=2025-2026",
+        sheetName: "2025-2026",
+        gid: "",
+        headerRow: 1,
+        dataStartRow: 2,
+        active: true,
+        priority: 1,
+        mappings: {
+          fullName: "",
+          firstName: "İsim",
+          lastName: "Soyisim*",
+          gender: "Cinsiyet*",
+          className: "Sınıf",
+          schoolNumber: "Okul Numarası",
+          parentFullName: "",
+          parentFirstName: "Veli Adı",
+          parentLastName: "Veli Soyadı",
+          parentPhone: "Veli Telefon",
+          parent2FullName: "",
+          parent2Phone: ""
+        }
+      }
+    ],
+    columns: [
+      { id: "col_firstName", field: "firstName", label: "İsim", dataType: "text", visible: true, searchable: true, filterable: false, reportVisible: true },
+      { id: "col_lastName", field: "lastName", label: "Soyisim", dataType: "text", visible: true, searchable: true, filterable: false, reportVisible: true },
+      { id: "col_gender", field: "gender", label: "Cinsiyet", dataType: "select", visible: true, searchable: false, filterable: true, reportVisible: false },
+      { id: "col_className", field: "className", label: "Sınıf", dataType: "select", visible: true, searchable: true, filterable: true, reportVisible: true },
+      { id: "col_schoolNumber", field: "schoolNumber", label: "Okul No", dataType: "number", visible: true, searchable: true, filterable: false, reportVisible: true },
+      { id: "col_parentFirstName", field: "parentFirstName", label: "Veli Adı", dataType: "text", visible: true, searchable: true, filterable: false, reportVisible: true },
+      { id: "col_parentLastName", field: "parentLastName", label: "Veli Soyadı", dataType: "text", visible: true, searchable: true, filterable: false, reportVisible: true },
+      { id: "col_parentPhone", field: "parentPhone", label: "Veli Tel", dataType: "phone", visible: true, searchable: true, filterable: false, reportVisible: true }
+    ]
+  };
+
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
-  const ASSIGNMENTS_PATH = "assignments";
 
+  /* UYGULAMA DURUMU */
   let students = [];
   let teachers = [];
   let assignments = [];
+  let studentConfig = deepClone(DEFAULT_STUDENT_CONFIG);
+  let settingsDraft = null;
+  let studentWarnings = [];
+  let activeStudentFilters = {};
 
-  /* YARDIMCI FONKSİYONLAR */
-  function detectSeparator(line) {
-    const comma = (line.match(/,/g) || []).length;
-    const semi = (line.match(/;/g) || []).length;
-    return semi > comma ? ";" : ",";
+  /* GENEL YARDIMCILAR */
+  function deepClone(value) {
+    return JSON.parse(JSON.stringify(value));
   }
 
-  function parseCSV(text) {
-    const lines = text.trim().split(/\r?\n/);
-    if (!lines.length) return [];
-    const sep = detectSeparator(lines[0]);
-    const rows = [];
-    for (const line of lines) {
-      const row = [];
-      let cur = "";
-      let inQ = false;
-      for (let i = 0; i < line.length; i++) {
-        const ch = line[i];
-        if (ch === '"') {
-          if (inQ && line[i + 1] === '"') {
-            cur += '"'; i++;
-          } else inQ = !inQ;
-        } else if (ch === sep && !inQ) {
-          row.push(cur); cur = "";
-        } else {
-          cur += ch;
-        }
-      }
-      row.push(cur);
-      rows.push(row.map(c => c.trim()));
-    }
-    return rows;
+  function makeId(prefix = "id") {
+    return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
   }
 
-  function findColumnIndex(headerRow, expectedHeader) {
-    const target = expectedHeader.replace(/\*/g, "").trim();
-    for (let i = 0; i < headerRow.length; i++) {
-      const cell = (headerRow[i] || "").replace(/\*/g, "").trim();
-      if (cell === target) return i;
-    }
-    return -1;
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function escapeAttr(value) {
+    return escapeHtml(value).replace(/`/g, "&#096;");
+  }
+
+  function normalizeText(value) {
+    return String(value ?? "")
+      .replace(/^\uFEFF/, "")
+      .replace(/\*/g, "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLocaleLowerCase("tr-TR");
+  }
+
+  function normalizeIdentity(value) {
+    return normalizeText(value).replace(/[^a-z0-9çğıöşü]/gi, "");
+  }
+
+  function setText(id, text) {
+    const element = document.getElementById(id);
+    if (element) element.textContent = text;
+  }
+
+  function setHidden(elementOrId, hidden) {
+    const element = typeof elementOrId === "string" ? document.getElementById(elementOrId) : elementOrId;
+    if (element) element.classList.toggle("hidden", Boolean(hidden));
+  }
+
+  function unique(values) {
+    return Array.from(new Set(values));
   }
 
   function toDisplayDateFromISO(iso) {
     if (!iso) return "";
-    const [y, m, d] = iso.split("-");
-    return `${d}.${m}.${y}`;
+    const [year, month, day] = String(iso).split("-");
+    return year && month && day ? `${day}.${month}.${year}` : String(iso);
   }
 
-  function formatDateForStore(d) {
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, "0");
-    const dd = String(d.getDate()).padStart(2, "0");
+  function formatDateForStore(date) {
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const dd = String(date.getDate()).padStart(2, "0");
     return `${yyyy}-${mm}-${dd}`;
   }
 
   function normalizePhoneTR(phoneRaw) {
-    const raw = (phoneRaw || "").toString().trim();
+    const raw = String(phoneRaw ?? "").trim();
     if (!raw) return "";
-    // Keep leading +90 if present; otherwise ensure leading 0 for 10/11 digit TR mobiles/landlines
     const compact = raw.replace(/\s+/g, "").replace(/[-()]/g, "");
-    if (compact.startsWith("+")) return compact; // do not alter international format
+    if (compact.startsWith("+")) return compact;
     const digits = compact.replace(/\D/g, "");
     if (!digits) return raw;
     if (digits.startsWith("0")) return digits;
-    // If it already includes country code 90, keep as 0XXXXXXXXXX when possible
-    if (digits.startsWith("90") && digits.length >= 12) {
-      return "0" + digits.slice(2);
-    }
-    return "0" + digits;
-  
-
+    if (digits.startsWith("90") && digits.length >= 12) return `0${digits.slice(2)}`;
+    return `0${digits}`;
   }
 
   function formatPhoneMaskedTR(phoneRaw) {
-  const normalized = normalizePhoneTR(phoneRaw);
-  const digits = (normalized || "").toString().replace(/\D/g, "");
-  if (digits.length === 11 && digits.startsWith("0")) {
-    const a = digits.slice(0, 4);  // 0XXX
-    const b = digits.slice(4, 7);  // XXX
-    const c = digits.slice(7, 9);  // XX
-    const d = digits.slice(9, 11); // XX
-    return `(${a}) ${b} ${c} ${d}`;
+    const normalized = normalizePhoneTR(phoneRaw);
+    const digits = normalized.replace(/\D/g, "");
+    if (digits.length === 11 && digits.startsWith("0")) {
+      return `(${digits.slice(0, 4)}) ${digits.slice(4, 7)} ${digits.slice(7, 9)} ${digits.slice(9, 11)}`;
+    }
+    return normalized;
   }
-  // If it looks like +90... keep original normalized form
-  return normalized;
-}
 
   function normalizeStudentLike(obj) {
     return {
-      cls: (obj.sinif || obj.class || "").toString(),
-      first: (obj.isim || obj.studentFirstName || "").toString(),
-      last: (obj.soyisim || obj.studentLastName || "").toString(),
-      no: (obj.okulNo || obj.schoolNumber || "").toString()
+      cls: String(obj.sinif || obj.class || ""),
+      first: String(obj.fullName || obj.isim || obj.studentFullName || obj.studentFirstName || ""),
+      last: String(obj.soyisim || obj.studentLastName || ""),
+      no: String(obj.okulNo || obj.schoolNumber || "")
     };
   }
 
   function compareClassCode(a, b) {
-    // Class codes like "6A", "5D" - simple locale compare is adequate
-    return a.localeCompare(b, 'tr', { numeric: true, sensitivity: 'base' });
+    return String(a).localeCompare(String(b), "tr", { numeric: true, sensitivity: "base" });
   }
 
   function sortStudentLike(a, b, sortByClass) {
@@ -1035,114 +1520,455 @@
     const B = normalizeStudentLike(b);
 
     if (sortByClass) {
-      const c = compareClassCode(A.cls, B.cls);
-      if (c !== 0) return c;
+      const classComparison = compareClassCode(A.cls, B.cls);
+      if (classComparison !== 0) return classComparison;
     }
 
-    const fn = A.first.toLocaleLowerCase('tr').localeCompare(B.first.toLocaleLowerCase('tr'), 'tr');
-    if (fn !== 0) return fn;
+    const firstComparison = A.first.toLocaleLowerCase("tr").localeCompare(B.first.toLocaleLowerCase("tr"), "tr");
+    if (firstComparison !== 0) return firstComparison;
 
-    const ln = A.last.toLocaleLowerCase('tr').localeCompare(B.last.toLocaleLowerCase('tr'), 'tr');
-    if (ln !== 0) return ln;
+    const lastComparison = A.last.toLocaleLowerCase("tr").localeCompare(B.last.toLocaleLowerCase("tr"), "tr");
+    if (lastComparison !== 0) return lastComparison;
 
-    const numA = parseInt(A.no, 10);
-    const numB = parseInt(B.no, 10);
-    if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+    const numberA = Number.parseInt(A.no, 10);
+    const numberB = Number.parseInt(B.no, 10);
+    if (!Number.isNaN(numberA) && !Number.isNaN(numberB)) return numberA - numberB;
 
-    return A.no.localeCompare(B.no, 'tr', { numeric: true, sensitivity: 'base' });
+    return A.no.localeCompare(B.no, "tr", { numeric: true, sensitivity: "base" });
   }
 
   function listHasMultipleClasses(list) {
-    const set = new Set();
-    (list || []).forEach(x => {
-      const cls = (x.sinif || x.class || "").toString().trim();
-      if (cls) set.add(cls);
-    });
-    return set.size > 1;
+    return new Set((list || []).map(item => String(item.sinif || item.class || "").trim()).filter(Boolean)).size > 1;
   }
 
   function classBreakdownText(list) {
     const counts = {};
-    (list || []).forEach(a => {
-      const cls = (a.class || "").toString().trim();
-      if (!cls) return;
-      counts[cls] = (counts[cls] || 0) + 1;
+    (list || []).forEach(item => {
+      const cls = String(item.class || "").trim();
+      if (cls) counts[cls] = (counts[cls] || 0) + 1;
     });
     const keys = Object.keys(counts).sort(compareClassCode);
-    if (!keys.length) return `${(list || []).length} Öğrenci`;
-    return keys.map(k => `${k} ${counts[k]} Kişi`).join(" - ");
+    return keys.length ? keys.map(key => `${key} ${counts[key]} Kişi`).join(" - ") : `${(list || []).length} Öğrenci`;
   }
 
+  const uid = () => makeId("a");
+  const studentKey = student => `${student.sinif}||${student.okulNo}||${student.fullName}`;
+  const assignmentStudentKey = assignment => assignment.studentKey || `${assignment.class}||${assignment.schoolNumber}||${assignment.studentFullName || `${assignment.studentFirstName} ${assignment.studentLastName}`.trim()}`;
 
-  const unique = arr => Array.from(new Set(arr));
-  const uid = () => "a_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
-  const studentKey = (s) => `${s.sinif}||${s.okulNo}||${s.isim}||${s.soyisim}`;
-  const assignmentStudentKey = (a) => (a.studentKey || `${a.class}||${a.schoolNumber}||${a.studentFirstName}||${a.studentLastName}`);
-  const setText = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
+  /* CSV VE GOOGLE E-TABLO YARDIMCILARI */
+  function detectSeparator(text) {
+    const firstLine = String(text || "").split(/\r?\n/, 1)[0] || "";
+    const comma = (firstLine.match(/,/g) || []).length;
+    const semi = (firstLine.match(/;/g) || []).length;
+    return semi > comma ? ";" : ",";
+  }
 
-  /* VERİ ÇEKME */
-  async function loadStudents() {
-    setText("studentStatus", "Yükleniyor...");
-    const res = await fetch(STUDENT_SHEET_CSV_URL);
-    const text = await res.text();
-    const rows = parseCSV(text);
-    if (!rows.length) { setText("studentStatus","Veri yok"); return; }
+  function parseCSV(text) {
+    const input = String(text || "");
+    if (!input.trim()) return [];
+    const separator = detectSeparator(input);
+    const rows = [];
+    let row = [];
+    let cell = "";
+    let inQuotes = false;
 
-    const header = rows[0];
-    const idxIsim       = findColumnIndex(header, "İsim");
-    const idxSoyisim    = findColumnIndex(header, "Soyisim*");
-    const idxCinsiyet   = findColumnIndex(header, "Cinsiyet*");
-    const idxSinif      = findColumnIndex(header, "Sınıf");
-    const idxOkulNo     = findColumnIndex(header, "Okul Numarası");
-    const idxVeliAdi    = findColumnIndex(header, "Veli Adı");
-    const idxVeliSoyad  = findColumnIndex(header, "Veli Soyadı");
-    const idxVeliTel    = findColumnIndex(header, "Veli Telefon");
+    for (let index = 0; index < input.length; index += 1) {
+      const char = input[index];
+      const next = input[index + 1];
 
-    const required = [idxIsim, idxSoyisim, idxCinsiyet, idxSinif, idxOkulNo];
-    if (required.some(i => i === -1)) {
-      setText("studentStatus","Hatalı Başlıklar");
-      return;
+      if (char === '"') {
+        if (inQuotes && next === '"') {
+          cell += '"';
+          index += 1;
+        } else {
+          inQuotes = !inQuotes;
+        }
+      } else if (char === separator && !inQuotes) {
+        row.push(cell.trim());
+        cell = "";
+      } else if ((char === "\n" || char === "\r") && !inQuotes) {
+        if (char === "\r" && next === "\n") index += 1;
+        row.push(cell.trim());
+        if (row.some(value => value !== "")) rows.push(row);
+        row = [];
+        cell = "";
+      } else {
+        cell += char;
+      }
     }
 
-    students = rows.slice(1)
-      .filter(r => r[idxIsim] && r[idxSinif])
-      .map(r => ({
-        isim: r[idxIsim] || "",
-        soyisim: r[idxSoyisim] || "",
-        cinsiyet: r[idxCinsiyet] || "",
-        sinif: r[idxSinif] || "",
-        okulNo: r[idxOkulNo] || "",
-        veliAdi:    idxVeliAdi    !== -1 ? (r[idxVeliAdi]    || "") : "",
-        veliSoyadi: idxVeliSoyad !== -1 ? (r[idxVeliSoyad] || "") : "",
-        veliTel:    idxVeliTel    !== -1 ? (r[idxVeliTel]    || "") : "",
-        key: ""
-      }));
+    row.push(cell.trim());
+    if (row.some(value => value !== "")) rows.push(row);
+    return rows;
+  }
 
-    // Öğrenci anahtarı: sınıf + okul no + ad + soyad (aynı okul numarası farklı sınıflarda tekrar ederse karışmayı engeller)
-    students.forEach(s => { s.key = studentKey(s); });
+  function findColumnIndexes(headerRow, expectedHeader) {
+    const target = normalizeText(expectedHeader);
+    const indexes = [];
+    headerRow.forEach((cell, index) => {
+      if (normalizeText(cell) === target) indexes.push(index);
+    });
+    return indexes;
+  }
 
-    setText("studentStatus", `${students.length} Öğrenci`);
+  function parseHeaderCandidate(candidate) {
+    const value = String(candidate || "").trim();
+    const occurrenceMatch = value.match(/#(\d+)$/);
+    return {
+      header: occurrenceMatch ? value.slice(0, occurrenceMatch.index).trim() : value,
+      occurrence: occurrenceMatch ? Math.max(1, Number(occurrenceMatch[1])) : 1
+    };
+  }
+
+  function findMappedColumnIndex(headerRow, mapping) {
+    const candidates = String(mapping || "").split("|").map(value => value.trim()).filter(Boolean);
+    for (const candidate of candidates) {
+      const parsed = parseHeaderCandidate(candidate);
+      const indexes = findColumnIndexes(headerRow, parsed.header);
+      if (indexes.length >= parsed.occurrence) return indexes[parsed.occurrence - 1];
+    }
+    return -1;
+  }
+
+  function buildStudentSourceUrl(source) {
+    const rawUrl = String(source.url || "").trim();
+    if (!rawUrl) throw new Error("E-tablo adresi boş.");
+    if (/tqx=out:csv|[?&]format=csv/i.test(rawUrl)) return rawUrl;
+
+    const idMatch = rawUrl.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/) || rawUrl.match(/^([a-zA-Z0-9-_]{20,})$/);
+    if (!idMatch) return rawUrl;
+
+    const spreadsheetId = idMatch[1];
+    let urlGid = "";
+    try {
+      urlGid = new URL(rawUrl).searchParams.get("gid") || "";
+    } catch (_error) {
+      urlGid = "";
+    }
+
+    if (String(source.sheetName || "").trim()) {
+      return `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(String(source.sheetName).trim())}`;
+    }
+
+    const gid = String(source.gid || urlGid || "0").trim();
+    return `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv&gid=${encodeURIComponent(gid)}`;
+  }
+
+  async function fetchCsvRows(source) {
+    const response = await fetch(buildStudentSourceUrl(source), { cache: "no-store" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const text = await response.text();
+    const rows = parseCSV(text);
+    if (!rows.length) throw new Error("E-tabloda okunabilir veri bulunamadı.");
+    return rows;
+  }
+
+  /* AYAR MODELİ */
+  function normalizeSource(source, index) {
+    const fallback = DEFAULT_STUDENT_CONFIG.sources[0];
+    const normalized = {
+      id: String(source?.id || makeId("source")),
+      name: String(source?.name || `Öğrenci Kaynağı ${index + 1}`),
+      url: String(source?.url || ""),
+      sheetName: String(source?.sheetName || ""),
+      gid: String(source?.gid || ""),
+      headerRow: Math.max(1, Number(source?.headerRow || 1)),
+      dataStartRow: Math.max(1, Number(source?.dataStartRow || Number(source?.headerRow || 1) + 1)),
+      active: source?.active !== false,
+      priority: index + 1,
+      mappings: { ...(source?.mappings || {}) }
+    };
+
+    SYSTEM_FIELD_DEFINITIONS.forEach(field => {
+      if (typeof normalized.mappings[field.key] !== "string") {
+        normalized.mappings[field.key] = source ? "" : (fallback.mappings[field.key] || "");
+      }
+    });
+    return normalized;
+  }
+
+  function normalizeColumn(column, index) {
+    const field = String(column?.field || `custom_${Date.now().toString(36)}_${index}`);
+    return {
+      id: String(column?.id || makeId("column")),
+      field,
+      label: String(column?.label || `Yeni Sütun ${index + 1}`),
+      dataType: DATA_TYPE_OPTIONS.some(item => item.value === column?.dataType) ? column.dataType : "text",
+      visible: column?.visible !== false,
+      searchable: Boolean(column?.searchable),
+      filterable: Boolean(column?.filterable),
+      reportVisible: Boolean(column?.reportVisible)
+    };
+  }
+
+  function normalizeStudentConfig(rawConfig) {
+    if (!rawConfig || typeof rawConfig !== "object") return deepClone(DEFAULT_STUDENT_CONFIG);
+    const sources = Array.isArray(rawConfig.sources) && rawConfig.sources.length
+      ? rawConfig.sources.map(normalizeSource)
+      : deepClone(DEFAULT_STUDENT_CONFIG.sources);
+    const columns = Array.isArray(rawConfig.columns)
+      ? rawConfig.columns.map(normalizeColumn)
+      : deepClone(DEFAULT_STUDENT_CONFIG.columns);
+    const duplicateKeys = Array.isArray(rawConfig.duplicateKeys) && rawConfig.duplicateKeys.length
+      ? rawConfig.duplicateKeys.filter(key => DUPLICATE_FIELD_OPTIONS.some(option => option.value === key))
+      : deepClone(DEFAULT_STUDENT_CONFIG.duplicateKeys);
+
+    return {
+      version: 2,
+      duplicateKeys: duplicateKeys.length ? duplicateKeys : ["fullName"],
+      sources: sources.map((source, index) => ({ ...source, priority: index + 1 })),
+      columns
+    };
+  }
+
+  function getCustomFieldKeys(config) {
+    return unique((config.columns || []).map(column => column.field).filter(field => !SYSTEM_FIELD_KEYS.has(field)));
+  }
+
+  function cleanupUnusedCustomMappings(config) {
+    const allowedFields = new Set([...SYSTEM_FIELD_KEYS, ...getCustomFieldKeys(config)]);
+    config.sources.forEach(source => {
+      Object.keys(source.mappings || {}).forEach(key => {
+        if (!allowedFields.has(key)) delete source.mappings[key];
+      });
+    });
+  }
+
+  function getMappingFieldDefinitions(config) {
+    const customLabels = new Map();
+    (config.columns || []).forEach(column => {
+      if (!SYSTEM_FIELD_KEYS.has(column.field) && !customLabels.has(column.field)) {
+        customLabels.set(column.field, column.label || column.field);
+      }
+    });
+    return [
+      ...SYSTEM_FIELD_DEFINITIONS,
+      ...Array.from(customLabels, ([key, label]) => ({ key, label: `Özel: ${label}` }))
+    ];
+  }
+
+  function getFieldLabel(config, fieldKey) {
+    const system = SYSTEM_FIELD_DEFINITIONS.find(item => item.key === fieldKey);
+    if (system) return system.label;
+    const column = (config.columns || []).find(item => item.field === fieldKey);
+    return column?.label || fieldKey;
+  }
+
+  function validateStudentConfig(config) {
+    const errors = [];
+    const activeSources = config.sources.filter(source => source.active);
+    if (!activeSources.length) errors.push("En az bir öğrenci veri kaynağı aktif olmalıdır.");
+    activeSources.forEach((source, index) => {
+      if (!String(source.url || "").trim()) errors.push(`${index + 1}. aktif kaynağın e-tablo adresi boş.`);
+      const mappings = source.mappings || {};
+      const hasName = String(mappings.fullName || "").trim() || String(mappings.firstName || "").trim();
+      if (!hasName) errors.push(`“${source.name}” kaynağında öğrenci adı veya tam adı eşleştirilmelidir.`);
+    });
+    if (!config.duplicateKeys.length) errors.push("En az bir çakışma kontrol alanı seçilmelidir.");
+    return errors;
+  }
+
+  async function loadStudentConfigFromFirebase() {
+    try {
+      const snapshot = await get(ref(db, CONFIG_PATH));
+      studentConfig = snapshot.exists()
+        ? normalizeStudentConfig(snapshot.val())
+        : deepClone(DEFAULT_STUDENT_CONFIG);
+    } catch (error) {
+      console.error("Öğrenci ayarları yüklenemedi:", error);
+      studentConfig = deepClone(DEFAULT_STUDENT_CONFIG);
+    }
+  }
+
+  async function saveStudentConfigToFirebase(config) {
+    const cleanConfig = normalizeStudentConfig(config);
+    cleanupUnusedCustomMappings(cleanConfig);
+    await set(ref(db, CONFIG_PATH), cleanConfig);
+    studentConfig = cleanConfig;
+  }
+
+  /* ÖĞRENCİ VERİ ADAPTÖRÜ */
+  function valueAt(row, index) {
+    return index >= 0 ? String(row[index] ?? "").trim() : "";
+  }
+
+  function createStudentRecord(source, row, indexMap) {
+    const values = {};
+    Object.entries(indexMap).forEach(([field, index]) => {
+      values[field] = valueAt(row, index);
+    });
+
+    let firstName = values.firstName || "";
+    let lastName = values.lastName || "";
+    let fullName = values.fullName || `${firstName} ${lastName}`.trim();
+    if (!firstName && !lastName && fullName) firstName = fullName;
+    if (!fullName) fullName = `${firstName} ${lastName}`.trim();
+
+    let parentFirstName = values.parentFirstName || "";
+    let parentLastName = values.parentLastName || "";
+    let parentFullName = values.parentFullName || `${parentFirstName} ${parentLastName}`.trim();
+    if (!parentFirstName && !parentLastName && parentFullName) parentFirstName = parentFullName;
+    if (!parentFullName) parentFullName = `${parentFirstName} ${parentLastName}`.trim();
+
+    const className = values.className || "Sınıfsız";
+    const schoolNumber = values.schoolNumber || "";
+    const parentPhone = normalizePhoneTR(values.parentPhone || "");
+    const parent2Phone = normalizePhoneTR(values.parent2Phone || "");
+
+    Object.assign(values, {
+      fullName,
+      firstName,
+      lastName,
+      className,
+      schoolNumber,
+      parentFullName,
+      parentFirstName,
+      parentLastName,
+      parentPhone,
+      parent2Phone
+    });
+
+    const student = {
+      fullName,
+      isim: firstName,
+      soyisim: lastName,
+      cinsiyet: values.gender || "",
+      sinif: className,
+      okulNo: schoolNumber,
+      veliAdi: parentFirstName,
+      veliSoyadi: parentLastName,
+      veliTel: parentPhone,
+      sourceId: source.id,
+      sourceName: source.name,
+      values,
+      key: ""
+    };
+    student.key = studentKey(student);
+    return student;
+  }
+
+  function buildDuplicateKey(student, duplicateKeys) {
+    const parts = [];
+    duplicateKeys.forEach(field => {
+      const value = student.values?.[field] ?? "";
+      const normalized = field === "schoolNumber" || field === "parentPhone"
+        ? String(value).replace(/\D/g, "")
+        : normalizeIdentity(value);
+      if (normalized) parts.push(`${field}:${normalized}`);
+    });
+    return parts.join("|");
+  }
+
+  async function fetchStudentsFromConfig(config) {
+    const normalizedConfig = normalizeStudentConfig(config);
+    const sources = normalizedConfig.sources
+      .filter(source => source.active)
+      .sort((a, b) => a.priority - b.priority);
+    const collected = [];
+    const warnings = [];
+    const sourceResults = [];
+    const exactDuplicateMap = new Map();
+    const fullNameSources = new Map();
+    const mappingDefinitions = getMappingFieldDefinitions(normalizedConfig);
+
+    for (const source of sources) {
+      try {
+        const rows = await fetchCsvRows(source);
+        const headerIndex = Math.max(0, source.headerRow - 1);
+        const dataStartIndex = Math.max(headerIndex + 1, source.dataStartRow - 1);
+        const header = rows[headerIndex] || [];
+        const indexMap = {};
+
+        mappingDefinitions.forEach(field => {
+          indexMap[field.key] = findMappedColumnIndex(header, source.mappings?.[field.key]);
+        });
+
+        let acceptedCount = 0;
+        let skippedCount = 0;
+        rows.slice(dataStartIndex).forEach(row => {
+          const student = createStudentRecord(source, row, indexMap);
+          if (!student.fullName) return;
+
+          const normalizedFullName = normalizeIdentity(student.fullName);
+          if (normalizedFullName) {
+            if (!fullNameSources.has(normalizedFullName)) {
+              fullNameSources.set(normalizedFullName, { displayName: student.fullName, sources: new Set() });
+            }
+            fullNameSources.get(normalizedFullName).sources.add(source.name);
+          }
+
+          const duplicateKey = buildDuplicateKey(student, normalizedConfig.duplicateKeys);
+          if (duplicateKey && exactDuplicateMap.has(duplicateKey)) {
+            const previous = exactDuplicateMap.get(duplicateKey);
+            warnings.push(`“${student.fullName}” kaydı “${previous.sourceName}” ve “${source.name}” kaynaklarında aynı çakışma anahtarıyla bulundu. Öncelikli kaynak korundu.`);
+            skippedCount += 1;
+            return;
+          }
+
+          if (duplicateKey) exactDuplicateMap.set(duplicateKey, student);
+          collected.push(student);
+          acceptedCount += 1;
+        });
+
+        sourceResults.push({ sourceId: source.id, sourceName: source.name, count: acceptedCount, skipped: skippedCount, headers: header });
+      } catch (error) {
+        console.error(`Öğrenci kaynağı yüklenemedi: ${source.name}`, error);
+        warnings.push(`“${source.name}” kaynağı yüklenemedi: ${error.message}`);
+        sourceResults.push({ sourceId: source.id, sourceName: source.name, count: 0, skipped: 0, error: error.message, headers: [] });
+      }
+    }
+
+    fullNameSources.forEach(info => {
+      const sourceNames = Array.from(info.sources);
+      if (sourceNames.length > 1) {
+        warnings.push(`“${info.displayName}” adlı öğrenci birden fazla e-tabloda var: ${sourceNames.join(", ")}. Kayıtlar seçili çakışma alanlarına göre işlendi.`);
+      }
+    });
+
+    collected.sort((a, b) => sortStudentLike(a, b, true));
+    return { students: collected, warnings: unique(warnings), sourceResults };
+  }
+
+  /* VERİ YÜKLEME */
+  async function loadStudents() {
+    setText("studentStatus", "Yükleniyor...");
+    const result = await fetchStudentsFromConfig(studentConfig);
+    students = result.students;
+    studentWarnings = result.warnings;
+    activeStudentFilters = {};
+
+    setText("studentStatus", studentWarnings.length
+      ? `${students.length} Öğrenci • ${studentWarnings.length} Uyarı`
+      : `${students.length} Öğrenci`);
+    renderStudentWarnings();
     fillClassFilter();
+    renderDynamicStudentFilters();
     renderStudentsTable();
   }
 
   async function loadTeachers() {
     setText("teacherStatus", "Yükleniyor...");
-    const res = await fetch(TEACHER_SHEET_CSV_URL);
-    const text = await res.text();
-    const rows = parseCSV(text);
-    if (!rows.length) { setText("teacherStatus","Veri yok"); return; }
+    const response = await fetch(TEACHER_SHEET_CSV_URL, { cache: "no-store" });
+    if (!response.ok) throw new Error(`Öğretmen listesi yüklenemedi: HTTP ${response.status}`);
+    const rows = parseCSV(await response.text());
+    if (!rows.length) {
+      teachers = [];
+      setText("teacherStatus", "Veri yok");
+      fillTeacherSelect();
+      return;
+    }
+
     const header = rows[0];
-    const idxId    = findColumnIndex(header, "ID");
-    const idxAd    = findColumnIndex(header, "OGRETMEN_ADI");
-    const idxBrans = findColumnIndex(header, "BRANS");
+    const idxId = findMappedColumnIndex(header, "ID");
+    const idxName = findMappedColumnIndex(header, "OGRETMEN_ADI");
+    const idxBranch = findMappedColumnIndex(header, "BRANS");
 
     teachers = rows.slice(1)
-      .filter(r => r[idxAd])
-      .map(r => ({
-        id:    idxId    !== -1 ? (r[idxId]    || "") : "",
-        ad:    idxAd    !== -1 ? (r[idxAd]    || "") : "",
-        brans: idxBrans !== -1 ? (r[idxBrans] || "") : ""
+      .filter(row => valueAt(row, idxName))
+      .map((row, index) => ({
+        id: valueAt(row, idxId) || `teacher_${index + 1}`,
+        ad: valueAt(row, idxName),
+        brans: valueAt(row, idxBranch)
       }));
 
     setText("teacherStatus", `${teachers.length} Öğretmen`);
@@ -1151,218 +1977,324 @@
 
   async function loadAssignmentsFromFirebase() {
     try {
-      const snap = await get(ref(db, ASSIGNMENTS_PATH));
-      if (snap.exists()) {
-        const val = snap.val();
-        assignments = Array.isArray(val) ? val.filter(Boolean) : Object.values(val || {});
-      } else assignments = [];
+      const snapshot = await get(ref(db, ASSIGNMENTS_PATH));
+      if (snapshot.exists()) {
+        const value = snapshot.val();
+        assignments = Array.isArray(value) ? value.filter(Boolean) : Object.values(value || {});
+      } else {
+        assignments = [];
+      }
       renderAssignmentsTable();
-    } catch (e) { console.error(e); }
+    } catch (error) {
+      console.error("Atamalar yüklenemedi:", error);
+    }
   }
 
-  async function loadAllData() {
+  async function loadAllData({ refreshConfig = true } = {}) {
     try {
+      if (refreshConfig) await loadStudentConfigFromFirebase();
       await Promise.all([loadStudents(), loadTeachers(), loadAssignmentsFromFirebase()]);
-    } catch (e) {
-      console.error(e);
-      alert("Veriler yüklenirken hata oluştu.");
+    } catch (error) {
+      console.error(error);
+      alert(`Veriler yüklenirken hata oluştu: ${error.message}`);
     }
   }
 
-  /* EKRAN DOLDURMA */
+  /* ÖĞRENCİ LİSTESİ EKRANI */
+  function getSelectedClasses() {
+    return Array.from(document.getElementById("classFilter").selectedOptions).map(option => option.value);
+  }
+
   function fillClassFilter() {
-    const sel = document.getElementById("classFilter");
-    const siniflar = unique(students.map(s => s.sinif)).sort();
-    sel.innerHTML = "";
-    siniflar.forEach(s => {
-      const o = document.createElement("option");
-      o.value = s; o.textContent = s;
-      sel.appendChild(o);
+    const select = document.getElementById("classFilter");
+    const previousSelection = new Set(Array.from(select.selectedOptions).map(option => option.value));
+    const classes = unique(students.map(student => student.sinif).filter(Boolean)).sort(compareClassCode);
+    select.innerHTML = classes.map(cls => `<option value="${escapeAttr(cls)}">${escapeHtml(cls)}</option>`).join("");
+
+    let selectedCount = 0;
+    Array.from(select.options).forEach(option => {
+      option.selected = previousSelection.has(option.value);
+      if (option.selected) selectedCount += 1;
     });
-
-    // İlk yüklemede en az 1 sınıf seçili olsun
-    if (sel.options.length && sel.selectedOptions.length === 0) {
-      sel.options[0].selected = true;
-    }
+    if (!selectedCount && select.options.length) select.options[0].selected = true;
   }
-
-  const getSelectedClasses = () =>
-    Array.from(document.getElementById("classFilter").selectedOptions).map(o => o.value);
 
   function fillTeacherSelect() {
-    const sel = document.getElementById("teacherSelect");
-    sel.innerHTML = "";
-    teachers.forEach(t => {
-      const o = document.createElement("option");
-      o.value = t.id;
-      o.textContent = `${t.ad} (${t.brans})`;
-      sel.appendChild(o);
+    const select = document.getElementById("teacherSelect");
+    select.innerHTML = teachers.map(teacher => (
+      `<option value="${escapeAttr(teacher.id)}">${escapeHtml(teacher.ad)} (${escapeHtml(teacher.brans)})</option>`
+    )).join("");
+  }
+
+  function getVisibleStudentColumns() {
+    return studentConfig.columns.filter(column => column.visible);
+  }
+
+  function getStudentFieldValue(student, field) {
+    return student.values?.[field] ?? "";
+  }
+
+  function formatColumnValue(column, rawValue) {
+    const value = rawValue ?? "";
+    if (column.dataType === "phone") return formatPhoneMaskedTR(value);
+    if (column.dataType === "checkbox") {
+      const checked = value === true || ["1", "true", "evet", "yes", "x"].includes(normalizeText(value));
+      return checked ? "Evet" : "Hayır";
+    }
+    if (column.dataType === "date") {
+      const stringValue = String(value);
+      return /^\d{4}-\d{2}-\d{2}$/.test(stringValue) ? toDisplayDateFromISO(stringValue) : stringValue;
+    }
+    return String(value);
+  }
+
+  function renderStudentWarnings() {
+    const box = document.getElementById("studentDataWarnings");
+    if (!studentWarnings.length) {
+      box.innerHTML = "";
+      box.classList.add("hidden");
+      return;
+    }
+    box.classList.remove("hidden");
+    const shown = studentWarnings.slice(0, 8);
+    box.innerHTML = `
+      <strong>Öğrenci verisi uyarıları:</strong>
+      <ul>${shown.map(warning => `<li>${escapeHtml(warning)}</li>`).join("")}</ul>
+      ${studentWarnings.length > shown.length ? `<div>Toplam ${studentWarnings.length} uyarı var. Ayrıntılar Ayarlar &gt; Canlı Önizleme bölümünde görülebilir.</div>` : ""}
+    `;
+  }
+
+  function renderDynamicStudentFilters() {
+    const container = document.getElementById("dynamicStudentFilters");
+    const filterableColumns = studentConfig.columns.filter(column => column.filterable && column.field !== "className");
+    if (!filterableColumns.length) {
+      container.innerHTML = "";
+      container.classList.add("hidden");
+      return;
+    }
+
+    container.classList.remove("hidden");
+    container.innerHTML = filterableColumns.map(column => {
+      const values = unique(students.map(student => formatColumnValue(column, getStudentFieldValue(student, column.field))).filter(Boolean))
+        .sort((a, b) => a.localeCompare(b, "tr", { numeric: true, sensitivity: "base" }));
+      return `
+        <label class="compact-field">
+          <span>${escapeHtml(column.label)}</span>
+          <select data-student-filter="${escapeAttr(column.field)}">
+            <option value="">Tümü</option>
+            ${values.map(value => `<option value="${escapeAttr(value)}">${escapeHtml(value)}</option>`).join("")}
+          </select>
+        </label>
+      `;
+    }).join("");
+  }
+
+  function studentMatchesSearch(student, query) {
+    if (!query) return true;
+    const searchableColumns = studentConfig.columns.filter(column => column.searchable);
+    return searchableColumns.some(column => normalizeText(getStudentFieldValue(student, column.field)).includes(query));
+  }
+
+  function studentMatchesDynamicFilters(student) {
+    return Object.entries(activeStudentFilters).every(([field, selectedValue]) => {
+      if (!selectedValue) return true;
+      const column = studentConfig.columns.find(item => item.field === field);
+      if (!column) return true;
+      return formatColumnValue(column, getStudentFieldValue(student, field)) === selectedValue;
     });
+  }
+
+  function getFilteredStudents() {
+    const selectedClasses = getSelectedClasses();
+    const searchQuery = normalizeText(document.getElementById("studentSearchInput").value);
+    const list = students.filter(student => (
+      selectedClasses.includes(student.sinif)
+      && studentMatchesSearch(student, searchQuery)
+      && studentMatchesDynamicFilters(student)
+    ));
+    list.sort((a, b) => sortStudentLike(a, b, selectedClasses.length > 1 || listHasMultipleClasses(list)));
+    return list;
   }
 
   function renderStudentsTable() {
-    const tbody = document.getElementById("studentsBody");
-    const selectedClasses = getSelectedClasses();
-    if (!selectedClasses.length) { tbody.innerHTML = ""; return; }
+    const headerRow = document.getElementById("studentsHeadRow");
+    const body = document.getElementById("studentsBody");
+    const columns = getVisibleStudentColumns();
+    const list = getFilteredStudents();
 
-    let list = students.filter(s => selectedClasses.includes(s.sinif));
-    list.sort((a,b)=>sortStudentLike(a,b, (typeof selectedClasses!=="undefined" && selectedClasses.length>1) || listHasMultipleClasses(list)));
-
-    tbody.innerHTML = "";
-    list.forEach(s => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td style="text-align:center;"><input type="checkbox" class="student-checkbox" data-skey="${s.key}"></td>
-        <td>${s.isim}</td>
-        <td>${s.soyisim}</td>
-        <td>${s.cinsiyet}</td>
-        <td>${s.sinif}</td>
-        <td>${s.okulNo}</td>
-        <td>${s.veliAdi}</td>
-        <td>${s.veliSoyadi}</td>
-        <td>${s.veliTel}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-
-    // Liste değiştiği için "tümünü seç" üst kutusunu sıfırla
-    const allCb = document.getElementById("allRowCheckbox");
-    if (allCb) allCb.checked = false;
-  }
-
-  function renderAssignmentsTable() {
-    const tbody = document.getElementById("assignmentsBody");
-    tbody.innerHTML = "";
-    
-    assignments.sort((a,b)=>sortStudentLike(a,b, listHasMultipleClasses(assignments)));
-
-    assignments.forEach((a,i) => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${i+1}</td>
-        <td>${a.teacherName}</td>
-        <td>${a.teacherBranch}</td>
-        <td>${a.studentFirstName}</td>
-        <td>${a.studentLastName}</td>
-        <td>${a.class}</td>
-        <td>${a.schoolNumber}</td>
-        <td>${a.parentFirstName} ${a.parentLastName}</td>
-        <td>${formatPhoneMaskedTR(a.parentPhone)}</td>
-        <td>${toDisplayDateFromISO(a.startDate)}<br>${toDisplayDateFromISO(a.endDate)}</td>
-        <td><button type="button" class="danger" style="padding:4px 8px; font-size:0.8rem" data-del-id="${a.id}">Sil</button></td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
-
-  /* RAPOR OLUŞTURMA (KARTLI MODERN SİSTEM) */
-function renderReports() {
-  const cont = document.getElementById("reportContainer");
-  cont.innerHTML = "";
-  if (!assignments.length) { cont.innerHTML="<p class='muted'>Herhangi bir atama yok.</p>"; return; }
-
-  const filtered = assignments.slice();
-  if (!filtered.length) return;
-
-  // Gruplama
-  const groups = {};
-  filtered.forEach(a => {
-    if (!groups[a.teacherId]) groups[a.teacherId] = [];
-    groups[a.teacherId].push(a);
-  });
-
-  const teacherIds = Object.keys(groups);
-
-  teacherIds.forEach((tid) => {
-    const list = groups[tid];
-    const tName = list[0].teacherName;
-    const tBranch = list[0].teacherBranch;
-    const minStart = list.reduce((m,a)=>!m||a.startDate < m ? a.startDate : m, null);
-    const maxEnd = list.reduce((m,a)=>!m||a.endDate > m ? a.endDate : m, null);
-
-    // Sıralama
-    list.sort((a,b)=>sortStudentLike(a,b, listHasMultipleClasses(list)));
-
-    const cardWrapper = document.createElement("div");
-    cardWrapper.className = "report-card";
-
-    // 1. Başlık Alanı
-    const headerHtml = `
-      <div class="report-header-box">
-        <div class="report-header-info">
-          <h3>${tName}</h3>
-          <div style="font-size:10pt; font-weight:normal; margin-top:2px;">${tBranch}</div>
-        </div>
-        <div class="report-header-meta" style="text-align:right">
-          <div>${classBreakdownText(list)}</div>
-          <div>${toDisplayDateFromISO(minStart)} – ${toDisplayDateFromISO(maxEnd)}</div>
-        </div>
-      </div>
+    headerRow.innerHTML = `
+      <th style="width:40px; text-align:center;"><input type="checkbox" id="allRowCheckbox" aria-label="Görünen öğrencilerin tümünü seç"></th>
+      ${columns.map(column => `<th>${escapeHtml(column.label)}</th>`).join("")}
     `;
 
-    // 2. Öğrenci Kartları Konteyneri
-    const grid = document.createElement("div");
-    grid.className = "student-card-grid";
+    body.innerHTML = list.map(student => `
+      <tr>
+        <td style="text-align:center;"><input type="checkbox" class="student-checkbox" data-skey="${escapeAttr(student.key)}"></td>
+        ${columns.map(column => `<td>${escapeHtml(formatColumnValue(column, getStudentFieldValue(student, column.field)))}</td>`).join("")}
+      </tr>
+    `).join("");
 
-    list.forEach((a, i) => {
-      const studentCard = document.createElement("div");
-      studentCard.className = "student-card";
+    setText("studentVisibleCount", `${list.length} kayıt gösteriliyor`);
+  }
 
-      studentCard.innerHTML = `
-        <div class="card-top">
-          <div class="info-group">
-            <span class="st-index">${i+1}</span>
-            <span class="st-class">${a.class}</span>
-            <span class="st-name">${a.studentFirstName} ${a.studentLastName}</span>
-            <small style="color:#666">(${a.schoolNumber})</small>
+  /* ATAMA TABLOSU VE RAPOR */
+  function renderAssignmentsTable() {
+    const body = document.getElementById("assignmentsBody");
+    assignments.sort((a, b) => sortStudentLike(a, b, listHasMultipleClasses(assignments)));
+    body.innerHTML = assignments.map((assignment, index) => `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${escapeHtml(assignment.teacherName)}</td>
+        <td>${escapeHtml(assignment.teacherBranch)}</td>
+        <td>${escapeHtml(assignment.studentFirstName)}</td>
+        <td>${escapeHtml(assignment.studentLastName)}</td>
+        <td>${escapeHtml(assignment.class)}</td>
+        <td>${escapeHtml(assignment.schoolNumber)}</td>
+        <td>${escapeHtml(`${assignment.parentFirstName || ""} ${assignment.parentLastName || ""}`.trim())}</td>
+        <td>${escapeHtml(formatPhoneMaskedTR(assignment.parentPhone))}</td>
+        <td>${escapeHtml(toDisplayDateFromISO(assignment.startDate))}<br>${escapeHtml(toDisplayDateFromISO(assignment.endDate))}</td>
+        <td><button type="button" class="danger" style="padding:4px 8px; font-size:0.8rem" data-del-id="${escapeAttr(assignment.id)}">Sil</button></td>
+      </tr>
+    `).join("");
+  }
+
+  function reportFieldEnabled(field) {
+    return studentConfig.columns.some(column => column.field === field && column.reportVisible);
+  }
+
+  function assignmentFieldValue(assignment, field) {
+    if (assignment.studentFields && Object.prototype.hasOwnProperty.call(assignment.studentFields, field)) {
+      return assignment.studentFields[field];
+    }
+    const fallback = {
+      fullName: assignment.studentFullName || `${assignment.studentFirstName || ""} ${assignment.studentLastName || ""}`.trim(),
+      firstName: assignment.studentFirstName,
+      lastName: assignment.studentLastName,
+      className: assignment.class,
+      schoolNumber: assignment.schoolNumber,
+      parentFirstName: assignment.parentFirstName,
+      parentLastName: assignment.parentLastName,
+      parentFullName: `${assignment.parentFirstName || ""} ${assignment.parentLastName || ""}`.trim(),
+      parentPhone: assignment.parentPhone,
+      gender: assignment.gender
+    };
+    return fallback[field] ?? "";
+  }
+
+  function renderReportExtraFields(assignment) {
+    const coreFields = new Set(["fullName", "firstName", "lastName", "className", "schoolNumber", "parentFullName", "parentFirstName", "parentLastName", "parentPhone"]);
+    const columns = studentConfig.columns.filter(column => column.reportVisible && !coreFields.has(column.field));
+    const items = columns.map(column => {
+      const value = formatColumnValue(column, assignmentFieldValue(assignment, column.field));
+      return value ? `<span class="report-extra-item"><strong>${escapeHtml(column.label)}:</strong> ${escapeHtml(value)}</span>` : "";
+    }).filter(Boolean);
+    return items.length ? `<div class="report-extra-fields">${items.join("")}</div>` : "";
+  }
+
+  function renderReports() {
+    const container = document.getElementById("reportContainer");
+    container.innerHTML = "";
+    if (!assignments.length) {
+      container.innerHTML = "<p class='muted'>Herhangi bir atama yok.</p>";
+      return;
+    }
+
+    const groups = {};
+    assignments.forEach(assignment => {
+      if (!groups[assignment.teacherId]) groups[assignment.teacherId] = [];
+      groups[assignment.teacherId].push(assignment);
+    });
+
+    Object.values(groups).forEach(list => {
+      const teacherName = list[0].teacherName;
+      const teacherBranch = list[0].teacherBranch;
+      const minStart = list.reduce((minimum, assignment) => !minimum || assignment.startDate < minimum ? assignment.startDate : minimum, null);
+      const maxEnd = list.reduce((maximum, assignment) => !maximum || assignment.endDate > maximum ? assignment.endDate : maximum, null);
+      list.sort((a, b) => sortStudentLike(a, b, listHasMultipleClasses(list)));
+
+      const cardWrapper = document.createElement("div");
+      cardWrapper.className = "report-card";
+      cardWrapper.innerHTML = `
+        <div class="report-header-box">
+          <div class="report-header-info">
+            <h3>${escapeHtml(teacherName)}</h3>
+            <div style="font-size:10pt; font-weight:normal; margin-top:2px;">${escapeHtml(teacherBranch)}</div>
           </div>
-          <div class="info-group right" style="font-size:9pt;">
-            <span class="st-parent">Veli: <strong>${a.parentFirstName} ${a.parentLastName}</strong></span>
-            <span class="st-phone"><span class="tel-icon" aria-hidden="true">☎️</span>Tel: <span class="phone-pill">${formatPhoneMaskedTR(a.parentPhone)}</span></span>
-          </div>
-        </div>
-        <div class="card-bottom">
-          <div class="note-area">
-            <textarea class="note-input" data-assignment-id="${a.id}">${a.note || ""}</textarea>
-            <div class="method-row">
-              <span class="method-label">Görüşme Şekli:</span>
-              <label class="method-item"><input type="checkbox" class="method-checkbox" data-assignment-id="${a.id}" data-method="phone" ${a.methodPhone ? "checked" : ""}> Telefon</label>
-              <label class="method-item"><input type="checkbox" class="method-checkbox" data-assignment-id="${a.id}" data-method="whatsapp" ${a.methodWhatsApp ? "checked" : ""}> WhatsApp</label>
-              <label class="method-item"><input type="checkbox" class="method-checkbox" data-assignment-id="${a.id}" data-method="sms" ${a.methodSMS ? "checked" : ""}> Normal Mesaj</label>
-              <label class="method-item"><input type="checkbox" class="method-checkbox" data-assignment-id="${a.id}" data-method="face" ${a.methodFaceToFace ? "checked" : ""}> Yüz Yüze</label>
-            </div>
-          </div>
-          <div class="action-area">
-             <div class="call-emoji" aria-hidden="true">📞</div>
-             <input type="checkbox" class="report-called" data-assignment-id="${a.id}" ${a.called ? "checked" : ""}>
+          <div class="report-header-meta" style="text-align:right">
+            <div>${escapeHtml(classBreakdownText(list))}</div>
+            <div>${escapeHtml(toDisplayDateFromISO(minStart))} – ${escapeHtml(toDisplayDateFromISO(maxEnd))}</div>
           </div>
         </div>
       `;
-      // Son kartın en altına notu bağla (yazdırmada kayma olmaması için not kartla birlikte kalsın)
-      if (i === list.length - 1) {
-        const inlineNote = document.createElement("div");
-        inlineNote.className = "inline-footer-note";
-        inlineNote.textContent = "📌 Not: Bu liste tamamlandığında lütfen ilgili zümre başkanına zamanında teslim ediniz.";
-        studentCard.appendChild(inlineNote);
-      }
-      grid.appendChild(studentCard);
+
+      const grid = document.createElement("div");
+      grid.className = "student-card-grid";
+
+      list.forEach((assignment, index) => {
+        const studentCard = document.createElement("div");
+        studentCard.className = "student-card";
+        const showName = reportFieldEnabled("fullName") || reportFieldEnabled("firstName") || reportFieldEnabled("lastName");
+        const showClass = reportFieldEnabled("className");
+        const showNumber = reportFieldEnabled("schoolNumber");
+        const showParent = reportFieldEnabled("parentFullName") || reportFieldEnabled("parentFirstName") || reportFieldEnabled("parentLastName");
+        const showPhone = reportFieldEnabled("parentPhone");
+        const studentName = assignmentFieldValue(assignment, "fullName");
+        const parentName = assignmentFieldValue(assignment, "parentFullName");
+
+        studentCard.innerHTML = `
+          <div class="card-top">
+            <div class="info-group">
+              <span class="st-index">${index + 1}</span>
+              ${showClass ? `<span class="st-class">${escapeHtml(assignment.class)}</span>` : ""}
+              ${showName ? `<span class="st-name">${escapeHtml(studentName)}</span>` : ""}
+              ${showNumber ? `<small style="color:#666">(${escapeHtml(assignment.schoolNumber)})</small>` : ""}
+            </div>
+            <div class="info-group right" style="font-size:9pt;">
+              ${showParent ? `<span class="st-parent">Veli: <strong>${escapeHtml(parentName)}</strong></span>` : ""}
+              ${showPhone ? `<span class="st-phone"><span class="tel-icon" aria-hidden="true">☎️</span>Tel: <span class="phone-pill">${escapeHtml(formatPhoneMaskedTR(assignment.parentPhone))}</span></span>` : ""}
+            </div>
+            ${renderReportExtraFields(assignment)}
+          </div>
+          <div class="card-bottom">
+            <div class="note-area">
+              <textarea class="note-input" data-assignment-id="${escapeAttr(assignment.id)}">${escapeHtml(assignment.note || "")}</textarea>
+              <div class="method-row">
+                <span class="method-label">Görüşme Şekli:</span>
+                <label class="method-item"><input type="checkbox" class="method-checkbox" data-assignment-id="${escapeAttr(assignment.id)}" data-method="phone" ${assignment.methodPhone ? "checked" : ""}> Telefon</label>
+                <label class="method-item"><input type="checkbox" class="method-checkbox" data-assignment-id="${escapeAttr(assignment.id)}" data-method="whatsapp" ${assignment.methodWhatsApp ? "checked" : ""}> WhatsApp</label>
+                <label class="method-item"><input type="checkbox" class="method-checkbox" data-assignment-id="${escapeAttr(assignment.id)}" data-method="sms" ${assignment.methodSMS ? "checked" : ""}> Normal Mesaj</label>
+                <label class="method-item"><input type="checkbox" class="method-checkbox" data-assignment-id="${escapeAttr(assignment.id)}" data-method="face" ${assignment.methodFaceToFace ? "checked" : ""}> Yüz Yüze</label>
+              </div>
+            </div>
+            <div class="action-area">
+              <div class="call-emoji" aria-hidden="true">📞</div>
+              <input type="checkbox" class="report-called" data-assignment-id="${escapeAttr(assignment.id)}" ${assignment.called ? "checked" : ""}>
+            </div>
+          </div>
+        `;
+
+        if (index === list.length - 1) {
+          const inlineNote = document.createElement("div");
+          inlineNote.className = "inline-footer-note";
+          inlineNote.textContent = "📌 Not: Bu liste tamamlandığında lütfen ilgili zümre başkanına zamanında teslim ediniz.";
+          studentCard.appendChild(inlineNote);
+        }
+        grid.appendChild(studentCard);
+      });
+
+      cardWrapper.appendChild(grid);
+      container.appendChild(cardWrapper);
     });
+  }
 
-    cardWrapper.innerHTML = headerHtml; // Başlığı ekle
-    cardWrapper.appendChild(grid); // Kartları ekle
-
-    cont.appendChild(cardWrapper);
-  });
-}
-
-/* İŞLEVLER */
+  /* ATAMA İŞLEMLERİ */
   async function saveAssignmentsToFirebase() {
     try {
       await set(ref(db, ASSIGNMENTS_PATH), assignments);
       alert("Tüm atamalar veritabanına kaydedildi.");
-    } catch (e) {
-      console.error(e);
-      alert("Kaydetme hatası: " + e.message);
+    } catch (error) {
+      console.error(error);
+      alert(`Kaydetme hatası: ${error.message}`);
     }
   }
 
@@ -1372,78 +2304,97 @@ function renderReports() {
       await remove(ref(db, ASSIGNMENTS_PATH));
       assignments = [];
       renderAssignmentsTable();
-      document.getElementById("reportContainer").innerHTML="";
-      alert("Veritabanı temizlendi.");
-    } catch (e) { console.error(e); alert("Silme hatası."); }
+      document.getElementById("reportContainer").innerHTML = "";
+      alert("Veritabanındaki atamalar temizlendi.");
+    } catch (error) {
+      console.error(error);
+      alert("Silme hatası.");
+    }
   }
 
   function clearLocalList() {
-    if (!confirm("Ekrandaki liste temizlensin mi? (Veritabanından silinmez, sadece görünüm sıfırlanır).")) return;
+    if (!confirm("Ekrandaki liste temizlensin mi? Veritabanındaki kayıtlar silinmez.")) return;
     assignments = [];
     renderAssignmentsTable();
-    document.getElementById("reportContainer").innerHTML="";
+    document.getElementById("reportContainer").innerHTML = "";
   }
 
-  const getSelectedTeacherIds = () => Array.from(document.getElementById("teacherSelect").selectedOptions).map(o => o.value);
-  
+  function getSelectedTeacherIds() {
+    return Array.from(document.getElementById("teacherSelect").selectedOptions).map(option => option.value);
+  }
+
   function getSelectedStudents() {
-    const keys = Array.from(document.querySelectorAll(".student-checkbox:checked"))
-      .map(cb => cb.getAttribute("data-skey"));
-    return students.filter(s => keys.includes(s.key));
+    const keys = Array.from(document.querySelectorAll(".student-checkbox:checked")).map(checkbox => checkbox.dataset.skey);
+    return students.filter(student => keys.includes(student.key));
   }
 
   function updateAssignDatePreview() {
-    const s = document.getElementById("assignStart").value;
-    const e = document.getElementById("assignEnd").value;
-    const el = document.getElementById("assignDatePreview");
-    if (!s || !e) { el.textContent="Aralık seçilmedi."; return; }
-    el.textContent = toDisplayDateFromISO(s) + " – " + toDisplayDateFromISO(e);
+    const start = document.getElementById("assignStart").value;
+    const end = document.getElementById("assignEnd").value;
+    setText("assignDatePreview", start && end ? `${toDisplayDateFromISO(start)} – ${toDisplayDateFromISO(end)}` : "Aralık seçilmedi.");
   }
 
   function applyQuickRange(days) {
-    const sInput = document.getElementById("assignStart");
-    const eInput = document.getElementById("assignEnd");
-    let s = sInput.value;
-    if (!s) { const t=new Date(); s=formatDateForStore(t); sInput.value=s; }
-    const [y,m,d]=s.split("-");
-    const base = new Date(+y,+m-1,+d);
-    const end  = new Date(base.getTime());
-    end.setDate(end.getDate()+Number(days));
-    eInput.value = formatDateForStore(end);
+    const startInput = document.getElementById("assignStart");
+    const endInput = document.getElementById("assignEnd");
+    let start = startInput.value;
+    if (!start) {
+      start = formatDateForStore(new Date());
+      startInput.value = start;
+    }
+    const [year, month, day] = start.split("-").map(Number);
+    const endDate = new Date(year, month - 1, day);
+    endDate.setDate(endDate.getDate() + Number(days));
+    endInput.value = formatDateForStore(endDate);
     updateAssignDatePreview();
   }
 
   function createAssignments() {
-    const tids = getSelectedTeacherIds();
-    const studs = getSelectedStudents();
-    const s = document.getElementById("assignStart").value;
-    const e = document.getElementById("assignEnd").value;
+    const teacherIds = getSelectedTeacherIds();
+    const selectedStudents = getSelectedStudents();
+    const start = document.getElementById("assignStart").value;
+    const end = document.getElementById("assignEnd").value;
 
-    if (!tids.length || !studs.length || !s || !e) { alert("Lütfen öğretmen, öğrenci ve tarih aralığı seçiniz."); return; }
-    if (e < s) { alert("Bitiş tarihi başlangıçtan önce olamaz."); return; }
+    if (!teacherIds.length || !selectedStudents.length || !start || !end) {
+      alert("Lütfen öğretmen, öğrenci ve tarih aralığı seçiniz.");
+      return;
+    }
+    if (end < start) {
+      alert("Bitiş tarihi başlangıçtan önce olamaz.");
+      return;
+    }
 
-    let added=0;
-    tids.forEach(tid=>{
-      const t=teachers.find(x=>x.id===tid); if(!t) return;
-      studs.forEach(st=>{
-        const exists = assignments.some(a => a.teacherId===tid && assignmentStudentKey(a)===st.key && a.startDate===s && a.endDate===e);
+    let added = 0;
+    teacherIds.forEach(teacherId => {
+      const teacher = teachers.find(item => item.id === teacherId);
+      if (!teacher) return;
+      selectedStudents.forEach(student => {
+        const exists = assignments.some(assignment => (
+          assignment.teacherId === teacherId
+          && assignmentStudentKey(assignment) === student.key
+          && assignment.startDate === start
+          && assignment.endDate === end
+        ));
         if (exists) return;
+
         assignments.push({
           id: uid(),
-          teacherId: tid,
-          teacherName: t.ad,
-          teacherBranch: t.brans,
-          studentFirstName: st.isim,
-          studentLastName: st.soyisim,
-          gender: st.cinsiyet,
-          class: st.sinif,
-          schoolNumber: st.okulNo,
-          studentKey: st.key,
-          parentFirstName: st.veliAdi,
-          parentLastName: st.veliSoyadi,
-          parentPhone: normalizePhoneTR(st.veliTel),
-          startDate: s,
-          endDate: e,
+          teacherId,
+          teacherName: teacher.ad,
+          teacherBranch: teacher.brans,
+          studentFullName: student.fullName,
+          studentFirstName: student.isim,
+          studentLastName: student.soyisim,
+          gender: student.cinsiyet,
+          class: student.sinif,
+          schoolNumber: student.okulNo,
+          studentKey: student.key,
+          studentFields: deepClone(student.values),
+          parentFirstName: student.veliAdi,
+          parentLastName: student.veliSoyadi,
+          parentPhone: normalizePhoneTR(student.veliTel),
+          startDate: start,
+          endDate: end,
           called: false,
           note: "",
           methodPhone: false,
@@ -1451,87 +2402,537 @@ function renderReports() {
           methodSMS: false,
           methodFaceToFace: false
         });
-        added++;
+        added += 1;
       });
     });
-    if (!added) alert("Seçilen kriterlere uygun yeni atama eklenemedi (zaten ekli olabilir).");
-    else { 
-      renderAssignmentsTable(); 
-      document.getElementById("assignmentsBody").scrollIntoView({behavior: "smooth", block: "end"});
+
+    if (!added) {
+      alert("Seçilen kriterlere uygun yeni atama eklenemedi. Kayıtlar daha önce eklenmiş olabilir.");
+      return;
     }
+    renderAssignmentsTable();
+    document.getElementById("assignmentsBody").scrollIntoView({ behavior: "smooth", block: "end" });
   }
 
   function removeAssignmentById(id) {
-    if(!confirm("Bu atama listeden silinsin mi?")) return;
-    assignments = assignments.filter(a=>a.id!==id);
+    if (!confirm("Bu atama listeden silinsin mi?")) return;
+    assignments = assignments.filter(assignment => assignment.id !== id);
     renderAssignmentsTable();
   }
 
   function syncReportBackToAssignments() {
-    Array.from(document.querySelectorAll(".report-called")).forEach(cb=>{
-      const id = cb.getAttribute("data-assignment-id");
-      const a = assignments.find(x=>x.id===id);
-      if (a) a.called = cb.checked;
+    document.querySelectorAll(".report-called").forEach(checkbox => {
+      const assignment = assignments.find(item => item.id === checkbox.dataset.assignmentId);
+      if (assignment) assignment.called = checkbox.checked;
     });
-    Array.from(document.querySelectorAll(".note-input")).forEach(t=>{
-      const id = t.getAttribute("data-assignment-id");
-      const a = assignments.find(x=>x.id===id);
-      if (a) a.note = t.value;
+    document.querySelectorAll(".note-input").forEach(textarea => {
+      const assignment = assignments.find(item => item.id === textarea.dataset.assignmentId);
+      if (assignment) assignment.note = textarea.value;
     });
-  
-    Array.from(document.querySelectorAll(".method-checkbox")).forEach(cb=>{
-      const id = cb.getAttribute("data-assignment-id");
-      const method = cb.getAttribute("data-method");
-      const a = assignments.find(x=>x.id===id);
-      if (!a) return;
-      if (method === "phone") a.methodPhone = cb.checked;
-      else if (method === "whatsapp") a.methodWhatsApp = cb.checked;
-      else if (method === "sms") a.methodSMS = cb.checked;
-      else if (method === "face") a.methodFaceToFace = cb.checked;
+    document.querySelectorAll(".method-checkbox").forEach(checkbox => {
+      const assignment = assignments.find(item => item.id === checkbox.dataset.assignmentId);
+      if (!assignment) return;
+      const propertyByMethod = {
+        phone: "methodPhone",
+        whatsapp: "methodWhatsApp",
+        sms: "methodSMS",
+        face: "methodFaceToFace"
+      };
+      const property = propertyByMethod[checkbox.dataset.method];
+      if (property) assignment[property] = checkbox.checked;
     });
   }
 
-  document.getElementById("reloadDataBtn").addEventListener("click", loadAllData);
+  /* AYARLAR MODALI */
+  function isAdminAuthenticated() {
+    return localStorage.getItem(ADMIN_SESSION_KEY) === "true";
+  }
+
+  function openModal(id) {
+    const modal = document.getElementById(id);
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+  }
+
+  function closeModal(id) {
+    const modal = document.getElementById(id);
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+    if (!document.querySelector(".modal-overlay.open")) document.body.classList.remove("modal-open");
+  }
+
+  function requestSettingsAccess() {
+    if (isAdminAuthenticated()) {
+      openSettingsModal();
+      return;
+    }
+    document.getElementById("settingsPassword").value = "";
+    setText("loginError", "");
+    openModal("loginModal");
+    setTimeout(() => document.getElementById("settingsPassword").focus(), 50);
+  }
+
+  function openSettingsModal() {
+    settingsDraft = deepClone(studentConfig);
+    renderSettingsEditor();
+    openModal("settingsModal");
+  }
+
+  function renderSettingsEditor() {
+    renderSettingsSources();
+    renderSettingsColumns();
+    renderDuplicateSettings();
+    document.getElementById("settingsPreview").innerHTML = '<div class="preview-placeholder">Canlı önizleme için “Canlı Önizleme” düğmesine basın.</div>';
+    setText("settingsSaveStatus", "");
+  }
+
+  function renderSettingsSources() {
+    const container = document.getElementById("settingsSourcesList");
+    const mappingFields = getMappingFieldDefinitions(settingsDraft);
+    container.innerHTML = settingsDraft.sources.map((source, index) => `
+      <details class="settings-source-card" open data-source-card="${escapeAttr(source.id)}">
+        <summary>
+          <span><strong>${index + 1}. ${escapeHtml(source.name)}</strong> <span class="badge">Öncelik ${index + 1}</span></span>
+          <span>${source.active ? "Aktif" : "Pasif"}</span>
+        </summary>
+        <div class="settings-source-content">
+          <div class="settings-grid">
+            <label>Kaynak adı
+              <input type="text" value="${escapeAttr(source.name)}" data-source-id="${escapeAttr(source.id)}" data-source-prop="name">
+            </label>
+            <label class="span-2">Google E-Tablo veya CSV adresi
+              <input type="url" value="${escapeAttr(source.url)}" data-source-id="${escapeAttr(source.id)}" data-source-prop="url" placeholder="https://docs.google.com/spreadsheets/d/...">
+            </label>
+            <label>Sayfa adı
+              <input type="text" value="${escapeAttr(source.sheetName)}" data-source-id="${escapeAttr(source.id)}" data-source-prop="sheetName" placeholder="Örn. 2026 YAZ LGS">
+            </label>
+            <label>GID
+              <input type="text" value="${escapeAttr(source.gid)}" data-source-id="${escapeAttr(source.id)}" data-source-prop="gid" placeholder="Sayfa adı boşsa kullanılır">
+            </label>
+            <label>Başlık satırı
+              <input type="number" min="1" value="${source.headerRow}" data-source-id="${escapeAttr(source.id)}" data-source-prop="headerRow">
+            </label>
+            <label>Verinin başladığı satır
+              <input type="number" min="1" value="${source.dataStartRow}" data-source-id="${escapeAttr(source.id)}" data-source-prop="dataStartRow">
+            </label>
+            <label class="checkbox-line"><input type="checkbox" ${source.active ? "checked" : ""} data-source-id="${escapeAttr(source.id)}" data-source-prop="active"> Kaynak aktif</label>
+          </div>
+
+          <div class="source-actions">
+            <button type="button" class="secondary compact-button" data-source-action="move-up" data-source-id="${escapeAttr(source.id)}" ${index === 0 ? "disabled" : ""}>↑ Yukarı</button>
+            <button type="button" class="secondary compact-button" data-source-action="move-down" data-source-id="${escapeAttr(source.id)}" ${index === settingsDraft.sources.length - 1 ? "disabled" : ""}>↓ Aşağı</button>
+            <button type="button" class="secondary compact-button" data-source-action="auto-map" data-source-id="${escapeAttr(source.id)}">✨ Başlıkları Otomatik Eşleştir</button>
+            <button type="button" class="secondary compact-button" data-source-action="test" data-source-id="${escapeAttr(source.id)}">Bağlantıyı Test Et</button>
+            <button type="button" class="danger compact-button" data-source-action="delete" data-source-id="${escapeAttr(source.id)}" ${settingsDraft.sources.length === 1 ? "disabled" : ""}>Kaynağı Sil</button>
+            <span class="source-test-status" id="sourceTestStatus_${escapeAttr(source.id)}"></span>
+          </div>
+
+          <div class="mapping-help">Sütun başlığı alternatifleri için <code>İsim* | Ad Soyad</code>; aynı isimli ikinci sütun için <code>Telefon#2</code> yazabilirsiniz.</div>
+          <div class="settings-table-wrap">
+            <table class="settings-table">
+              <thead><tr><th>Sistem alanı</th><th>Bu kaynaktaki sütun başlığı</th></tr></thead>
+              <tbody>
+                ${mappingFields.map(field => `
+                  <tr>
+                    <td>${escapeHtml(field.label)}</td>
+                    <td><input type="text" value="${escapeAttr(source.mappings?.[field.key] || "")}" data-source-id="${escapeAttr(source.id)}" data-mapping-key="${escapeAttr(field.key)}" placeholder="E-tablodaki başlık"></td>
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+    `).join("");
+  }
+
+  function fieldSelectOptions(selectedField) {
+    const systemOptions = SYSTEM_FIELD_DEFINITIONS.map(field => (
+      `<option value="${escapeAttr(field.key)}" ${selectedField === field.key ? "selected" : ""}>${escapeHtml(field.label)}</option>`
+    ));
+    const customFields = getCustomFieldKeys(settingsDraft).map(field => (
+      `<option value="${escapeAttr(field)}" ${selectedField === field ? "selected" : ""}>Özel alan: ${escapeHtml(getFieldLabel(settingsDraft, field))}</option>`
+    ));
+    return [...systemOptions, ...customFields].join("");
+  }
+
+  function renderSettingsColumns() {
+    const body = document.getElementById("settingsColumnsBody");
+    body.innerHTML = settingsDraft.columns.map((column, index) => `
+      <tr data-column-id="${escapeAttr(column.id)}">
+        <td class="order-buttons">
+          <button type="button" class="secondary mini-button" data-column-action="move-up" data-column-id="${escapeAttr(column.id)}" ${index === 0 ? "disabled" : ""}>↑</button>
+          <button type="button" class="secondary mini-button" data-column-action="move-down" data-column-id="${escapeAttr(column.id)}" ${index === settingsDraft.columns.length - 1 ? "disabled" : ""}>↓</button>
+        </td>
+        <td><select data-column-id="${escapeAttr(column.id)}" data-column-prop="field">${fieldSelectOptions(column.field)}</select></td>
+        <td><input type="text" value="${escapeAttr(column.label)}" data-column-id="${escapeAttr(column.id)}" data-column-prop="label"></td>
+        <td><select data-column-id="${escapeAttr(column.id)}" data-column-prop="dataType">${DATA_TYPE_OPTIONS.map(option => `<option value="${option.value}" ${column.dataType === option.value ? "selected" : ""}>${option.label}</option>`).join("")}</select></td>
+        <td><input type="checkbox" ${column.visible ? "checked" : ""} data-column-id="${escapeAttr(column.id)}" data-column-prop="visible"></td>
+        <td><input type="checkbox" ${column.searchable ? "checked" : ""} data-column-id="${escapeAttr(column.id)}" data-column-prop="searchable"></td>
+        <td><input type="checkbox" ${column.filterable ? "checked" : ""} data-column-id="${escapeAttr(column.id)}" data-column-prop="filterable"></td>
+        <td><input type="checkbox" ${column.reportVisible ? "checked" : ""} data-column-id="${escapeAttr(column.id)}" data-column-prop="reportVisible"></td>
+        <td><button type="button" class="danger mini-button" data-column-action="delete" data-column-id="${escapeAttr(column.id)}">Sil</button></td>
+      </tr>
+    `).join("");
+  }
+
+  function renderDuplicateSettings() {
+    const container = document.getElementById("duplicateKeyOptions");
+    container.innerHTML = DUPLICATE_FIELD_OPTIONS.map(option => `
+      <label class="checkbox-chip">
+        <input type="checkbox" value="${escapeAttr(option.value)}" ${settingsDraft.duplicateKeys.includes(option.value) ? "checked" : ""}>
+        ${escapeHtml(option.label)}
+      </label>
+    `).join("");
+  }
+
+  function updateSourceDraftFromInput(input) {
+    const source = settingsDraft.sources.find(item => item.id === input.dataset.sourceId);
+    if (!source) return;
+    const property = input.dataset.sourceProp;
+    if (property) {
+      if (input.type === "checkbox") source[property] = input.checked;
+      else if (input.type === "number") source[property] = Math.max(1, Number(input.value || 1));
+      else source[property] = input.value;
+      return;
+    }
+    const mappingKey = input.dataset.mappingKey;
+    if (mappingKey) source.mappings[mappingKey] = input.value;
+  }
+
+  function updateColumnDraftFromInput(input) {
+    const column = settingsDraft.columns.find(item => item.id === input.dataset.columnId);
+    if (!column) return;
+    const property = input.dataset.columnProp;
+    if (!property) return;
+    column[property] = input.type === "checkbox" ? input.checked : input.value;
+  }
+
+  function moveArrayItem(array, index, direction) {
+    const target = index + direction;
+    if (index < 0 || target < 0 || target >= array.length) return;
+    [array[index], array[target]] = [array[target], array[index]];
+  }
+
+  async function testSource(sourceId) {
+    const source = settingsDraft.sources.find(item => item.id === sourceId);
+    const status = document.getElementById(`sourceTestStatus_${sourceId}`);
+    if (!source || !status) return;
+    status.textContent = "Test ediliyor...";
+    try {
+      const rows = await fetchCsvRows(source);
+      const header = rows[Math.max(0, source.headerRow - 1)] || [];
+      status.textContent = `Başarılı: ${header.length} sütun, ${Math.max(0, rows.length - source.dataStartRow + 1)} veri satırı.`;
+      status.className = "source-test-status success-text";
+    } catch (error) {
+      status.textContent = `Hata: ${error.message}`;
+      status.className = "source-test-status danger-text";
+    }
+  }
+
+  function headerCandidate(header, aliases, occurrence = 1) {
+    for (const alias of aliases) {
+      const indexes = findColumnIndexes(header, alias);
+      if (indexes.length >= occurrence) return occurrence > 1 ? `${header[indexes[occurrence - 1]]}#${occurrence}` : header[indexes[0]];
+    }
+    return "";
+  }
+
+  async function autoMapSource(sourceId) {
+    const source = settingsDraft.sources.find(item => item.id === sourceId);
+    const status = document.getElementById(`sourceTestStatus_${sourceId}`);
+    if (!source || !status) return;
+    status.textContent = "Başlıklar okunuyor...";
+    try {
+      const rows = await fetchCsvRows(source);
+      const header = rows[Math.max(0, source.headerRow - 1)] || [];
+      const hasLastName = Boolean(headerCandidate(header, FIELD_ALIASES.lastName));
+
+      SYSTEM_FIELD_DEFINITIONS.forEach(field => {
+        let candidate = headerCandidate(header, FIELD_ALIASES[field.key] || [field.label]);
+        if (field.key === "fullName" && !candidate && !hasLastName) candidate = headerCandidate(header, ["İsim", "İsim*"]);
+        if (field.key === "fullName" && hasLastName) candidate = "";
+        if (field.key === "parent2FullName" && !candidate) candidate = headerCandidate(header, ["Veli Adı", "Veli"], 2);
+        if (field.key === "parent2Phone" && !candidate) candidate = headerCandidate(header, ["Telefon", "Veli Telefon"], 2);
+        if (candidate) source.mappings[field.key] = candidate;
+      });
+
+      getCustomFieldKeys(settingsDraft).forEach(field => {
+        const label = getFieldLabel(settingsDraft, field);
+        const candidate = headerCandidate(header, [label]);
+        if (candidate) source.mappings[field] = candidate;
+      });
+
+      renderSettingsSources();
+      const refreshedStatus = document.getElementById(`sourceTestStatus_${sourceId}`);
+      if (refreshedStatus) {
+        refreshedStatus.textContent = "Otomatik eşleştirme tamamlandı. Kaydetmeden önce kontrol edin.";
+        refreshedStatus.className = "source-test-status success-text";
+      }
+    } catch (error) {
+      status.textContent = `Hata: ${error.message}`;
+      status.className = "source-test-status danger-text";
+    }
+  }
+
+  async function renderSettingsPreview() {
+    const preview = document.getElementById("settingsPreview");
+    const errors = validateStudentConfig(settingsDraft);
+    if (errors.length) {
+      preview.innerHTML = `<div class="settings-alert danger"><strong>Ayarlar tamamlanmalı:</strong><ul>${errors.map(error => `<li>${escapeHtml(error)}</li>`).join("")}</ul></div>`;
+      return;
+    }
+
+    preview.innerHTML = '<div class="preview-placeholder">Veriler okunuyor...</div>';
+    try {
+      const result = await fetchStudentsFromConfig(settingsDraft);
+      const visibleColumns = settingsDraft.columns.filter(column => column.visible);
+      const rows = result.students.slice(0, 10);
+      preview.innerHTML = `
+        <div class="preview-summary">
+          <strong>${result.students.length} öğrenci bulundu.</strong>
+          ${result.sourceResults.map(item => `<span class="badge">${escapeHtml(item.sourceName)}: ${item.count}${item.skipped ? ` / ${item.skipped} atlandı` : ""}</span>`).join(" ")}
+        </div>
+        ${result.warnings.length ? `<div class="settings-alert warning"><strong>Uyarılar:</strong><ul>${result.warnings.map(warning => `<li>${escapeHtml(warning)}</li>`).join("")}</ul></div>` : '<div class="settings-alert success">Çakışma veya bağlantı uyarısı bulunmadı.</div>'}
+        <div class="settings-table-wrap">
+          <table class="settings-table preview-table">
+            <thead><tr><th>Kaynak</th>${visibleColumns.map(column => `<th>${escapeHtml(column.label)}</th>`).join("")}</tr></thead>
+            <tbody>${rows.map(student => `<tr><td>${escapeHtml(student.sourceName)}</td>${visibleColumns.map(column => `<td>${escapeHtml(formatColumnValue(column, getStudentFieldValue(student, column.field)))}</td>`).join("")}</tr>`).join("")}</tbody>
+          </table>
+        </div>
+      `;
+    } catch (error) {
+      preview.innerHTML = `<div class="settings-alert danger">Önizleme oluşturulamadı: ${escapeHtml(error.message)}</div>`;
+    }
+  }
+
+  async function saveSettings() {
+    const errors = validateStudentConfig(settingsDraft);
+    if (errors.length) {
+      alert(errors.join("\n"));
+      return;
+    }
+
+    const button = document.getElementById("saveSettingsBtn");
+    button.disabled = true;
+    setText("settingsSaveStatus", "Kaydediliyor...");
+    try {
+      await saveStudentConfigToFirebase(settingsDraft);
+      setText("settingsSaveStatus", "Ayarlar Firebase'e kaydedildi ve uygulandı.");
+      await loadStudents();
+      setTimeout(() => closeModal("settingsModal"), 400);
+    } catch (error) {
+      console.error(error);
+      setText("settingsSaveStatus", `Kaydetme hatası: ${error.message}`);
+      alert(`Öğrenci ayarları kaydedilemedi: ${error.message}`);
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  async function resetStudentSettings() {
+    if (!confirm("Tüm öğrenci e-tablo kaynakları ve öğrenci sütun ayarları varsayılan ilk duruma dönecek. Öğretmenler ve atamalar etkilenmeyecek. Devam edilsin mi?")) return;
+    try {
+      await remove(ref(db, CONFIG_PATH));
+      studentConfig = deepClone(DEFAULT_STUDENT_CONFIG);
+      settingsDraft = deepClone(DEFAULT_STUDENT_CONFIG);
+      renderSettingsEditor();
+      await loadStudents();
+      alert("Öğrenci e-tablo ayarları varsayılan ilk duruma döndürüldü.");
+    } catch (error) {
+      console.error(error);
+      alert(`Resetleme hatası: ${error.message}`);
+    }
+  }
+
+  function logoutSettings() {
+    localStorage.removeItem(ADMIN_SESSION_KEY);
+    closeModal("settingsModal");
+    settingsDraft = null;
+    alert("Ayarlar oturumu kapatıldı. Ayarlar bölümüne yeniden girmek için şifre gerekecek.");
+  }
+
+  /* OLAY BAĞLANTILARI */
+  document.getElementById("settingsBtn").addEventListener("click", requestSettingsAccess);
+  document.getElementById("loginCloseBtn").addEventListener("click", () => closeModal("loginModal"));
+  document.getElementById("settingsCloseBtn").addEventListener("click", () => closeModal("settingsModal"));
+
+  document.getElementById("settingsLoginForm").addEventListener("submit", event => {
+    event.preventDefault();
+    const password = document.getElementById("settingsPassword").value;
+    if (password !== ADMIN_PASSWORD) {
+      setText("loginError", "Şifre hatalı.");
+      return;
+    }
+    localStorage.setItem(ADMIN_SESSION_KEY, "true");
+    closeModal("loginModal");
+    openSettingsModal();
+  });
+
+  document.getElementById("addStudentSourceBtn").addEventListener("click", () => {
+    settingsDraft.sources.push(normalizeSource({
+      id: makeId("source"),
+      name: `Öğrenci Kaynağı ${settingsDraft.sources.length + 1}`,
+      url: "",
+      sheetName: "",
+      gid: "",
+      headerRow: 1,
+      dataStartRow: 2,
+      active: true,
+      mappings: {}
+    }, settingsDraft.sources.length));
+    renderSettingsSources();
+  });
+
+  document.getElementById("addStudentColumnBtn").addEventListener("click", () => {
+    const customField = makeId("custom");
+    settingsDraft.columns.push(normalizeColumn({
+      id: makeId("column"),
+      field: customField,
+      label: "Yeni Sütun",
+      dataType: "text",
+      visible: true,
+      searchable: false,
+      filterable: false,
+      reportVisible: false
+    }, settingsDraft.columns.length));
+    settingsDraft.sources.forEach(source => { source.mappings[customField] = ""; });
+    renderSettingsColumns();
+    renderSettingsSources();
+  });
+
+  document.getElementById("settingsSourcesList").addEventListener("input", event => {
+    const input = event.target.closest("[data-source-id]");
+    if (input) updateSourceDraftFromInput(input);
+  });
+  document.getElementById("settingsSourcesList").addEventListener("change", event => {
+    const input = event.target.closest("[data-source-id]");
+    if (input) updateSourceDraftFromInput(input);
+  });
+  document.getElementById("settingsSourcesList").addEventListener("click", event => {
+    const button = event.target.closest("button[data-source-action]");
+    if (!button) return;
+    const sourceId = button.dataset.sourceId;
+    const index = settingsDraft.sources.findIndex(source => source.id === sourceId);
+    const action = button.dataset.sourceAction;
+
+    if (action === "move-up") moveArrayItem(settingsDraft.sources, index, -1);
+    if (action === "move-down") moveArrayItem(settingsDraft.sources, index, 1);
+    if (action === "delete") {
+      if (!confirm("Bu öğrenci veri kaynağı silinsin mi?")) return;
+      settingsDraft.sources.splice(index, 1);
+    }
+    if (["move-up", "move-down", "delete"].includes(action)) {
+      settingsDraft.sources.forEach((source, sourceIndex) => { source.priority = sourceIndex + 1; });
+      renderSettingsSources();
+    }
+    if (action === "test") testSource(sourceId);
+    if (action === "auto-map") autoMapSource(sourceId);
+  });
+
+  document.getElementById("settingsColumnsBody").addEventListener("input", event => {
+    const input = event.target.closest('[data-column-id][data-column-prop="label"]');
+    if (input) updateColumnDraftFromInput(input);
+  });
+  document.getElementById("settingsColumnsBody").addEventListener("change", event => {
+    const input = event.target.closest("[data-column-id][data-column-prop]");
+    if (!input) return;
+    const previousField = settingsDraft.columns.find(column => column.id === input.dataset.columnId)?.field;
+    updateColumnDraftFromInput(input);
+    if (input.dataset.columnProp === "field" && previousField !== input.value) {
+      settingsDraft.sources.forEach(source => {
+        if (typeof source.mappings[input.value] !== "string") source.mappings[input.value] = "";
+      });
+      cleanupUnusedCustomMappings(settingsDraft);
+      renderSettingsColumns();
+      renderSettingsSources();
+    }
+  });
+  document.getElementById("settingsColumnsBody").addEventListener("click", event => {
+    const button = event.target.closest("button[data-column-action]");
+    if (!button) return;
+    const index = settingsDraft.columns.findIndex(column => column.id === button.dataset.columnId);
+    const action = button.dataset.columnAction;
+    if (action === "move-up") moveArrayItem(settingsDraft.columns, index, -1);
+    if (action === "move-down") moveArrayItem(settingsDraft.columns, index, 1);
+    if (action === "delete") {
+      if (!confirm("Bu görünüm sütunu silinsin mi?")) return;
+      settingsDraft.columns.splice(index, 1);
+      cleanupUnusedCustomMappings(settingsDraft);
+      renderSettingsSources();
+    }
+    renderSettingsColumns();
+  });
+
+  document.getElementById("duplicateKeyOptions").addEventListener("change", () => {
+    settingsDraft.duplicateKeys = Array.from(document.querySelectorAll("#duplicateKeyOptions input:checked")).map(input => input.value);
+  });
+
+  document.getElementById("previewSettingsBtn").addEventListener("click", renderSettingsPreview);
+  document.getElementById("saveSettingsBtn").addEventListener("click", saveSettings);
+  document.getElementById("resetStudentSettingsBtn").addEventListener("click", resetStudentSettings);
+  document.getElementById("logoutSettingsBtn").addEventListener("click", logoutSettings);
+
+  document.querySelectorAll(".modal-overlay").forEach(modal => {
+    modal.addEventListener("click", event => {
+      if (event.target === modal) closeModal(modal.id);
+    });
+  });
+
+  document.addEventListener("keydown", event => {
+    if (event.key !== "Escape") return;
+    if (document.getElementById("loginModal").classList.contains("open")) closeModal("loginModal");
+    else if (document.getElementById("settingsModal").classList.contains("open")) closeModal("settingsModal");
+  });
+
+  document.getElementById("reloadDataBtn").addEventListener("click", () => loadAllData({ refreshConfig: true }));
   document.getElementById("classFilter").addEventListener("change", renderStudentsTable);
+  document.getElementById("studentSearchInput").addEventListener("input", renderStudentsTable);
+  document.getElementById("dynamicStudentFilters").addEventListener("change", event => {
+    const select = event.target.closest("select[data-student-filter]");
+    if (!select) return;
+    activeStudentFilters[select.dataset.studentFilter] = select.value;
+    renderStudentsTable();
+  });
+  document.getElementById("studentsTable").addEventListener("change", event => {
+    if (event.target.id !== "allRowCheckbox") return;
+    document.querySelectorAll(".student-checkbox").forEach(checkbox => { checkbox.checked = event.target.checked; });
+  });
   document.getElementById("assignStart").addEventListener("change", updateAssignDatePreview);
   document.getElementById("assignEnd").addEventListener("change", updateAssignDatePreview);
-  document.querySelectorAll("button[data-quick]").forEach(btn=>{
-    btn.addEventListener("click", ()=>applyQuickRange(btn.getAttribute("data-quick")));
+  document.querySelectorAll("button[data-quick]").forEach(button => {
+    button.addEventListener("click", () => applyQuickRange(button.dataset.quick));
   });
-  document.getElementById("selectAllStudentsBtn").addEventListener("click", ()=>{
-    document.querySelectorAll(".student-checkbox").forEach(cb=>cb.checked=true);
-    document.getElementById("allRowCheckbox").checked=true;
+  document.getElementById("selectAllStudentsBtn").addEventListener("click", () => {
+    document.querySelectorAll(".student-checkbox").forEach(checkbox => { checkbox.checked = true; });
+    const allCheckbox = document.getElementById("allRowCheckbox");
+    if (allCheckbox) allCheckbox.checked = true;
   });
-  document.getElementById("clearSelectionBtn").addEventListener("click", ()=>{
-    document.querySelectorAll(".student-checkbox").forEach(cb=>cb.checked=false);
-    document.getElementById("allRowCheckbox").checked=false;
-  });
-  document.getElementById("allRowCheckbox").addEventListener("change",e=>{
-    const c=e.target.checked;
-    document.querySelectorAll(".student-checkbox").forEach(cb=>cb.checked=c);
+  document.getElementById("clearSelectionBtn").addEventListener("click", () => {
+    document.querySelectorAll(".student-checkbox").forEach(checkbox => { checkbox.checked = false; });
+    const allCheckbox = document.getElementById("allRowCheckbox");
+    if (allCheckbox) allCheckbox.checked = false;
   });
   document.getElementById("assignBtn").addEventListener("click", createAssignments);
-  document.getElementById("assignmentsBody").addEventListener("click",e=>{
-    const btn=e.target.closest("button[data-del-id]");
-    if(btn) removeAssignmentById(btn.getAttribute("data-del-id"));
+  document.getElementById("assignmentsBody").addEventListener("click", event => {
+    const button = event.target.closest("button[data-del-id]");
+    if (button) removeAssignmentById(button.dataset.delId);
   });
-  
-  document.getElementById("saveAssignmentsBtn").addEventListener("click", async()=>{
+  document.getElementById("saveAssignmentsBtn").addEventListener("click", async () => {
     syncReportBackToAssignments();
     await saveAssignmentsToFirebase();
   });
   document.getElementById("deleteAssignmentsBtn").addEventListener("click", deleteAllAssignmentsInFirebase);
   document.getElementById("clearLocalListBtn").addEventListener("click", clearLocalList);
-  
-  document.getElementById("printReportsBtn").addEventListener("click", ()=>{
+  document.getElementById("printReportsBtn").addEventListener("click", () => {
     syncReportBackToAssignments();
     renderReports();
     window.print();
   });
 
-  loadAllData();
+  loadAllData({ refreshConfig: true });
+
 </script>
 </body>
 </html>
-
-
