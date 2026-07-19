@@ -499,7 +499,7 @@
 
     .settings-steps {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 10px;
       margin-bottom: 16px;
     }
@@ -760,7 +760,45 @@
     }
     .report-extra-item { white-space: nowrap; }
 
+    .mapping-menu-grid {
+      display: grid;
+      grid-template-columns: minmax(320px, 0.8fr) minmax(620px, 1.6fr);
+      gap: 14px;
+      align-items: start;
+    }
+    .mapping-menu-panel {
+      min-width: 0;
+      padding: 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      background: #f8fafc;
+    }
+    .mapping-menu-panel-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .mapping-menu-panel-heading h4 { margin: 0; font-size: 0.95rem; }
+    .mapping-menu-table { min-width: 620px; }
+    .mapping-menu-table.mapping-groups-table { min-width: 420px; }
+    .mapping-menu-kind {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      color: #475569;
+      font-size: 0.74rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .mapping-menu-kind.custom { background: #dcfce7; color: #166534; }
+
     @media (max-width: 1100px) {
+      .mapping-menu-grid { grid-template-columns: 1fr; }
       .source-main-grid { grid-template-columns: 1fr 1.6fr; }
       .source-main-grid label:last-child { grid-column: span 2; }
       .source-advanced-grid { grid-template-columns: repeat(2, minmax(140px, 1fr)); }
@@ -1364,8 +1402,9 @@
     <div class="modal-body">
       <div class="settings-steps" aria-label="Ayar adımları">
         <div class="settings-step"><span class="settings-step-number">1</span><span>E-tablo adresini ve sayfayı seçin</span></div>
-        <div class="settings-step"><span class="settings-step-number">2</span><span>Her e-tablo sütununun sistemde ne olacağını belirleyin</span></div>
+        <div class="settings-step"><span class="settings-step-number">2</span><span>“Sistemde Ne Olsun?” ana ve alt başlıklarını düzenleyin</span></div>
         <div class="settings-step"><span class="settings-step-number">3</span><span>Liste, arama, filtre ve rapor görünümünü ayarlayın</span></div>
+        <div class="settings-step"><span class="settings-step-number">4</span><span>Önizleyin, kaydedin ve uygulayın</span></div>
       </div>
 
       <section class="settings-section">
@@ -1382,7 +1421,59 @@
       <section class="settings-section">
         <div class="settings-section-heading">
           <div>
-            <h3>2. Liste ve Rapor Görünümü</h3>
+            <h3>2. “Sistemde Ne Olsun?” Menüsü</h3>
+            <div class="settings-section-description">Combobox içinde görünen ana başlıkları ve alt başlıkları ekleyin, silin, yeniden adlandırın, gruplandırın ve sıralayın.</div>
+          </div>
+        </div>
+        <div class="mapping-menu-grid">
+          <div class="mapping-menu-panel">
+            <div class="mapping-menu-panel-heading">
+              <h4>Ana Başlıklar</h4>
+              <button type="button" id="addMappingGroupBtn" class="secondary compact-button">＋ Ana Başlık</button>
+            </div>
+            <div class="settings-table-wrap">
+              <table class="settings-table mapping-menu-table mapping-groups-table">
+                <thead>
+                  <tr>
+                    <th>Sıra</th>
+                    <th>Ana Başlık Adı</th>
+                    <th>Alt Başlık</th>
+                    <th>İşlem</th>
+                  </tr>
+                </thead>
+                <tbody id="mappingGroupsBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="mapping-menu-panel">
+            <div class="mapping-menu-panel-heading">
+              <h4>Alt Başlıklar</h4>
+              <button type="button" id="addMappingFieldBtn" class="secondary compact-button">＋ Alt Başlık</button>
+            </div>
+            <div class="settings-table-wrap">
+              <table class="settings-table mapping-menu-table">
+                <thead>
+                  <tr>
+                    <th>Sıra</th>
+                    <th>Ana Başlık</th>
+                    <th>Alt Başlık Adı</th>
+                    <th>Veri Türü</th>
+                    <th>Alan</th>
+                    <th>İşlem</th>
+                  </tr>
+                </thead>
+                <tbody id="mappingFieldsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="settings-alert warning">Bir alt başlığı silmek, o alanın mevcut e-tablo eşleşmelerini ve liste/rapor sütununu da kaldırır. Öğrenci adı gibi temel alanları silerseniz veri yükleme veya rapor işlemleri çalışmayabilir.</div>
+      </section>
+
+      <section class="settings-section">
+        <div class="settings-section-heading">
+          <div>
+            <h3>3. Liste ve Rapor Görünümü</h3>
             <div class="settings-section-description">Alan adını değiştirin; listede, aramada, filtrede veya raporda kullanılıp kullanılmayacağını seçin.</div>
           </div>
           <button type="button" id="addStudentColumnBtn" class="secondary">＋ Özel Alan Ekle</button>
@@ -1418,7 +1509,7 @@
       <section class="settings-section">
         <div class="settings-section-heading">
           <div>
-            <h3>3. Kontrol Önizlemesi</h3>
+            <h3>4. Kontrol Önizlemesi</h3>
             <div class="settings-section-description">Kaydetmeden önce ilk 10 öğrenciyi ve veli bilgilerinin doğru okunup okunmadığını kontrol edin.</div>
           </div>
           <button type="button" id="previewSettingsBtn" class="secondary">Önizlemeyi Yenile</button>
@@ -1480,6 +1571,28 @@
 
   const SYSTEM_FIELD_KEYS = new Set(SYSTEM_FIELD_DEFINITIONS.map(item => item.key));
 
+  const DEFAULT_MAPPING_GROUPS = [
+    { id: "student", label: "Öğrenciyle İlgili Bilgiler" },
+    { id: "parent1", label: "Birinci Veliyle İlgili Bilgiler" },
+    { id: "parent2", label: "İkinci Veliyle İlgili Bilgiler" },
+    { id: "custom", label: "Özel Alanlar" }
+  ];
+
+  const DEFAULT_MAPPING_FIELDS = [
+    { id: "menu_fullName", field: "fullName", groupId: "student", label: "Öğrenci Adı Soyadı (tek sütun)" },
+    { id: "menu_firstName", field: "firstName", groupId: "student", label: "Öğrenci Adı" },
+    { id: "menu_lastName", field: "lastName", groupId: "student", label: "Öğrenci Soyadı" },
+    { id: "menu_gender", field: "gender", groupId: "student", label: "Cinsiyet" },
+    { id: "menu_className", field: "className", groupId: "student", label: "Sınıf" },
+    { id: "menu_schoolNumber", field: "schoolNumber", groupId: "student", label: "Öğrenci No" },
+    { id: "menu_parentFullName", field: "parentFullName", groupId: "parent1", label: "1. Veli Adı Soyadı" },
+    { id: "menu_parentFirstName", field: "parentFirstName", groupId: "parent1", label: "1. Veli Adı" },
+    { id: "menu_parentLastName", field: "parentLastName", groupId: "parent1", label: "1. Veli Soyadı" },
+    { id: "menu_parentPhone", field: "parentPhone", groupId: "parent1", label: "1. Veli Telefonu" },
+    { id: "menu_parent2FullName", field: "parent2FullName", groupId: "parent2", label: "2. Veli Adı" },
+    { id: "menu_parent2Phone", field: "parent2Phone", groupId: "parent2", label: "2. Veli Telefonu" }
+  ];
+
   const DATA_TYPE_OPTIONS = [
     { value: "text", label: "Metin" },
     { value: "number", label: "Sayı" },
@@ -1513,8 +1626,10 @@
   };
 
   const DEFAULT_STUDENT_CONFIG = {
-    version: 2,
+    version: 3,
     duplicateKeys: ["fullName", "schoolNumber"],
+    mappingGroups: deepClone(DEFAULT_MAPPING_GROUPS),
+    mappingFields: deepClone(DEFAULT_MAPPING_FIELDS),
     sources: [
       {
         id: "default_students",
@@ -1865,6 +1980,56 @@
     };
   }
 
+  function normalizeMappingGroups(groups) {
+    const seen = new Set();
+    return (Array.isArray(groups) ? groups : []).map((group, index) => {
+      const id = String(group?.id || makeId("mapping_group"));
+      if (seen.has(id)) return null;
+      seen.add(id);
+      return {
+        id,
+        label: String(group?.label || `Ana Başlık ${index + 1}`).trim() || `Ana Başlık ${index + 1}`
+      };
+    }).filter(Boolean);
+  }
+
+  function normalizeMappingFields(fields, groups, columns) {
+    const groupIds = new Set(groups.map(group => group.id));
+    const fallbackGroupId = groups[0]?.id || "";
+    const systemLabels = new Map(SYSTEM_FIELD_DEFINITIONS.map(item => [item.key, item.label]));
+    const columnLabels = new Map(columns.map(column => [column.field, column.label]));
+    const seenFields = new Set();
+
+    return (Array.isArray(fields) ? fields : []).map((item, index) => {
+      const field = String(item?.field || "").trim();
+      if (!field || seenFields.has(field)) return null;
+      seenFields.add(field);
+      return {
+        id: String(item?.id || makeId("mapping_field")),
+        field,
+        groupId: groupIds.has(String(item?.groupId || "")) ? String(item.groupId) : fallbackGroupId,
+        label: String(item?.label || systemLabels.get(field) || columnLabels.get(field) || `Alt Başlık ${index + 1}`).trim()
+      };
+    }).filter(Boolean).filter(item => item.groupId);
+  }
+
+  function legacyMappingFields(columns) {
+    const fields = deepClone(DEFAULT_MAPPING_FIELDS);
+    const customGroupId = "custom";
+    const known = new Set(fields.map(item => item.field));
+    columns.forEach(column => {
+      if (known.has(column.field)) return;
+      known.add(column.field);
+      fields.push({
+        id: makeId("mapping_field"),
+        field: column.field,
+        groupId: customGroupId,
+        label: column.label || column.field
+      });
+    });
+    return fields;
+  }
+
   function normalizeStudentConfig(rawConfig) {
     if (!rawConfig || typeof rawConfig !== "object") return deepClone(DEFAULT_STUDENT_CONFIG);
     const sources = Array.isArray(rawConfig.sources) && rawConfig.sources.length
@@ -1876,12 +2041,21 @@
     const duplicateKeys = Array.isArray(rawConfig.duplicateKeys) && rawConfig.duplicateKeys.length
       ? rawConfig.duplicateKeys.filter(key => DUPLICATE_FIELD_OPTIONS.some(option => option.value === key))
       : deepClone(DEFAULT_STUDENT_CONFIG.duplicateKeys);
+    const hasDynamicMappingMenu = Array.isArray(rawConfig.mappingGroups) && Array.isArray(rawConfig.mappingFields);
+    const mappingGroups = normalizeMappingGroups(hasDynamicMappingMenu ? rawConfig.mappingGroups : DEFAULT_MAPPING_GROUPS);
+    const mappingFields = normalizeMappingFields(
+      hasDynamicMappingMenu ? rawConfig.mappingFields : legacyMappingFields(columns),
+      mappingGroups,
+      columns
+    );
 
     return {
-      version: 2,
+      version: 3,
       duplicateKeys: duplicateKeys.length ? duplicateKeys : ["fullName"],
       sources: sources.map((source, index) => ({ ...source, priority: index + 1 })),
-      columns
+      columns,
+      mappingGroups,
+      mappingFields
     };
   }
 
@@ -1899,19 +2073,19 @@
   }
 
   function getMappingFieldDefinitions(config) {
-    const customLabels = new Map();
+    const labels = new Map(SYSTEM_FIELD_DEFINITIONS.map(item => [item.key, item.label]));
     (config.columns || []).forEach(column => {
-      if (!SYSTEM_FIELD_KEYS.has(column.field) && !customLabels.has(column.field)) {
-        customLabels.set(column.field, column.label || column.field);
-      }
+      if (!labels.has(column.field)) labels.set(column.field, column.label || column.field);
     });
-    return [
-      ...SYSTEM_FIELD_DEFINITIONS,
-      ...Array.from(customLabels, ([key, label]) => ({ key, label: `Özel: ${label}` }))
-    ];
+    (config.mappingFields || []).forEach(item => {
+      if (item.field) labels.set(item.field, item.label || labels.get(item.field) || item.field);
+    });
+    return Array.from(labels, ([key, label]) => ({ key, label }));
   }
 
   function getFieldLabel(config, fieldKey) {
+    const menuItem = (config.mappingFields || []).find(item => item.field === fieldKey);
+    if (menuItem?.label) return menuItem.label;
     const system = SYSTEM_FIELD_DEFINITIONS.find(item => item.key === fieldKey);
     if (system) return system.label;
     const column = (config.columns || []).find(item => item.field === fieldKey);
@@ -2692,6 +2866,7 @@
 
   function renderSettingsEditor() {
     renderSettingsSources();
+    renderMappingMenuSettings();
     renderSettingsColumns();
     renderDuplicateSettings();
     document.getElementById("settingsPreview").innerHTML = '<div class="preview-placeholder">Önce sütunları okuyun ve eşleştirin. Ardından “Önizlemeyi Yenile” düğmesini kullanın.</div>';
@@ -2771,33 +2946,23 @@
     return best.known >= 2 ? bestIndex : safePreferred;
   }
 
-  function systemFieldOptionGroups(selectedField, includeNewCustom = false, includeRemoveCustom = false) {
-    const groups = [
-      { label: "Öğrenci", keys: ["fullName", "firstName", "lastName", "gender", "className", "schoolNumber"] },
-      { label: "1. Veli", keys: ["parentFullName", "parentFirstName", "parentLastName", "parentPhone"] },
-      { label: "2. Veli", keys: ["parent2FullName", "parent2Phone"] }
-    ];
-    const definitions = new Map(SYSTEM_FIELD_DEFINITIONS.map(item => [item.key, item]));
-    const html = groups.map(group => `
-      <optgroup label="${escapeAttr(group.label)}">
-        ${group.keys.map(key => {
-          const field = definitions.get(key);
-          return `<option value="${escapeAttr(key)}" ${selectedField === key ? "selected" : ""}>${escapeHtml(field.label)}</option>`;
-        }).join("")}
-      </optgroup>
-    `);
-    const customFields = getCustomFieldKeys(settingsDraft);
-    if (customFields.length) {
-      html.push(`
-        <optgroup label="Özel Alanlar">
-          ${customFields.map(field => `<option value="${escapeAttr(field)}" ${selectedField === field ? "selected" : ""}>${escapeHtml(getFieldLabel(settingsDraft, field))}</option>`).join("")}
+  function systemFieldOptionGroups(selectedField, includeNewCustom = false, includeRemoveField = false) {
+    const menuFields = settingsDraft.mappingFields || [];
+    const html = (settingsDraft.mappingGroups || []).map(group => {
+      const items = menuFields.filter(item => item.groupId === group.id);
+      if (!items.length) return "";
+      return `
+        <optgroup label="${escapeAttr(group.label)}">
+          ${items.map(item => `<option value="${escapeAttr(item.field)}" ${selectedField === item.field ? "selected" : ""}>${escapeHtml(item.label)}</option>`).join("")}
         </optgroup>
-      `);
+      `;
+    }).filter(Boolean);
+
+    if (selectedField && !menuFields.some(item => item.field === selectedField)) {
+      html.push(`<optgroup label="Mevcut Eşleşme"><option value="${escapeAttr(selectedField)}" selected>${escapeHtml(getFieldLabel(settingsDraft, selectedField))}</option></optgroup>`);
     }
-    if (includeNewCustom) html.push('<option value="__new_custom__">＋ Yeni özel alan oluştur…</option>');
-    if (includeRemoveCustom && selectedField && !SYSTEM_FIELD_KEYS.has(selectedField)) {
-      html.push('<option value="__remove_custom__">− Bu özel alanı sistemden kaldır…</option>');
-    }
+    if (includeNewCustom) html.push('<option value="__new_custom__">＋ Yeni alt başlık oluştur…</option>');
+    if (includeRemoveField && selectedField) html.push('<option value="__remove_field__">− Bu alt başlığı sistemden kaldır…</option>');
     return html.join("");
   }
 
@@ -2825,10 +2990,21 @@
     }, settingsDraft.columns.length));
   }
 
+  function ensureMappingGroup(groupId = "") {
+    const existing = settingsDraft.mappingGroups.find(group => group.id === groupId)
+      || settingsDraft.mappingGroups.find(group => group.id === "custom")
+      || settingsDraft.mappingGroups[0];
+    if (existing) return existing.id;
+    const group = { id: makeId("mapping_group"), label: "Genel Bilgiler" };
+    settingsDraft.mappingGroups.push(group);
+    return group.id;
+  }
+
   function createCustomField(label, options = {}) {
     const cleanLabel = String(label || "").trim();
     if (!cleanLabel) return "";
     const field = makeId("custom");
+    const groupId = ensureMappingGroup(options.groupId);
     settingsDraft.columns.push(normalizeColumn({
       id: makeId("column"),
       field,
@@ -2839,21 +3015,34 @@
       filterable: Boolean(options.filterable),
       reportVisible: Boolean(options.reportVisible)
     }, settingsDraft.columns.length));
+    settingsDraft.mappingFields.push({
+      id: makeId("mapping_field"),
+      field,
+      groupId,
+      label: cleanLabel
+    });
     settingsDraft.sources.forEach(source => { source.mappings[field] = ""; });
     return field;
   }
 
-  function removeCustomField(field, { askConfirmation = true } = {}) {
-    if (!field || SYSTEM_FIELD_KEYS.has(field)) return false;
+  function removeMappingMenuField(field, { askConfirmation = true } = {}) {
+    if (!field) return false;
     const label = getFieldLabel(settingsDraft, field);
-    if (askConfirmation && !confirm(`“${label}” özel alanı tüm kaynak eşleşmelerinden, listeden ve rapor ayarlarından kaldırılsın mı?`)) {
+    if (askConfirmation && !confirm(`“${label}” alt başlığı sistemden çıkarılsın mı? Mevcut e-tablo eşleşmesi ile liste ve rapor sütunu da kaldırılacaktır.`)) {
       return false;
     }
 
+    settingsDraft.mappingFields = settingsDraft.mappingFields.filter(item => item.field !== field);
     settingsDraft.columns = settingsDraft.columns.filter(column => column.field !== field);
     settingsDraft.sources.forEach(source => { delete source.mappings[field]; });
+    settingsDraft.duplicateKeys = settingsDraft.duplicateKeys.filter(key => key !== field);
     cleanupUnusedCustomMappings(settingsDraft);
     return true;
+  }
+
+  function removeCustomField(field, { askConfirmation = true } = {}) {
+    if (!field || SYSTEM_FIELD_KEYS.has(field)) return false;
+    return removeMappingMenuField(field, { askConfirmation });
   }
 
   function renderSourceMappingBoard(source) {
@@ -2915,6 +3104,51 @@
         ${unresolvedMappings.length ? `<div class="mapping-issue">E-tabloda artık bulunamayan ${unresolvedMappings.length} eski eşleştirme var. “Otomatik Eşleştir” ile yenileyebilirsiniz.</div>` : ""}
       </div>
     `;
+  }
+
+  function renderMappingMenuSettings() {
+    const groupsBody = document.getElementById("mappingGroupsBody");
+    const fieldsBody = document.getElementById("mappingFieldsBody");
+    if (!groupsBody || !fieldsBody) return;
+
+    groupsBody.innerHTML = settingsDraft.mappingGroups.length
+      ? settingsDraft.mappingGroups.map((group, index) => {
+          const itemCount = settingsDraft.mappingFields.filter(item => item.groupId === group.id).length;
+          return `
+            <tr data-mapping-group-id="${escapeAttr(group.id)}">
+              <td class="order-buttons">
+                <button type="button" class="secondary mini-button" data-mapping-group-action="move-up" data-mapping-group-id="${escapeAttr(group.id)}" ${index === 0 ? "disabled" : ""}>↑</button>
+                <button type="button" class="secondary mini-button" data-mapping-group-action="move-down" data-mapping-group-id="${escapeAttr(group.id)}" ${index === settingsDraft.mappingGroups.length - 1 ? "disabled" : ""}>↓</button>
+              </td>
+              <td><input type="text" value="${escapeAttr(group.label)}" data-mapping-group-id="${escapeAttr(group.id)}" data-mapping-group-prop="label"></td>
+              <td>${itemCount}</td>
+              <td><button type="button" class="danger mini-button" data-mapping-group-action="delete" data-mapping-group-id="${escapeAttr(group.id)}">Sil</button></td>
+            </tr>
+          `;
+        }).join("")
+      : '<tr><td colspan="4" class="mapping-empty">Ana başlık yok. “Ana Başlık” düğmesiyle ekleyebilirsiniz.</td></tr>';
+
+    const groupOptions = settingsDraft.mappingGroups.map(group => `<option value="${escapeAttr(group.id)}">${escapeHtml(group.label)}</option>`).join("");
+    fieldsBody.innerHTML = settingsDraft.mappingFields.length
+      ? settingsDraft.mappingFields.map((item, index) => {
+          const column = settingsDraft.columns.find(entry => entry.field === item.field);
+          const dataType = column?.dataType || (item.field.toLowerCase().includes("phone") ? "phone" : "text");
+          const kind = SYSTEM_FIELD_KEYS.has(item.field) ? "Sistem" : "Özel";
+          return `
+            <tr data-mapping-field-id="${escapeAttr(item.id)}">
+              <td class="order-buttons">
+                <button type="button" class="secondary mini-button" data-mapping-field-action="move-up" data-mapping-field-id="${escapeAttr(item.id)}" ${index === 0 ? "disabled" : ""}>↑</button>
+                <button type="button" class="secondary mini-button" data-mapping-field-action="move-down" data-mapping-field-id="${escapeAttr(item.id)}" ${index === settingsDraft.mappingFields.length - 1 ? "disabled" : ""}>↓</button>
+              </td>
+              <td><select data-mapping-field-id="${escapeAttr(item.id)}" data-mapping-field-prop="groupId">${groupOptions.replace(`value="${escapeAttr(item.groupId)}"`, `value="${escapeAttr(item.groupId)}" selected`)}</select></td>
+              <td><input type="text" value="${escapeAttr(item.label)}" data-mapping-field-id="${escapeAttr(item.id)}" data-mapping-field-prop="label"></td>
+              <td><select data-mapping-field-id="${escapeAttr(item.id)}" data-mapping-field-prop="dataType">${DATA_TYPE_OPTIONS.map(option => `<option value="${option.value}" ${dataType === option.value ? "selected" : ""}>${option.label}</option>`).join("")}</select></td>
+              <td><span class="mapping-menu-kind ${kind === "Özel" ? "custom" : ""}">${kind}</span></td>
+              <td><button type="button" class="danger mini-button" data-mapping-field-action="delete" data-mapping-field-id="${escapeAttr(item.id)}">Sil</button></td>
+            </tr>
+          `;
+        }).join("")
+      : '<tr><td colspan="6" class="mapping-empty">Alt başlık yok. “Alt Başlık” düğmesiyle yeni bir özel alan ekleyebilirsiniz.</td></tr>';
   }
 
   function renderSettingsSources() {
@@ -3148,6 +3382,7 @@
       const runtime = await loadSourceRuntime(source);
       if (options.autoMapMissing !== false) applyAutoMapping(source, runtime.header, true);
       renderSettingsSources();
+      renderMappingMenuSettings();
       renderSettingsColumns();
       setSourceStatus(sourceId, `${runtime.descriptors.length} sütun ve ${Math.max(0, runtime.rows.length - runtime.dataStartIndex)} veri satırı okundu.`, "success");
     } catch (error) {
@@ -3165,6 +3400,7 @@
       const runtime = settingsSourceRuntime.get(sourceId) || await loadSourceRuntime(source);
       applyAutoMapping(source, runtime.header, false);
       renderSettingsSources();
+      renderMappingMenuSettings();
       renderSettingsColumns();
       setSourceStatus(sourceId, "Eşleştirme tamamlandı. Veli Adı ve Telefon sütunlarını kontrol edin.", "success");
     } catch (error) {
@@ -3191,8 +3427,9 @@
         return;
       }
     }
-    if (nextField === "__remove_custom__") {
-      if (removeCustomField(currentField)) {
+    if (nextField === "__remove_field__") {
+      if (removeMappingMenuField(currentField)) {
+        renderMappingMenuSettings();
         renderSettingsSources();
         renderSettingsColumns();
       } else {
@@ -3212,6 +3449,7 @@
     }
 
     renderSettingsSources();
+    renderMappingMenuSettings();
     renderSettingsColumns();
   }
 
@@ -3324,8 +3562,100 @@
     renderSettingsSources();
   });
 
+  document.getElementById("addMappingGroupBtn").addEventListener("click", () => {
+    settingsDraft.mappingGroups.push({ id: makeId("mapping_group"), label: "Yeni Ana Başlık" });
+    renderMappingMenuSettings();
+    renderSettingsSources();
+  });
+
+  document.getElementById("addMappingFieldBtn").addEventListener("click", () => {
+    createCustomField("Yeni Alt Başlık", { searchable: false, groupId: settingsDraft.mappingGroups[0]?.id });
+    renderMappingMenuSettings();
+    renderSettingsColumns();
+    renderSettingsSources();
+  });
+
+  document.getElementById("mappingGroupsBody").addEventListener("input", event => {
+    const input = event.target.closest("[data-mapping-group-id][data-mapping-group-prop]");
+    if (!input) return;
+    const group = settingsDraft.mappingGroups.find(item => item.id === input.dataset.mappingGroupId);
+    if (!group) return;
+    group[input.dataset.mappingGroupProp] = input.value;
+    renderSettingsSources();
+  });
+
+  document.getElementById("mappingGroupsBody").addEventListener("click", event => {
+    const button = event.target.closest("button[data-mapping-group-action]");
+    if (!button) return;
+    const index = settingsDraft.mappingGroups.findIndex(group => group.id === button.dataset.mappingGroupId);
+    if (index < 0) return;
+    const action = button.dataset.mappingGroupAction;
+    if (action === "move-up") moveArrayItem(settingsDraft.mappingGroups, index, -1);
+    if (action === "move-down") moveArrayItem(settingsDraft.mappingGroups, index, 1);
+    if (action === "delete") {
+      const group = settingsDraft.mappingGroups[index];
+      const childFields = settingsDraft.mappingFields.filter(item => item.groupId === group.id);
+      const warning = childFields.length
+        ? `“${group.label}” ana başlığı ve içindeki ${childFields.length} alt başlık sistemden çıkarılsın mı? Eşleşmeler ve görünüm sütunları da kaldırılacaktır.`
+        : `“${group.label}” ana başlığı silinsin mi?`;
+      if (!confirm(warning)) return;
+      childFields.forEach(item => removeMappingMenuField(item.field, { askConfirmation: false }));
+      settingsDraft.mappingGroups.splice(index, 1);
+    }
+    renderMappingMenuSettings();
+    renderSettingsColumns();
+    renderSettingsSources();
+  });
+
+  document.getElementById("mappingFieldsBody").addEventListener("input", event => {
+    const input = event.target.closest('[data-mapping-field-id][data-mapping-field-prop="label"]');
+    if (!input) return;
+    const item = settingsDraft.mappingFields.find(entry => entry.id === input.dataset.mappingFieldId);
+    if (!item) return;
+    const previousLabel = item.label;
+    item.label = input.value;
+    const column = settingsDraft.columns.find(entry => entry.field === item.field);
+    if (column && (!column.label || column.label === previousLabel)) column.label = input.value;
+  });
+
+  document.getElementById("mappingFieldsBody").addEventListener("change", event => {
+    const input = event.target.closest("[data-mapping-field-id][data-mapping-field-prop]");
+    if (!input) return;
+    const item = settingsDraft.mappingFields.find(entry => entry.id === input.dataset.mappingFieldId);
+    if (!item) return;
+    const property = input.dataset.mappingFieldProp;
+    if (property === "dataType") {
+      ensureColumnForField(item.field);
+      const column = settingsDraft.columns.find(entry => entry.field === item.field);
+      if (column) column.dataType = input.value;
+    } else {
+      item[property] = input.value;
+    }
+    renderMappingMenuSettings();
+    renderSettingsColumns();
+    renderSettingsSources();
+  });
+
+  document.getElementById("mappingFieldsBody").addEventListener("click", event => {
+    const button = event.target.closest("button[data-mapping-field-action]");
+    if (!button) return;
+    const index = settingsDraft.mappingFields.findIndex(item => item.id === button.dataset.mappingFieldId);
+    if (index < 0) return;
+    const action = button.dataset.mappingFieldAction;
+    if (action === "move-up") moveArrayItem(settingsDraft.mappingFields, index, -1);
+    if (action === "move-down") moveArrayItem(settingsDraft.mappingFields, index, 1);
+    if (action === "delete") {
+      const item = settingsDraft.mappingFields[index];
+      if (!removeMappingMenuField(item.field)) return;
+    }
+    renderMappingMenuSettings();
+    renderSettingsColumns();
+    renderSettingsSources();
+  });
+
   document.getElementById("addStudentColumnBtn").addEventListener("click", () => {
     createCustomField("Yeni Sütun", { searchable: false });
+    renderMappingMenuSettings();
     renderSettingsColumns();
     renderSettingsSources();
   });
@@ -3385,6 +3715,7 @@
         if (typeof source.mappings[input.value] !== "string") source.mappings[input.value] = "";
       });
       cleanupUnusedCustomMappings(settingsDraft);
+      renderMappingMenuSettings();
       renderSettingsColumns();
       renderSettingsSources();
     }
@@ -3406,6 +3737,7 @@
         settingsDraft.columns.splice(index, 1);
       }
       cleanupUnusedCustomMappings(settingsDraft);
+      renderMappingMenuSettings();
       renderSettingsSources();
     }
     renderSettingsColumns();
